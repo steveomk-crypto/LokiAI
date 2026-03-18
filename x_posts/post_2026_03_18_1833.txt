@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Measured risk-on flow
+Last scan: 18:33 18 Mar
+Signals detected: 56
+
+🔥 Top opportunities:
+
+1️⃣ ANKR
+   📈 Momentum: +20.9%
+   💰 Volume: $177.7M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ OGN
+   📈 Momentum: +44.6%
+   💰 Volume: $8.2M (thin)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+3️⃣ VELO
+   📈 Momentum: +28.3%
+   💰 Volume: $958.1K (micro)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

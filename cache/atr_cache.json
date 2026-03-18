@@ -1,0 +1,122 @@
+{
+  "hyperlane": {
+    "coin_id": "hyperlane",
+    "symbol": "HYPER",
+    "atr_usd": 0.001849,
+    "atr_pct": 0.016974,
+    "fetched_at": "2026-03-17T23:55:57Z",
+    "source": "coingecko"
+  },
+  "bitway": {
+    "coin_id": "bitway",
+    "symbol": "BTW",
+    "atr_usd": 0.000782,
+    "atr_pct": 0.022532,
+    "fetched_at": "2026-03-18T00:38:39Z",
+    "source": "coingecko"
+  },
+  "lighter": {
+    "coin_id": "lighter",
+    "symbol": "LIT",
+    "atr_usd": 0.009286,
+    "atr_pct": 0.007549,
+    "fetched_at": "2026-03-18T11:28:13Z",
+    "source": "coingecko"
+  },
+  "akash-network": {
+    "coin_id": "akash-network",
+    "symbol": "AKT",
+    "atr_usd": 0.016301,
+    "atr_pct": 0.028497,
+    "fetched_at": "2026-03-18T10:32:02Z",
+    "source": "coingecko"
+  },
+  "anime": {
+    "coin_id": "anime",
+    "symbol": "ANIME",
+    "atr_usd": 8.1e-05,
+    "atr_pct": 0.01403,
+    "fetched_at": "2026-03-17T23:14:14Z",
+    "source": "coingecko"
+  },
+  "vanar-chain": {
+    "coin_id": "vanar-chain",
+    "symbol": "VANRY",
+    "atr_usd": 0.000196,
+    "atr_pct": 0.027754,
+    "fetched_at": "2026-03-18T09:35:59Z",
+    "source": "coingecko"
+  },
+  "synfutures": {
+    "coin_id": "synfutures",
+    "symbol": "F",
+    "atr_usd": 4.3e-05,
+    "atr_pct": 0.007285,
+    "fetched_at": "2026-03-17T23:58:05Z",
+    "source": "coingecko"
+  },
+  "siren-2": {
+    "coin_id": "siren-2",
+    "symbol": "SIREN",
+    "atr_usd": 0.00899,
+    "atr_pct": 0.012667,
+    "fetched_at": "2026-03-18T00:47:13Z",
+    "source": "coingecko"
+  },
+  "huma-finance": {
+    "coin_id": "huma-finance",
+    "symbol": "HUMA",
+    "atr_usd": 0.000213,
+    "atr_pct": 0.01194,
+    "fetched_at": "2026-03-18T00:35:14Z",
+    "source": "coingecko"
+  },
+  "zetachain": {
+    "coin_id": "zetachain",
+    "symbol": "ZETA",
+    "atr_usd": 0.000422,
+    "atr_pct": 0.007745,
+    "fetched_at": "2026-03-18T00:36:29Z",
+    "source": "coingecko"
+  },
+  "ankr": {
+    "coin_id": "ankr",
+    "symbol": "ANKR",
+    "atr_usd": 0.000202,
+    "atr_pct": 0.033747,
+    "fetched_at": "2026-03-18T05:55:48Z",
+    "source": "coingecko"
+  },
+  "polymesh": {
+    "coin_id": "polymesh",
+    "symbol": "POLYX",
+    "atr_usd": 0.001229,
+    "atr_pct": 0.024543,
+    "fetched_at": "2026-03-18T00:38:34Z",
+    "source": "coingecko"
+  },
+  "enjincoin": {
+    "coin_id": "enjincoin",
+    "symbol": "ENJ",
+    "atr_usd": 0.001167,
+    "atr_pct": 0.039274,
+    "fetched_at": "2026-03-18T09:12:18Z",
+    "source": "coingecko"
+  },
+  "wormhole": {
+    "coin_id": "wormhole",
+    "symbol": "W",
+    "atr_usd": 0.000246,
+    "atr_pct": 0.01321,
+    "fetched_at": "2026-03-18T11:08:42Z",
+    "source": "coingecko"
+  },
+  "aethir": {
+    "coin_id": "aethir",
+    "symbol": "ATH",
+    "atr_usd": 8.8e-05,
+    "atr_pct": 0.012341,
+    "fetched_at": "2026-03-18T11:28:13Z",
+    "source": "coingecko"
+  }
+}

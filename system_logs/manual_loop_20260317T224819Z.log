@@ -1,0 +1,3936 @@
+=== Cycle 1 @ 2026-03-17T22:48:19Z ===
+[2026-03-17T22:48:19Z] START market_scanner
+📊 Scanner 2026-03-18T06:48: 65 signals
+• STIBA: +38972.8% | $492,762 vol | isolated spike
+• ANIME: +18.7% | $229,225,269 vol | fading
+• DAO: +24.3% | $4,979,261 vol | steady
+[2026-03-17T22:48:21Z] END market_scanner (exit 0)
+[2026-03-17T22:48:26Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +0.00%
+HYPER -1.15%
+
+Closed trades:
+None
+[2026-03-17T22:48:27Z] END paper_trader (exit 0)
+[2026-03-17T22:48:32Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:48:32Z] END position_manager (exit 0)
+[2026-03-17T22:48:37Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:48:37Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:48:42Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0648.txt).
+[2026-03-17T22:48:43Z] END market_broadcaster (exit 0)
+[2026-03-17T22:48:48Z] START telegram_sender
+Telegram status pushed (cycle 10).
+[2026-03-17T22:48:49Z] END telegram_sender (exit 0)
+[2026-03-17T22:48:54Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0648.txt).
+[2026-03-17T22:48:54Z] END performance_analyzer (exit 0)
+=== Cycle 2 @ 2026-03-17T22:49:24Z ===
+[2026-03-17T22:49:24Z] START market_scanner
+📊 Scanner 2026-03-18T06:49: 60 signals
+• LIT: +10.6% | $49,239,895 vol | steady
+• F: +5.5% | $59,779,523 vol | accelerating
+• DAO: +24.3% | $4,979,261 vol | steady
+[2026-03-17T22:49:25Z] END market_scanner (exit 0)
+[2026-03-17T22:49:30Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.00%
+BTW +0.34%
+HYPER -1.09%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:49:32Z] END paper_trader (exit 0)
+[2026-03-17T22:49:37Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:49:37Z] END position_manager (exit 0)
+[2026-03-17T22:49:42Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:49:43Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:49:48Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0649.txt).
+[2026-03-17T22:49:48Z] END market_broadcaster (exit 0)
+[2026-03-17T22:49:53Z] START telegram_sender
+Telegram status pushed (cycle 11).
+[2026-03-17T22:49:54Z] END telegram_sender (exit 0)
+[2026-03-17T22:49:59Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0649.txt).
+[2026-03-17T22:49:59Z] END performance_analyzer (exit 0)
+=== Cycle 3 @ 2026-03-17T22:50:29Z ===
+[2026-03-17T22:50:29Z] START market_scanner
+📊 Scanner 2026-03-18T06:50: 67 signals
+• LIT: +10.8% | $50,269,033 vol | steady
+• AIN: +579.0% | $1,119,789 vol | isolated spike
+• BTW: +19.3% | $11,465,625 vol | steady
+[2026-03-17T22:50:30Z] END market_scanner (exit 0)
+[2026-03-17T22:50:35Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.24%
+BTW +0.61%
+HYPER -1.12%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:50:36Z] END paper_trader (exit 0)
+[2026-03-17T22:50:41Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:50:41Z] END position_manager (exit 0)
+[2026-03-17T22:50:46Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:50:47Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:50:52Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0650.txt).
+[2026-03-17T22:50:52Z] END market_broadcaster (exit 0)
+[2026-03-17T22:50:57Z] START telegram_sender
+Telegram status pushed (cycle 12).
+[2026-03-17T22:50:58Z] END telegram_sender (exit 0)
+[2026-03-17T22:51:03Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0651.txt).
+[2026-03-17T22:51:03Z] END performance_analyzer (exit 0)
+=== Cycle 4 @ 2026-03-17T22:51:33Z ===
+[2026-03-17T22:51:33Z] START market_scanner
+📊 Scanner 2026-03-18T06:51: 47 signals
+• AIN: +579.0% | $1,119,789 vol | isolated spike
+• ANIME: +18.8% | $215,414,872 vol | fading
+• DAO: +27.4% | $5,213,148 vol | steady
+[2026-03-17T22:51:35Z] END market_scanner (exit 0)
+[2026-03-17T22:51:40Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.26%
+BTW +0.71%
+COTI +0.00%
+HYPER -0.91%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:51:41Z] END paper_trader (exit 0)
+[2026-03-17T22:51:46Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:51:47Z] END position_manager (exit 0)
+[2026-03-17T22:51:52Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:51:52Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:51:57Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0651.txt).
+[2026-03-17T22:51:57Z] END market_broadcaster (exit 0)
+[2026-03-17T22:52:02Z] START telegram_sender
+Telegram status pushed (cycle 13).
+[2026-03-17T22:52:03Z] END telegram_sender (exit 0)
+[2026-03-17T22:52:08Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0652.txt).
+[2026-03-17T22:52:08Z] END performance_analyzer (exit 0)
+=== Cycle 5 @ 2026-03-17T22:52:38Z ===
+[2026-03-17T22:52:38Z] START market_scanner
+📊 Scanner 2026-03-18T06:52: 56 signals
+• AIN: +579.0% | $1,119,789 vol | isolated spike
+• ANIME: +18.8% | $229,540,081 vol | steady
+• DAO: +27.4% | $5,213,148 vol | isolated spike
+[2026-03-17T22:52:40Z] END market_scanner (exit 0)
+[2026-03-17T22:52:45Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.27%
+BTW +1.24%
+COTI -0.14%
+HYPER -0.95%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:52:46Z] END paper_trader (exit 0)
+[2026-03-17T22:52:51Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:52:51Z] END position_manager (exit 0)
+[2026-03-17T22:52:56Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:52:56Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:53:01Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0652.txt).
+[2026-03-17T22:53:01Z] END market_broadcaster (exit 0)
+[2026-03-17T22:53:06Z] START telegram_sender
+Telegram status pushed (cycle 14).
+[2026-03-17T22:53:07Z] END telegram_sender (exit 0)
+[2026-03-17T22:53:12Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0653.txt).
+[2026-03-17T22:53:12Z] END performance_analyzer (exit 0)
+=== Cycle 6 @ 2026-03-17T22:53:42Z ===
+[2026-03-17T22:53:42Z] START market_scanner
+📊 Scanner 2026-03-18T06:53: 70 signals
+• AIN: +579.0% | $1,119,789 vol | steady
+• ANIME: +18.8% | $229,549,727 vol | isolated spike
+• DAO: +27.4% | $5,213,148 vol | isolated spike
+[2026-03-17T22:53:44Z] END market_scanner (exit 0)
+[2026-03-17T22:53:49Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.04%
+BTW +2.41%
+COTI -1.42%
+HYPER -0.94%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:53:49Z] END paper_trader (exit 0)
+[2026-03-17T22:53:54Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:53:54Z] END position_manager (exit 0)
+[2026-03-17T22:53:59Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:54:00Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:54:05Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0653.txt).
+[2026-03-17T22:54:05Z] END market_broadcaster (exit 0)
+[2026-03-17T22:54:10Z] START telegram_sender
+Telegram status pushed (cycle 15).
+[2026-03-17T22:54:11Z] END telegram_sender (exit 0)
+[2026-03-17T22:54:16Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0654.txt).
+[2026-03-17T22:54:16Z] END performance_analyzer (exit 0)
+=== Cycle 7 @ 2026-03-17T22:54:46Z ===
+[2026-03-17T22:54:46Z] START market_scanner
+📊 Scanner 2026-03-18T06:54: 76 signals
+• ANIME: +18.9% | $215,603,769 vol | steady
+• STIBA: +27494.6% | $354,063 vol | steady
+• POLYX: +28.4% | $141,664,272 vol | steady
+[2026-03-17T22:54:47Z] END market_scanner (exit 0)
+[2026-03-17T22:54:52Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.04%
+BTW +2.41%
+COTI -1.29%
+HYPER -0.68%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:54:53Z] END paper_trader (exit 0)
+[2026-03-17T22:54:58Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:54:58Z] END position_manager (exit 0)
+[2026-03-17T22:55:03Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:55:04Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:55:09Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0654.txt).
+[2026-03-17T22:55:09Z] END market_broadcaster (exit 0)
+[2026-03-17T22:55:14Z] START telegram_sender
+Telegram status pushed (cycle 16).
+[2026-03-17T22:55:15Z] END telegram_sender (exit 0)
+[2026-03-17T22:55:20Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0655.txt).
+[2026-03-17T22:55:20Z] END performance_analyzer (exit 0)
+=== Cycle 8 @ 2026-03-17T22:55:50Z ===
+[2026-03-17T22:55:50Z] START market_scanner
+📊 Scanner 2026-03-18T06:55: 114 signals
+• ANIME: +18.9% | $229,702,096 vol | steady
+• STIBA: +33021.3% | $425,348 vol | steady
+• ASTER: +4.1% | $375,766,160 vol | steady
+[2026-03-17T22:55:51Z] END market_scanner (exit 0)
+[2026-03-17T22:55:56Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.01%
+BTW +3.16%
+COTI -1.83%
+HYPER -0.66%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:55:57Z] END paper_trader (exit 0)
+[2026-03-17T22:56:02Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:56:02Z] END position_manager (exit 0)
+[2026-03-17T22:56:07Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:56:07Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:56:12Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0655.txt).
+[2026-03-17T22:56:12Z] END market_broadcaster (exit 0)
+[2026-03-17T22:56:17Z] START telegram_sender
+Telegram status pushed (cycle 17).
+[2026-03-17T22:56:19Z] END telegram_sender (exit 0)
+[2026-03-17T22:56:24Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0656.txt).
+[2026-03-17T22:56:24Z] END performance_analyzer (exit 0)
+=== Cycle 9 @ 2026-03-17T22:56:54Z ===
+[2026-03-17T22:56:54Z] START market_scanner
+📊 Scanner 2026-03-18T06:56: 67 signals
+• STIBA: +33021.3% | $425,348 vol | steady
+• ASTER: +4.1% | $375,845,284 vol | steady
+• POLYX: +28.5% | $141,831,799 vol | steady
+[2026-03-17T22:56:55Z] END market_scanner (exit 0)
+[2026-03-17T22:57:00Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +3.04%
+HYPER -0.59%
+LIT +0.00%
+
+Closed trades:
+COTI -2.10% (SL)
+[2026-03-17T22:57:01Z] END paper_trader (exit 0)
+[2026-03-17T22:57:06Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:57:06Z] END position_manager (exit 0)
+[2026-03-17T22:57:11Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:57:11Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:57:16Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0656.txt).
+[2026-03-17T22:57:16Z] END market_broadcaster (exit 0)
+[2026-03-17T22:57:21Z] START telegram_sender
+Telegram status pushed (cycle 18).
+[2026-03-17T22:57:23Z] END telegram_sender (exit 0)
+[2026-03-17T22:57:28Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0657.txt).
+[2026-03-17T22:57:28Z] END performance_analyzer (exit 0)
+=== Cycle 10 @ 2026-03-17T22:57:58Z ===
+[2026-03-17T22:57:58Z] START market_scanner
+📊 Scanner 2026-03-18T06:57: 68 signals
+• STIBA: +33021.3% | $425,348 vol | steady
+• ASTER: +4.1% | $375,933,708 vol | steady
+• ANIME: +19.0% | $211,954,649 vol | isolated spike
+[2026-03-17T22:57:59Z] END market_scanner (exit 0)
+[2026-03-17T22:58:04Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.23%
+BTW +2.89%
+HYPER -0.67%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:58:05Z] END paper_trader (exit 0)
+[2026-03-17T22:58:10Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:58:10Z] END position_manager (exit 0)
+[2026-03-17T22:58:15Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:58:15Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:58:20Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0657.txt).
+[2026-03-17T22:58:20Z] END market_broadcaster (exit 0)
+[2026-03-17T22:58:25Z] START telegram_sender
+Telegram status pushed (cycle 19).
+[2026-03-17T22:58:27Z] END telegram_sender (exit 0)
+[2026-03-17T22:58:32Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0658.txt).
+[2026-03-17T22:58:32Z] END performance_analyzer (exit 0)
+=== Cycle 11 @ 2026-03-17T22:59:02Z ===
+[2026-03-17T22:59:02Z] START market_scanner
+📊 Scanner 2026-03-18T06:59: 70 signals
+• STIBA: +33021.3% | $425,348 vol | isolated spike
+• ASTER: +4.1% | $375,837,364 vol | steady
+• ANIME: +18.9% | $229,787,735 vol | steady
+[2026-03-17T22:59:03Z] END market_scanner (exit 0)
+[2026-03-17T22:59:08Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.20%
+ANIME +0.00%
+BTW +2.72%
+HYPER -0.67%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T22:59:10Z] END paper_trader (exit 0)
+[2026-03-17T22:59:15Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T22:59:15Z] END position_manager (exit 0)
+[2026-03-17T22:59:20Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T22:59:20Z] END sol_paper_trader (exit 0)
+[2026-03-17T22:59:25Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0659.txt).
+[2026-03-17T22:59:25Z] END market_broadcaster (exit 0)
+[2026-03-17T22:59:30Z] START telegram_sender
+Telegram status pushed (cycle 20).
+[2026-03-17T22:59:31Z] END telegram_sender (exit 0)
+[2026-03-17T22:59:36Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0659.txt).
+[2026-03-17T22:59:36Z] END performance_analyzer (exit 0)
+=== Cycle 12 @ 2026-03-17T23:00:06Z ===
+[2026-03-17T23:00:06Z] START market_scanner
+📊 Scanner 2026-03-18T07:00: 73 signals
+• STIBA: +33021.3% | $425,348 vol | steady
+• ASTER: +4.2% | $375,322,892 vol | isolated spike
+• ANIME: +19.1% | $215,886,406 vol | isolated spike
+[2026-03-17T23:00:07Z] END market_scanner (exit 0)
+[2026-03-17T23:00:12Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.22%
+ANIME +0.16%
+BTW +2.81%
+HYPER -0.66%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:00:13Z] END paper_trader (exit 0)
+[2026-03-17T23:00:18Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:00:18Z] END position_manager (exit 0)
+[2026-03-17T23:00:23Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:00:24Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:00:29Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0700.txt).
+[2026-03-17T23:00:29Z] END market_broadcaster (exit 0)
+[2026-03-17T23:00:34Z] START telegram_sender
+Telegram status pushed (cycle 21).
+[2026-03-17T23:00:35Z] END telegram_sender (exit 0)
+[2026-03-17T23:00:40Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0700.txt).
+[2026-03-17T23:00:40Z] END performance_analyzer (exit 0)
+=== Cycle 13 @ 2026-03-17T23:01:10Z ===
+[2026-03-17T23:01:10Z] START market_scanner
+📊 Scanner 2026-03-18T07:01: 95 signals
+• ASTER: +4.2% | $374,873,003 vol | isolated spike
+• AA: +122.2% | $208,679 vol | isolated spike
+• ANIME: +19.3% | $215,963,488 vol | isolated spike
+[2026-03-17T23:01:12Z] END market_scanner (exit 0)
+[2026-03-17T23:01:17Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.20%
+ANIME +0.20%
+BTW +2.85%
+HYPER -0.65%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:01:18Z] END paper_trader (exit 0)
+[2026-03-17T23:01:23Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:01:23Z] END position_manager (exit 0)
+[2026-03-17T23:01:28Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:01:28Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:01:33Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0701.txt).
+[2026-03-17T23:01:34Z] END market_broadcaster (exit 0)
+[2026-03-17T23:01:39Z] START telegram_sender
+Telegram status pushed (cycle 22).
+[2026-03-17T23:01:40Z] END telegram_sender (exit 0)
+[2026-03-17T23:01:45Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0701.txt).
+[2026-03-17T23:01:45Z] END performance_analyzer (exit 0)
+=== Cycle 14 @ 2026-03-17T23:02:15Z ===
+[2026-03-17T23:02:15Z] START market_scanner
+📊 Scanner 2026-03-18T07:02: 85 signals
+• ASTER: +4.1% | $374,928,551 vol | steady
+• AA: +122.2% | $208,679 vol | steady
+• TONIC: +98.2% | $201,929 vol | steady
+[2026-03-17T23:02:16Z] END market_scanner (exit 0)
+[2026-03-17T23:02:21Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.23%
+ANIME +0.17%
+BTW +2.58%
+HYPER -0.50%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:02:22Z] END paper_trader (exit 0)
+[2026-03-17T23:02:27Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:02:27Z] END position_manager (exit 0)
+[2026-03-17T23:02:32Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:02:32Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:02:37Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0702.txt).
+[2026-03-17T23:02:37Z] END market_broadcaster (exit 0)
+[2026-03-17T23:02:42Z] START telegram_sender
+Telegram status pushed (cycle 23).
+[2026-03-17T23:02:44Z] END telegram_sender (exit 0)
+[2026-03-17T23:02:49Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0702.txt).
+[2026-03-17T23:02:49Z] END performance_analyzer (exit 0)
+=== Cycle 15 @ 2026-03-17T23:03:19Z ===
+[2026-03-17T23:03:19Z] START market_scanner
+📊 Scanner 2026-03-18T07:03: 70 signals
+• ASTER: +4.0% | $374,986,731 vol | steady
+• AA: +122.2% | $208,679 vol | steady
+• TONIC: +98.2% | $201,929 vol | steady
+[2026-03-17T23:03:20Z] END market_scanner (exit 0)
+[2026-03-17T23:03:25Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.24%
+ANIME +0.16%
+BTW +1.97%
+HYPER -0.49%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:03:26Z] END paper_trader (exit 0)
+[2026-03-17T23:03:31Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:03:32Z] END position_manager (exit 0)
+[2026-03-17T23:03:37Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:03:37Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:03:42Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0703.txt).
+[2026-03-17T23:03:42Z] END market_broadcaster (exit 0)
+[2026-03-17T23:03:47Z] START telegram_sender
+Telegram status pushed (cycle 24).
+[2026-03-17T23:03:48Z] END telegram_sender (exit 0)
+[2026-03-17T23:03:53Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0703.txt).
+[2026-03-17T23:03:53Z] END performance_analyzer (exit 0)
+=== Cycle 16 @ 2026-03-17T23:04:23Z ===
+[2026-03-17T23:04:23Z] START market_scanner
+📊 Scanner 2026-03-18T07:04: 70 signals
+• ANIME: +19.3% | $216,004,131 vol | isolated spike
+• AA: +122.2% | $208,679 vol | steady
+• TONIC: +98.2% | $201,929 vol | steady
+[2026-03-17T23:04:25Z] END market_scanner (exit 0)
+[2026-03-17T23:04:30Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.36%
+ANIME +0.20%
+BTW +1.96%
+HYPER -0.41%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:04:31Z] END paper_trader (exit 0)
+[2026-03-17T23:04:36Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:04:37Z] END position_manager (exit 0)
+[2026-03-17T23:04:42Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:04:42Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:04:47Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0704.txt).
+[2026-03-17T23:04:47Z] END market_broadcaster (exit 0)
+[2026-03-17T23:04:52Z] START telegram_sender
+Telegram status pushed (cycle 25).
+[2026-03-17T23:04:53Z] END telegram_sender (exit 0)
+[2026-03-17T23:04:58Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0704.txt).
+[2026-03-17T23:04:59Z] END performance_analyzer (exit 0)
+=== Cycle 17 @ 2026-03-17T23:05:29Z ===
+[2026-03-17T23:05:29Z] START market_scanner
+📊 Scanner 2026-03-18T07:05: 75 signals
+• ASTER: +4.0% | $373,882,970 vol | steady
+• TONIC: +98.3% | $203,091 vol | steady
+• ANIME: +19.4% | $216,120,919 vol | isolated spike
+[2026-03-17T23:05:30Z] END market_scanner (exit 0)
+[2026-03-17T23:05:35Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.41%
+ANIME +0.27%
+BTW +2.38%
+HYPER -0.05%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:05:36Z] END paper_trader (exit 0)
+[2026-03-17T23:05:41Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:05:41Z] END position_manager (exit 0)
+[2026-03-17T23:05:46Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:05:46Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:05:51Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0705.txt).
+[2026-03-17T23:05:51Z] END market_broadcaster (exit 0)
+[2026-03-17T23:05:56Z] START telegram_sender
+Telegram status pushed (cycle 26).
+[2026-03-17T23:05:57Z] END telegram_sender (exit 0)
+[2026-03-17T23:06:02Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0706.txt).
+[2026-03-17T23:06:03Z] END performance_analyzer (exit 0)
+=== Cycle 18 @ 2026-03-17T23:06:33Z ===
+[2026-03-17T23:06:33Z] START market_scanner
+📊 Scanner 2026-03-18T07:06: 57 signals
+• ASTER: +4.7% | $373,440,536 vol | isolated spike
+• STIBA: +32199.9% | $421,509 vol | steady
+• ANIME: +19.8% | $216,483,658 vol | isolated spike
+[2026-03-17T23:06:35Z] END market_scanner (exit 0)
+[2026-03-17T23:06:40Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.79%
+ANIME +0.45%
+BTW +2.40%
+HYPER +0.23%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:06:40Z] END paper_trader (exit 0)
+[2026-03-17T23:06:45Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:06:45Z] END position_manager (exit 0)
+[2026-03-17T23:06:50Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:06:51Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:06:56Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0706.txt).
+[2026-03-17T23:06:56Z] END market_broadcaster (exit 0)
+[2026-03-17T23:07:01Z] START telegram_sender
+Telegram status pushed (cycle 27).
+[2026-03-17T23:07:02Z] END telegram_sender (exit 0)
+[2026-03-17T23:07:07Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0707.txt).
+[2026-03-17T23:07:07Z] END performance_analyzer (exit 0)
+=== Cycle 19 @ 2026-03-17T23:07:37Z ===
+[2026-03-17T23:07:37Z] START market_scanner
+📊 Scanner 2026-03-18T07:07: 64 signals
+• ASTER: +4.7% | $373,331,353 vol | isolated spike
+• ANIME: +19.7% | $230,696,507 vol | steady
+• HYPER: +16.8% | $100,252,111 vol | isolated spike
+[2026-03-17T23:07:39Z] END market_scanner (exit 0)
+[2026-03-17T23:07:44Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.82%
+ANIME +0.39%
+BTW +2.39%
+HYPER +0.28%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:07:44Z] END paper_trader (exit 0)
+[2026-03-17T23:07:49Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:07:50Z] END position_manager (exit 0)
+[2026-03-17T23:07:55Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:07:55Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:08:00Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0707.txt).
+[2026-03-17T23:08:00Z] END market_broadcaster (exit 0)
+[2026-03-17T23:08:05Z] START telegram_sender
+Telegram status pushed (cycle 28).
+[2026-03-17T23:08:06Z] END telegram_sender (exit 0)
+[2026-03-17T23:08:11Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0708.txt).
+[2026-03-17T23:08:12Z] END performance_analyzer (exit 0)
+=== Cycle 20 @ 2026-03-17T23:08:42Z ===
+[2026-03-17T23:08:42Z] START market_scanner
+📊 Scanner 2026-03-18T07:08: 74 signals
+• ANIME: +19.7% | $230,648,310 vol | steady
+• HYPER: +16.8% | $100,268,522 vol | isolated spike
+• OGN: +44.6% | $15,350,478 vol | steady
+[2026-03-17T23:08:43Z] END market_scanner (exit 0)
+[2026-03-17T23:08:48Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.87%
+ANIME +0.39%
+BTW +1.68%
+HYPER +0.29%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:08:48Z] END paper_trader (exit 0)
+[2026-03-17T23:08:53Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:08:53Z] END position_manager (exit 0)
+[2026-03-17T23:08:58Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:08:59Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:09:04Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0708.txt).
+[2026-03-17T23:09:04Z] END market_broadcaster (exit 0)
+[2026-03-17T23:09:09Z] START telegram_sender
+Telegram status pushed (cycle 29).
+[2026-03-17T23:09:10Z] END telegram_sender (exit 0)
+[2026-03-17T23:09:15Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0709.txt).
+[2026-03-17T23:09:15Z] END performance_analyzer (exit 0)
+=== Cycle 21 @ 2026-03-17T23:09:45Z ===
+[2026-03-17T23:09:45Z] START market_scanner
+📊 Scanner 2026-03-18T07:09: 61 signals
+• HYPER: +17.1% | $100,461,238 vol | isolated spike
+• OGN: +44.6% | $15,350,478 vol | steady
+• VANRY: +16.1% | $48,955,499 vol | isolated spike
+[2026-03-17T23:09:47Z] END market_scanner (exit 0)
+[2026-03-17T23:09:52Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.90%
+ANIME +0.18%
+BTW +1.66%
+HYPER +0.60%
+LIT +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:09:53Z] END paper_trader (exit 0)
+[2026-03-17T23:09:58Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:09:58Z] END position_manager (exit 0)
+[2026-03-17T23:10:03Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:10:03Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:10:08Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0709.txt).
+[2026-03-17T23:10:08Z] END market_broadcaster (exit 0)
+[2026-03-17T23:10:13Z] START telegram_sender
+Telegram status pushed (cycle 30).
+[2026-03-17T23:10:15Z] END telegram_sender (exit 0)
+[2026-03-17T23:10:20Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0710.txt).
+[2026-03-17T23:10:20Z] END performance_analyzer (exit 0)
+=== Cycle 22 @ 2026-03-17T23:10:50Z ===
+[2026-03-17T23:10:50Z] START market_scanner
+📊 Scanner 2026-03-18T07:10: 97 signals
+• ASTER: +4.9% | $373,527,622 vol | isolated spike
+• STIBA: +34257.6% | $452,394 vol | steady
+• VANRY: +16.2% | $48,965,042 vol | steady
+[2026-03-17T23:10:51Z] END market_scanner (exit 0)
+[2026-03-17T23:10:56Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.88%
+ANIME +0.12%
+BTW +2.11%
+HYPER +0.54%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:10:57Z] END paper_trader (exit 0)
+[2026-03-17T23:11:02Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:11:02Z] END position_manager (exit 0)
+[2026-03-17T23:11:07Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:11:07Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:11:12Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0710.txt).
+[2026-03-17T23:11:12Z] END market_broadcaster (exit 0)
+[2026-03-17T23:11:17Z] START telegram_sender
+Telegram status pushed (cycle 31).
+[2026-03-17T23:11:19Z] END telegram_sender (exit 0)
+[2026-03-17T23:11:24Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0711.txt).
+[2026-03-17T23:11:24Z] END performance_analyzer (exit 0)
+=== Cycle 23 @ 2026-03-17T23:11:54Z ===
+[2026-03-17T23:11:54Z] START market_scanner
+📊 Scanner 2026-03-18T07:11: 59 signals
+• ASTER: +4.9% | $373,658,234 vol | isolated spike
+• ANIME: +20.1% | $199,868,124 vol | isolated spike
+• ANOME: +58.4% | $1,681,527 vol | steady
+[2026-03-17T23:11:55Z] END market_scanner (exit 0)
+[2026-03-17T23:12:00Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +1.17%
+ANIME +0.49%
+BTW +1.96%
+HYPER +0.39%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:12:01Z] END paper_trader (exit 0)
+[2026-03-17T23:12:06Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:12:06Z] END position_manager (exit 0)
+[2026-03-17T23:12:11Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:12:11Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:12:16Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0711.txt).
+[2026-03-17T23:12:17Z] END market_broadcaster (exit 0)
+[2026-03-17T23:12:22Z] START telegram_sender
+Telegram status pushed (cycle 32).
+[2026-03-17T23:12:23Z] END telegram_sender (exit 0)
+[2026-03-17T23:12:28Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0712.txt).
+[2026-03-17T23:12:28Z] END performance_analyzer (exit 0)
+=== Cycle 24 @ 2026-03-17T23:12:58Z ===
+[2026-03-17T23:12:58Z] START market_scanner
+📊 Scanner 2026-03-18T07:12: 64 signals
+• ASTER: +5.1% | $373,894,330 vol | isolated spike
+• ANIME: +18.9% | $228,878,782 vol | steady
+• ANOME: +58.4% | $1,681,527 vol | steady
+[2026-03-17T23:12:59Z] END market_scanner (exit 0)
+[2026-03-17T23:13:04Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +1.22%
+ANIME -0.51%
+BTW +2.07%
+HYPER +0.21%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:13:05Z] END paper_trader (exit 0)
+[2026-03-17T23:13:10Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:13:10Z] END position_manager (exit 0)
+[2026-03-17T23:13:15Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:13:16Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:13:21Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0712.txt).
+[2026-03-17T23:13:21Z] END market_broadcaster (exit 0)
+[2026-03-17T23:13:26Z] START telegram_sender
+Telegram status pushed (cycle 33).
+[2026-03-17T23:13:27Z] END telegram_sender (exit 0)
+[2026-03-17T23:13:32Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0713.txt).
+[2026-03-17T23:13:32Z] END performance_analyzer (exit 0)
+=== Cycle 25 @ 2026-03-17T23:14:02Z ===
+[2026-03-17T23:14:02Z] START market_scanner
+📊 Scanner 2026-03-18T07:14: 56 signals
+• ASTER: +5.1% | $373,672,103 vol | steady
+• ANOME: +58.4% | $1,681,527 vol | steady
+• HOME: +45.6% | $4,350,768 vol | steady
+[2026-03-17T23:14:03Z] END market_scanner (exit 0)
+[2026-03-17T23:14:08Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +1.27%
+ANIME -0.58%
+BTW +2.23%
+HYPER +0.15%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:14:09Z] END paper_trader (exit 0)
+[2026-03-17T23:14:14Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:14:14Z] END position_manager (exit 0)
+[2026-03-17T23:14:19Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:14:20Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:14:25Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0714.txt).
+[2026-03-17T23:14:25Z] END market_broadcaster (exit 0)
+[2026-03-17T23:14:30Z] START telegram_sender
+Telegram status pushed (cycle 34).
+[2026-03-17T23:14:31Z] END telegram_sender (exit 0)
+[2026-03-17T23:14:36Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0714.txt).
+[2026-03-17T23:14:36Z] END performance_analyzer (exit 0)
+=== Cycle 26 @ 2026-03-17T23:15:06Z ===
+[2026-03-17T23:15:06Z] START market_scanner
+📊 Scanner 2026-03-18T07:15: 75 signals
+• ANIME: +18.8% | $228,977,506 vol | steady
+• ANOME: +58.4% | $1,681,527 vol | steady
+• HOME: +45.6% | $4,350,768 vol | steady
+[2026-03-17T23:15:07Z] END market_scanner (exit 0)
+[2026-03-17T23:15:12Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +1.22%
+ANIME -0.56%
+BTW +2.26%
+HYPER +0.09%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:15:13Z] END paper_trader (exit 0)
+[2026-03-17T23:15:18Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:15:18Z] END position_manager (exit 0)
+[2026-03-17T23:15:23Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:15:24Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:15:29Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0715.txt).
+[2026-03-17T23:15:29Z] END market_broadcaster (exit 0)
+[2026-03-17T23:15:34Z] START telegram_sender
+Telegram status pushed (cycle 35).
+[2026-03-17T23:15:35Z] END telegram_sender (exit 0)
+[2026-03-17T23:15:40Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0715.txt).
+[2026-03-17T23:15:40Z] END performance_analyzer (exit 0)
+=== Cycle 27 @ 2026-03-17T23:16:10Z ===
+[2026-03-17T23:16:10Z] START market_scanner
+📊 Scanner 2026-03-18T07:16: 89 signals
+• ANIME: +18.8% | $228,972,907 vol | steady
+• AA: +113.3% | $199,715 vol | isolated spike
+• TONIC: +105.2% | $216,719 vol | isolated spike
+[2026-03-17T23:16:11Z] END market_scanner (exit 0)
+[2026-03-17T23:16:16Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +1.21%
+ANIME -0.56%
+BTW +2.28%
+HYPER -0.07%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:16:17Z] END paper_trader (exit 0)
+[2026-03-17T23:16:22Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:16:22Z] END position_manager (exit 0)
+[2026-03-17T23:16:27Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:16:28Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:16:33Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0716.txt).
+[2026-03-17T23:16:33Z] END market_broadcaster (exit 0)
+[2026-03-17T23:16:38Z] START telegram_sender
+Telegram status pushed (cycle 36).
+[2026-03-17T23:16:39Z] END telegram_sender (exit 0)
+[2026-03-17T23:16:44Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0716.txt).
+[2026-03-17T23:16:44Z] END performance_analyzer (exit 0)
+=== Cycle 28 @ 2026-03-17T23:17:14Z ===
+[2026-03-17T23:17:14Z] START market_scanner
+📊 Scanner 2026-03-18T07:17: 71 signals
+• POLYX: +27.5% | $140,956,115 vol | isolated spike
+• STIBA: +26566.7% | $353,006 vol | steady
+• HUMA: +6.5% | $47,805,939 vol | steady
+[2026-03-17T23:17:15Z] END market_scanner (exit 0)
+[2026-03-17T23:17:20Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +1.21%
+ANIME -0.66%
+BTW +2.28%
+HYPER -0.15%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:17:22Z] END paper_trader (exit 0)
+[2026-03-17T23:17:27Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:17:27Z] END position_manager (exit 0)
+[2026-03-17T23:17:32Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:17:32Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:17:37Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0717.txt).
+[2026-03-17T23:17:37Z] END market_broadcaster (exit 0)
+[2026-03-17T23:17:42Z] START telegram_sender
+Telegram status pushed (cycle 37).
+[2026-03-17T23:17:43Z] END telegram_sender (exit 0)
+[2026-03-17T23:17:48Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0717.txt).
+[2026-03-17T23:17:48Z] END performance_analyzer (exit 0)
+=== Cycle 29 @ 2026-03-17T23:18:18Z ===
+[2026-03-17T23:18:18Z] START market_scanner
+📊 Scanner 2026-03-18T07:18: 59 signals
+• POLYX: +28.4% | $141,960,466 vol | isolated spike
+• AA: +113.3% | $199,715 vol | steady
+• VANRY: +16.8% | $49,617,278 vol | isolated spike
+[2026-03-17T23:18:19Z] END market_scanner (exit 0)
+[2026-03-17T23:18:24Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.45%
+ANIME -1.12%
+BTW +2.36%
+HYPER -0.10%
+LIT -0.78%
+
+Closed trades:
+None
+[2026-03-17T23:18:25Z] END paper_trader (exit 0)
+[2026-03-17T23:18:30Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:18:30Z] END position_manager (exit 0)
+[2026-03-17T23:18:35Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:18:36Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:18:41Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0718.txt).
+[2026-03-17T23:18:41Z] END market_broadcaster (exit 0)
+[2026-03-17T23:18:46Z] START telegram_sender
+Telegram status pushed (cycle 38).
+[2026-03-17T23:18:47Z] END telegram_sender (exit 0)
+[2026-03-17T23:18:52Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0718.txt).
+[2026-03-17T23:18:52Z] END performance_analyzer (exit 0)
+=== Cycle 30 @ 2026-03-17T23:19:22Z ===
+[2026-03-17T23:19:22Z] START market_scanner
+📊 Scanner 2026-03-18T07:19: 60 signals
+• POLYX: +28.4% | $142,005,008 vol | steady
+• AA: +113.3% | $199,715 vol | steady
+• VANRY: +16.6% | $60,340,344 vol | isolated spike
+[2026-03-17T23:19:23Z] END market_scanner (exit 0)
+[2026-03-17T23:19:28Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.35%
+ANIME -1.33%
+BTW +2.43%
+HYPER -0.48%
+LIT -0.78%
+VANRY +0.00%
+
+Closed trades:
+None
+[2026-03-17T23:19:29Z] END paper_trader (exit 0)
+[2026-03-17T23:19:34Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:19:35Z] END position_manager (exit 0)
+[2026-03-17T23:19:40Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:19:40Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:19:45Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0719.txt).
+[2026-03-17T23:19:45Z] END market_broadcaster (exit 0)
+[2026-03-17T23:19:50Z] START telegram_sender
+Telegram status pushed (cycle 39).
+[2026-03-17T23:19:51Z] END telegram_sender (exit 0)
+[2026-03-17T23:19:56Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0719.txt).
+[2026-03-17T23:19:56Z] END performance_analyzer (exit 0)
+=== Cycle 31 @ 2026-03-17T23:20:26Z ===
+[2026-03-17T23:20:26Z] START market_scanner
+📊 Scanner 2026-03-18T07:20: 68 signals
+• STIBA: +44786.8% | $603,278 vol | steady
+• ASTER: +5.1% | $373,258,150 vol | steady
+• ZRO: +4.5% | $78,672,803 vol | steady
+[2026-03-17T23:20:28Z] END market_scanner (exit 0)
+[2026-03-17T23:20:33Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.28%
+ANIME -1.50%
+BTW +2.61%
+HYPER -0.64%
+LIT -0.78%
+VANRY +0.55%
+
+Closed trades:
+None
+[2026-03-17T23:20:34Z] END paper_trader (exit 0)
+[2026-03-17T23:20:39Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:20:39Z] END position_manager (exit 0)
+[2026-03-17T23:20:44Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:20:45Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:20:50Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0720.txt).
+[2026-03-17T23:20:50Z] END market_broadcaster (exit 0)
+[2026-03-17T23:20:55Z] START telegram_sender
+Telegram status pushed (cycle 40).
+[2026-03-17T23:20:56Z] END telegram_sender (exit 0)
+[2026-03-17T23:21:01Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0721.txt).
+[2026-03-17T23:21:01Z] END performance_analyzer (exit 0)
+=== Cycle 32 @ 2026-03-17T23:21:31Z ===
+[2026-03-17T23:21:31Z] START market_scanner
+📊 Scanner 2026-03-18T07:21: 70 signals
+• POLYX: +28.4% | $141,972,584 vol | isolated spike
+• STIBA: +44786.8% | $603,278 vol | steady
+• VANRY: +17.2% | $60,376,924 vol | isolated spike
+[2026-03-17T23:21:32Z] END market_scanner (exit 0)
+[2026-03-17T23:21:37Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.26%
+ANIME -1.61%
+BTW +2.65%
+HYPER -0.72%
+LIT -0.78%
+VANRY +0.19%
+
+Closed trades:
+None
+[2026-03-17T23:21:38Z] END paper_trader (exit 0)
+[2026-03-17T23:21:43Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:21:43Z] END position_manager (exit 0)
+[2026-03-17T23:21:48Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:21:49Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:21:54Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0721.txt).
+[2026-03-17T23:21:54Z] END market_broadcaster (exit 0)
+[2026-03-17T23:21:59Z] START telegram_sender
+Telegram status pushed (cycle 41).
+[2026-03-17T23:22:00Z] END telegram_sender (exit 0)
+[2026-03-17T23:22:05Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0722.txt).
+[2026-03-17T23:22:05Z] END performance_analyzer (exit 0)
+=== Cycle 33 @ 2026-03-17T23:22:35Z ===
+[2026-03-17T23:22:35Z] START market_scanner
+📊 Scanner 2026-03-18T07:22: 61 signals
+• STIBA: +44786.8% | $603,278 vol | isolated spike
+• ANIME: +17.5% | $227,332,536 vol | steady
+• VANRY: +18.0% | $61,057,353 vol | isolated spike
+[2026-03-17T23:22:37Z] END market_scanner (exit 0)
+[2026-03-17T23:22:42Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.25%
+ANIME -1.68%
+BTW +3.06%
+HYPER -0.79%
+LIT -1.55%
+VANRY +0.85%
+
+Closed trades:
+None
+[2026-03-17T23:22:42Z] END paper_trader (exit 0)
+[2026-03-17T23:22:47Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:22:47Z] END position_manager (exit 0)
+[2026-03-17T23:22:52Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:22:53Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:22:58Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0722.txt).
+[2026-03-17T23:22:58Z] END market_broadcaster (exit 0)
+[2026-03-17T23:23:03Z] START telegram_sender
+Telegram status pushed (cycle 42).
+[2026-03-17T23:23:04Z] END telegram_sender (exit 0)
+[2026-03-17T23:23:09Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0723.txt).
+[2026-03-17T23:23:09Z] END performance_analyzer (exit 0)
+=== Cycle 34 @ 2026-03-17T23:23:39Z ===
+[2026-03-17T23:23:39Z] START market_scanner
+📊 Scanner 2026-03-18T07:23: 64 signals
+• STIBA: +44786.8% | $603,278 vol | steady
+• ASTER: +4.6% | $373,586,903 vol | steady
+• ROBOTMONEY: +15.4% | $437,745 vol | isolated spike
+[2026-03-17T23:23:41Z] END market_scanner (exit 0)
+[2026-03-17T23:23:46Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.25%
+ANIME -1.73%
+BTW +3.17%
+HYPER -1.21%
+LIT -0.78%
+VANRY +0.81%
+
+Closed trades:
+None
+[2026-03-17T23:23:47Z] END paper_trader (exit 0)
+[2026-03-17T23:23:52Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:23:52Z] END position_manager (exit 0)
+[2026-03-17T23:23:57Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:23:57Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:24:02Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0723.txt).
+[2026-03-17T23:24:02Z] END market_broadcaster (exit 0)
+[2026-03-17T23:24:07Z] START telegram_sender
+Telegram status pushed (cycle 43).
+[2026-03-17T23:24:09Z] END telegram_sender (exit 0)
+[2026-03-17T23:24:14Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0724.txt).
+[2026-03-17T23:24:14Z] END performance_analyzer (exit 0)
+=== Cycle 35 @ 2026-03-17T23:24:44Z ===
+[2026-03-17T23:24:44Z] START market_scanner
+📊 Scanner 2026-03-18T07:24: 63 signals
+• STIBA: +44786.8% | $603,278 vol | steady
+• ASTER: +4.6% | $373,587,122 vol | steady
+• VANRY: +19.1% | $61,814,058 vol | isolated spike
+[2026-03-17T23:24:45Z] END market_scanner (exit 0)
+[2026-03-17T23:24:50Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.23%
+ANIME -1.82%
+BTW +3.18%
+HYPER -1.51%
+LIT -0.78%
+VANRY +1.84%
+
+Closed trades:
+None
+[2026-03-17T23:24:51Z] END paper_trader (exit 0)
+[2026-03-17T23:24:56Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:24:56Z] END position_manager (exit 0)
+[2026-03-17T23:25:01Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:25:01Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:25:06Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0724.txt).
+[2026-03-17T23:25:06Z] END market_broadcaster (exit 0)
+[2026-03-17T23:25:11Z] START telegram_sender
+Telegram status pushed (cycle 44).
+[2026-03-17T23:25:13Z] END telegram_sender (exit 0)
+[2026-03-17T23:25:18Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0725.txt).
+[2026-03-17T23:25:18Z] END performance_analyzer (exit 0)
+=== Cycle 36 @ 2026-03-17T23:25:48Z ===
+[2026-03-17T23:25:48Z] START market_scanner
+📊 Scanner 2026-03-18T07:25: 96 signals
+• STIBA: +61535.1% | $837,445 vol | isolated spike
+• ASTER: +4.6% | $373,631,779 vol | steady
+• VANRY: +19.2% | $61,862,694 vol | isolated spike
+[2026-03-17T23:25:49Z] END market_scanner (exit 0)
+[2026-03-17T23:25:54Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.28%
+ANIME -1.89%
+BTW +3.27%
+HYPER -1.60%
+LIT -0.78%
+VANRY +1.92%
+
+Closed trades:
+None
+[2026-03-17T23:25:55Z] END paper_trader (exit 0)
+[2026-03-17T23:26:00Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:26:00Z] END position_manager (exit 0)
+[2026-03-17T23:26:05Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:26:06Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:26:11Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0725.txt).
+[2026-03-17T23:26:11Z] END market_broadcaster (exit 0)
+[2026-03-17T23:26:16Z] START telegram_sender
+Telegram status pushed (cycle 45).
+[2026-03-17T23:26:17Z] END telegram_sender (exit 0)
+[2026-03-17T23:26:22Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0726.txt).
+[2026-03-17T23:26:22Z] END performance_analyzer (exit 0)
+=== Cycle 37 @ 2026-03-17T23:26:52Z ===
+[2026-03-17T23:26:52Z] START market_scanner
+📊 Scanner 2026-03-18T07:26: 69 signals
+• STIBA: +61535.1% | $837,445 vol | isolated spike
+• ASTER: +4.6% | $373,711,843 vol | steady
+• VANRY: +19.7% | $61,943,367 vol | isolated spike
+[2026-03-17T23:26:54Z] END market_scanner (exit 0)
+[2026-03-17T23:26:59Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.28%
+BTW +3.21%
+F +0.00%
+HYPER -1.56%
+LIT -0.78%
+VANRY +2.08%
+
+Closed trades:
+ANIME -2.07% (SL)
+[2026-03-17T23:27:00Z] END paper_trader (exit 0)
+[2026-03-17T23:27:05Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:27:05Z] END position_manager (exit 0)
+[2026-03-17T23:27:10Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:27:10Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:27:15Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0726.txt).
+[2026-03-17T23:27:15Z] END market_broadcaster (exit 0)
+[2026-03-17T23:27:20Z] START telegram_sender
+Telegram status pushed (cycle 46).
+[2026-03-17T23:27:22Z] END telegram_sender (exit 0)
+[2026-03-17T23:27:27Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0727.txt).
+[2026-03-17T23:27:27Z] END performance_analyzer (exit 0)
+=== Cycle 38 @ 2026-03-17T23:27:57Z ===
+[2026-03-17T23:27:57Z] START market_scanner
+📊 Scanner 2026-03-18T07:27: 81 signals
+• STIBA: +61535.1% | $837,445 vol | isolated spike
+• ASTER: +4.6% | $373,646,408 vol | steady
+• VANRY: +19.9% | $62,129,789 vol | isolated spike
+[2026-03-17T23:27:58Z] END market_scanner (exit 0)
+[2026-03-17T23:28:03Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.28%
+BTW +3.40%
+F +0.01%
+HYPER -1.51%
+LIT -0.78%
+VANRY +2.31%
+
+Closed trades:
+None
+[2026-03-17T23:28:04Z] END paper_trader (exit 0)
+[2026-03-17T23:28:09Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:28:09Z] END position_manager (exit 0)
+[2026-03-17T23:28:14Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:28:15Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:28:20Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0727.txt).
+[2026-03-17T23:28:20Z] END market_broadcaster (exit 0)
+[2026-03-17T23:28:25Z] START telegram_sender
+Telegram status pushed (cycle 47).
+[2026-03-17T23:28:26Z] END telegram_sender (exit 0)
+[2026-03-17T23:28:31Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0728.txt).
+[2026-03-17T23:28:31Z] END performance_analyzer (exit 0)
+=== Cycle 39 @ 2026-03-17T23:29:01Z ===
+[2026-03-17T23:29:01Z] START market_scanner
+📊 Scanner 2026-03-18T07:29: 69 signals
+• STIBA: +61535.1% | $837,445 vol | isolated spike
+• ASTER: +4.6% | $373,956,765 vol | isolated spike
+• VANRY: +20.0% | $62,041,156 vol | isolated spike
+[2026-03-17T23:29:02Z] END market_scanner (exit 0)
+[2026-03-17T23:29:07Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.28%
+BTW +3.36%
+F +0.29%
+HYPER -1.54%
+LIT -0.78%
+VANRY +2.36%
+
+Closed trades:
+None
+[2026-03-17T23:29:08Z] END paper_trader (exit 0)
+[2026-03-17T23:29:13Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:29:13Z] END position_manager (exit 0)
+[2026-03-17T23:29:18Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:29:18Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:29:23Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0729.txt).
+[2026-03-17T23:29:24Z] END market_broadcaster (exit 0)
+[2026-03-17T23:29:29Z] START telegram_sender
+Telegram status pushed (cycle 48).
+[2026-03-17T23:29:30Z] END telegram_sender (exit 0)
+[2026-03-17T23:29:35Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0729.txt).
+[2026-03-17T23:29:35Z] END performance_analyzer (exit 0)
+=== Cycle 40 @ 2026-03-17T23:30:05Z ===
+[2026-03-17T23:30:05Z] START market_scanner
+📊 Scanner 2026-03-18T07:30: 73 signals
+• STIBA: +61535.1% | $837,445 vol | steady
+• ANIME: +16.8% | $226,129,871 vol | steady
+• POLYX: +29.2% | $143,155,022 vol | steady
+[2026-03-17T23:30:06Z] END market_scanner (exit 0)
+[2026-03-17T23:30:11Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.28%
+BTW +3.27%
+F +0.31%
+HYPER -1.55%
+LIT -0.78%
+VANRY +2.30%
+
+Closed trades:
+None
+[2026-03-17T23:30:12Z] END paper_trader (exit 0)
+[2026-03-17T23:30:17Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:30:17Z] END position_manager (exit 0)
+[2026-03-17T23:30:22Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:30:22Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:30:27Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0730.txt).
+[2026-03-17T23:30:28Z] END market_broadcaster (exit 0)
+[2026-03-17T23:30:33Z] START telegram_sender
+Telegram status pushed (cycle 49).
+[2026-03-17T23:30:34Z] END telegram_sender (exit 0)
+[2026-03-17T23:30:39Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0730.txt).
+[2026-03-17T23:30:39Z] END performance_analyzer (exit 0)
+=== Cycle 41 @ 2026-03-17T23:31:09Z ===
+[2026-03-17T23:31:09Z] START market_scanner
+📊 Scanner 2026-03-18T07:31: 90 signals
+• STIBA: +86726.8% | $1,181,163 vol | isolated spike
+• POLYX: +29.2% | $143,236,534 vol | isolated spike
+• VANRY: +19.4% | $62,214,395 vol | steady
+[2026-03-17T23:31:10Z] END market_scanner (exit 0)
+[2026-03-17T23:31:15Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.06%
+BTW +3.22%
+F +0.06%
+HYPER -1.31%
+LIT -0.78%
+VANRY +2.32%
+
+Closed trades:
+None
+[2026-03-17T23:31:16Z] END paper_trader (exit 0)
+[2026-03-17T23:31:21Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:31:21Z] END position_manager (exit 0)
+[2026-03-17T23:31:26Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:31:27Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:31:32Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0731.txt).
+[2026-03-17T23:31:32Z] END market_broadcaster (exit 0)
+[2026-03-17T23:31:37Z] START telegram_sender
+Telegram status pushed (cycle 50).
+[2026-03-17T23:31:38Z] END telegram_sender (exit 0)
+[2026-03-17T23:31:43Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0731.txt).
+[2026-03-17T23:31:43Z] END performance_analyzer (exit 0)
+=== Cycle 42 @ 2026-03-17T23:32:13Z ===
+[2026-03-17T23:32:13Z] START market_scanner
+📊 Scanner 2026-03-18T07:32: 61 signals
+• STIBA: +86726.8% | $1,181,163 vol | isolated spike
+• POLYX: +29.2% | $143,238,217 vol | isolated spike
+• HYPER: +14.5% | $100,068,023 vol | steady
+[2026-03-17T23:32:15Z] END market_scanner (exit 0)
+[2026-03-17T23:32:20Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.06%
+BTW +3.24%
+F +0.28%
+HYPER -1.26%
+LIT -0.78%
+VANRY +3.76%
+
+Closed trades:
+None
+[2026-03-17T23:32:20Z] END paper_trader (exit 0)
+[2026-03-17T23:32:25Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:32:25Z] END position_manager (exit 0)
+[2026-03-17T23:32:30Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:32:31Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:32:36Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0732.txt).
+[2026-03-17T23:32:36Z] END market_broadcaster (exit 0)
+[2026-03-17T23:32:41Z] START telegram_sender
+Telegram status pushed (cycle 51).
+[2026-03-17T23:32:42Z] END telegram_sender (exit 0)
+[2026-03-17T23:32:47Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0732.txt).
+[2026-03-17T23:32:47Z] END performance_analyzer (exit 0)
+=== Cycle 43 @ 2026-03-17T23:33:17Z ===
+[2026-03-17T23:33:17Z] START market_scanner
+📊 Scanner 2026-03-18T07:33: 59 signals
+• STIBA: +86726.8% | $1,181,163 vol | isolated spike
+• ANIME: +16.9% | $226,827,429 vol | steady
+• POLYX: +29.3% | $143,342,847 vol | isolated spike
+[2026-03-17T23:33:18Z] END market_scanner (exit 0)
+[2026-03-17T23:33:23Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.14%
+BTW +3.14%
+F +0.34%
+HYPER -1.19%
+LIT -0.78%
+VANRY +3.78%
+
+Closed trades:
+None
+[2026-03-17T23:33:24Z] END paper_trader (exit 0)
+[2026-03-17T23:33:29Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:33:29Z] END position_manager (exit 0)
+[2026-03-17T23:33:34Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:33:35Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:33:40Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0733.txt).
+[2026-03-17T23:33:40Z] END market_broadcaster (exit 0)
+[2026-03-17T23:33:45Z] START telegram_sender
+Telegram status pushed (cycle 52).
+[2026-03-17T23:33:46Z] END telegram_sender (exit 0)
+[2026-03-17T23:33:51Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0733.txt).
+[2026-03-17T23:33:51Z] END performance_analyzer (exit 0)
+=== Cycle 44 @ 2026-03-17T23:34:21Z ===
+[2026-03-17T23:34:21Z] START market_scanner
+📊 Scanner 2026-03-18T07:34: 74 signals
+• STIBA: +86726.8% | $1,181,163 vol | isolated spike
+• ANIME: +16.9% | $227,494,362 vol | isolated spike
+• POLYX: +29.4% | $143,536,791 vol | isolated spike
+[2026-03-17T23:34:22Z] END market_scanner (exit 0)
+[2026-03-17T23:34:27Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +3.09%
+F +0.37%
+HYPER -1.19%
+LIT -0.78%
+VANRY +3.80%
+
+Closed trades:
+None
+[2026-03-17T23:34:28Z] END paper_trader (exit 0)
+[2026-03-17T23:34:33Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:34:34Z] END position_manager (exit 0)
+[2026-03-17T23:34:39Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:34:39Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:34:44Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0734.txt).
+[2026-03-17T23:34:44Z] END market_broadcaster (exit 0)
+[2026-03-17T23:34:49Z] START telegram_sender
+Telegram status pushed (cycle 53).
+[2026-03-17T23:34:51Z] END telegram_sender (exit 0)
+[2026-03-17T23:34:56Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0734.txt).
+[2026-03-17T23:34:56Z] END performance_analyzer (exit 0)
+=== Cycle 45 @ 2026-03-17T23:35:26Z ===
+[2026-03-17T23:35:26Z] START market_scanner
+📊 Scanner 2026-03-18T07:35: 63 signals
+• AA: +138.3% | $205,323 vol | steady
+• ANIME: +17.0% | $226,991,573 vol | isolated spike
+• POLYX: +30.4% | $144,687,071 vol | isolated spike
+[2026-03-17T23:35:27Z] END market_scanner (exit 0)
+[2026-03-17T23:35:32Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +3.04%
+F +0.89%
+HYPER -1.09%
+LIT -0.78%
+VANRY +1.31%
+
+Closed trades:
+None
+[2026-03-17T23:35:33Z] END paper_trader (exit 0)
+[2026-03-17T23:35:38Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:35:38Z] END position_manager (exit 0)
+[2026-03-17T23:35:43Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:35:44Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:35:49Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0735.txt).
+[2026-03-17T23:35:49Z] END market_broadcaster (exit 0)
+[2026-03-17T23:35:54Z] START telegram_sender
+Telegram status pushed (cycle 54).
+[2026-03-17T23:35:55Z] END telegram_sender (exit 0)
+[2026-03-17T23:36:00Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0736.txt).
+[2026-03-17T23:36:00Z] END performance_analyzer (exit 0)
+=== Cycle 46 @ 2026-03-17T23:36:30Z ===
+[2026-03-17T23:36:30Z] START market_scanner
+📊 Scanner 2026-03-18T07:36: 64 signals
+• AA: +138.3% | $205,323 vol | isolated spike
+• ANIME: +17.0% | $228,077,535 vol | steady
+• POLYX: +30.4% | $147,284,637 vol | isolated spike
+[2026-03-17T23:36:31Z] END market_scanner (exit 0)
+[2026-03-17T23:36:36Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +3.04%
+F +0.88%
+HYPER -1.04%
+LIT -0.78%
+VANRY +0.78%
+
+Closed trades:
+None
+[2026-03-17T23:36:37Z] END paper_trader (exit 0)
+[2026-03-17T23:36:42Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:36:43Z] END position_manager (exit 0)
+[2026-03-17T23:36:48Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:36:48Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:36:53Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0736.txt).
+[2026-03-17T23:36:53Z] END market_broadcaster (exit 0)
+[2026-03-17T23:36:58Z] START telegram_sender
+Telegram status pushed (cycle 55).
+[2026-03-17T23:36:59Z] END telegram_sender (exit 0)
+[2026-03-17T23:37:04Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0737.txt).
+[2026-03-17T23:37:04Z] END performance_analyzer (exit 0)
+=== Cycle 47 @ 2026-03-17T23:37:34Z ===
+[2026-03-17T23:37:34Z] START market_scanner
+📊 Scanner 2026-03-18T07:37: 67 signals
+• AA: +138.3% | $205,323 vol | isolated spike
+• ANIME: +17.0% | $227,365,472 vol | steady
+• POLYX: +30.4% | $147,323,546 vol | isolated spike
+[2026-03-17T23:37:36Z] END market_scanner (exit 0)
+[2026-03-17T23:37:41Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +3.14%
+F +0.30%
+HYPER -1.08%
+LIT -0.78%
+VANRY +0.66%
+
+Closed trades:
+None
+[2026-03-17T23:37:42Z] END paper_trader (exit 0)
+[2026-03-17T23:37:47Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:37:47Z] END position_manager (exit 0)
+[2026-03-17T23:37:52Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:37:52Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:37:57Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0737.txt).
+[2026-03-17T23:37:57Z] END market_broadcaster (exit 0)
+[2026-03-17T23:38:02Z] START telegram_sender
+Telegram status pushed (cycle 56).
+[2026-03-17T23:38:03Z] END telegram_sender (exit 0)
+[2026-03-17T23:38:08Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0738.txt).
+[2026-03-17T23:38:08Z] END performance_analyzer (exit 0)
+=== Cycle 48 @ 2026-03-17T23:38:38Z ===
+[2026-03-17T23:38:38Z] START market_scanner
+📊 Scanner 2026-03-18T07:38: 71 signals
+• AA: +138.3% | $205,323 vol | isolated spike
+• ANIME: +17.1% | $227,816,425 vol | isolated spike
+• POLYX: +30.4% | $147,449,993 vol | isolated spike
+[2026-03-17T23:38:39Z] END market_scanner (exit 0)
+[2026-03-17T23:38:44Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +3.06%
+F +0.72%
+HYPER -1.08%
+LIT -0.78%
+VANRY -0.48%
+
+Closed trades:
+None
+[2026-03-17T23:38:45Z] END paper_trader (exit 0)
+[2026-03-17T23:38:50Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:38:50Z] END position_manager (exit 0)
+[2026-03-17T23:38:55Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:38:56Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:39:01Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0738.txt).
+[2026-03-17T23:39:01Z] END market_broadcaster (exit 0)
+[2026-03-17T23:39:06Z] START telegram_sender
+Telegram status pushed (cycle 57).
+[2026-03-17T23:39:07Z] END telegram_sender (exit 0)
+[2026-03-17T23:39:12Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0739.txt).
+[2026-03-17T23:39:12Z] END performance_analyzer (exit 0)
+=== Cycle 49 @ 2026-03-17T23:39:42Z ===
+[2026-03-17T23:39:42Z] START market_scanner
+📊 Scanner 2026-03-18T07:39: 71 signals
+• AA: +138.3% | $205,323 vol | isolated spike
+• ANIME: +17.1% | $227,318,698 vol | isolated spike
+• POLYX: +30.5% | $145,142,282 vol | isolated spike
+[2026-03-17T23:39:43Z] END market_scanner (exit 0)
+[2026-03-17T23:39:48Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +2.96%
+F +0.74%
+HYPER -1.04%
+LIT -0.78%
+VANRY -0.55%
+
+Closed trades:
+None
+[2026-03-17T23:39:49Z] END paper_trader (exit 0)
+[2026-03-17T23:39:54Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:39:54Z] END position_manager (exit 0)
+[2026-03-17T23:39:59Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:40:00Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:40:05Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0739.txt).
+[2026-03-17T23:40:05Z] END market_broadcaster (exit 0)
+[2026-03-17T23:40:10Z] START telegram_sender
+Telegram status pushed (cycle 58).
+[2026-03-17T23:40:11Z] END telegram_sender (exit 0)
+[2026-03-17T23:40:16Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0740.txt).
+[2026-03-17T23:40:16Z] END performance_analyzer (exit 0)
+=== Cycle 50 @ 2026-03-17T23:40:46Z ===
+[2026-03-17T23:40:46Z] START market_scanner
+📊 Scanner 2026-03-18T07:40: 92 signals
+• POLYX: +30.3% | $147,398,613 vol | steady
+• HYPER: +14.6% | $100,352,899 vol | steady
+• STIBA: +58341.7% | $816,838 vol | steady
+[2026-03-17T23:40:47Z] END market_scanner (exit 0)
+[2026-03-17T23:40:52Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.19%
+BTW +2.85%
+F +0.73%
+HYPER -1.06%
+LIT -0.78%
+VANRY -0.59%
+
+Closed trades:
+None
+[2026-03-17T23:40:53Z] END paper_trader (exit 0)
+[2026-03-17T23:40:58Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:40:58Z] END position_manager (exit 0)
+[2026-03-17T23:41:03Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:41:03Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:41:08Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0740.txt).
+[2026-03-17T23:41:09Z] END market_broadcaster (exit 0)
+[2026-03-17T23:41:14Z] START telegram_sender
+Telegram status pushed (cycle 59).
+[2026-03-17T23:41:15Z] END telegram_sender (exit 0)
+[2026-03-17T23:41:20Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0741.txt).
+[2026-03-17T23:41:20Z] END performance_analyzer (exit 0)
+=== Cycle 51 @ 2026-03-17T23:41:50Z ===
+[2026-03-17T23:41:50Z] START market_scanner
+📊 Scanner 2026-03-18T07:41: 54 signals
+• HYPER: +14.6% | $100,370,971 vol | steady
+• STIBA: +58341.7% | $816,838 vol | steady
+• HUMA: +6.8% | $52,021,853 vol | isolated spike
+[2026-03-17T23:41:51Z] END market_scanner (exit 0)
+[2026-03-17T23:41:56Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.53%
+BTW +2.63%
+F +0.76%
+HYPER -1.09%
+LIT -0.78%
+VANRY -0.56%
+
+Closed trades:
+None
+[2026-03-17T23:41:57Z] END paper_trader (exit 0)
+[2026-03-17T23:42:02Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:42:02Z] END position_manager (exit 0)
+[2026-03-17T23:42:07Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:42:08Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:42:13Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0741.txt).
+[2026-03-17T23:42:13Z] END market_broadcaster (exit 0)
+[2026-03-17T23:42:18Z] START telegram_sender
+Telegram status pushed (cycle 60).
+[2026-03-17T23:42:19Z] END telegram_sender (exit 0)
+[2026-03-17T23:42:24Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0742.txt).
+[2026-03-17T23:42:24Z] END performance_analyzer (exit 0)
+=== Cycle 52 @ 2026-03-17T23:42:54Z ===
+[2026-03-17T23:42:54Z] START market_scanner
+📊 Scanner 2026-03-18T07:42: 56 signals
+• ANIME: +17.2% | $197,759,629 vol | isolated spike
+• STIBA: +58341.7% | $816,838 vol | steady
+• HYPER: +14.6% | $96,856,807 vol | steady
+[2026-03-17T23:42:56Z] END market_scanner (exit 0)
+[2026-03-17T23:43:01Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.56%
+BTW +1.96%
+F +0.75%
+HYPER -1.05%
+LIT -0.78%
+VANRY -0.52%
+
+Closed trades:
+None
+[2026-03-17T23:43:02Z] END paper_trader (exit 0)
+[2026-03-17T23:43:07Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:43:07Z] END position_manager (exit 0)
+[2026-03-17T23:43:12Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:43:12Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:43:17Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0742.txt).
+[2026-03-17T23:43:17Z] END market_broadcaster (exit 0)
+[2026-03-17T23:43:22Z] START telegram_sender
+Telegram status pushed (cycle 61).
+[2026-03-17T23:43:23Z] END telegram_sender (exit 0)
+[2026-03-17T23:43:28Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0743.txt).
+[2026-03-17T23:43:28Z] END performance_analyzer (exit 0)
+=== Cycle 53 @ 2026-03-17T23:43:58Z ===
+[2026-03-17T23:43:58Z] START market_scanner
+📊 Scanner 2026-03-18T07:43: 54 signals
+• STIBA: +58341.7% | $816,838 vol | steady
+• ANIME: +16.3% | $226,534,113 vol | steady
+• HYPER: +14.6% | $96,978,208 vol | steady
+[2026-03-17T23:43:59Z] END market_scanner (exit 0)
+[2026-03-17T23:44:04Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -0.71%
+BTW +1.68%
+F +0.69%
+HYPER -1.04%
+LIT -0.78%
+VANRY +0.72%
+
+Closed trades:
+None
+[2026-03-17T23:44:05Z] END paper_trader (exit 0)
+[2026-03-17T23:44:10Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:44:10Z] END position_manager (exit 0)
+[2026-03-17T23:44:15Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:44:16Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:44:21Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0743.txt).
+[2026-03-17T23:44:21Z] END market_broadcaster (exit 0)
+[2026-03-17T23:44:26Z] START telegram_sender
+Telegram status pushed (cycle 62).
+[2026-03-17T23:44:27Z] END telegram_sender (exit 0)
+[2026-03-17T23:44:32Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0744.txt).
+[2026-03-17T23:44:32Z] END performance_analyzer (exit 0)
+=== Cycle 54 @ 2026-03-17T23:45:02Z ===
+[2026-03-17T23:45:02Z] START market_scanner
+📊 Scanner 2026-03-18T07:45: 53 signals
+• STIBA: +58341.7% | $816,838 vol | steady
+• ANIME: +16.2% | $226,637,637 vol | steady
+• HYPER: +14.7% | $73,262,501 vol | isolated spike
+[2026-03-17T23:45:03Z] END market_scanner (exit 0)
+[2026-03-17T23:45:08Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.30%
+BTW +1.57%
+F +0.69%
+HYPER -0.96%
+LIT -0.78%
+VANRY +0.69%
+
+Closed trades:
+None
+[2026-03-17T23:45:09Z] END paper_trader (exit 0)
+[2026-03-17T23:45:14Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:45:14Z] END position_manager (exit 0)
+[2026-03-17T23:45:19Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:45:20Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:45:25Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0745.txt).
+[2026-03-17T23:45:25Z] END market_broadcaster (exit 0)
+[2026-03-17T23:45:30Z] START telegram_sender
+Telegram status pushed (cycle 63).
+[2026-03-17T23:45:31Z] END telegram_sender (exit 0)
+[2026-03-17T23:45:36Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0745.txt).
+[2026-03-17T23:45:36Z] END performance_analyzer (exit 0)
+=== Cycle 55 @ 2026-03-17T23:46:06Z ===
+[2026-03-17T23:46:06Z] START market_scanner
+📊 Scanner 2026-03-18T07:46: 90 signals
+• ANIME: +16.2% | $226,736,884 vol | steady
+• AA: +152.5% | $213,454 vol | steady
+• DEFI : +16.0% | $206,929 vol | isolated spike
+[2026-03-17T23:46:07Z] END market_scanner (exit 0)
+[2026-03-17T23:46:12Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.33%
+BTW +2.26%
+F +0.44%
+HYPER -1.27%
+LIT -0.78%
+VANRY +0.91%
+
+Closed trades:
+None
+[2026-03-17T23:46:13Z] END paper_trader (exit 0)
+[2026-03-17T23:46:18Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:46:18Z] END position_manager (exit 0)
+[2026-03-17T23:46:23Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:46:24Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:46:29Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0746.txt).
+[2026-03-17T23:46:29Z] END market_broadcaster (exit 0)
+[2026-03-17T23:46:34Z] START telegram_sender
+Telegram status pushed (cycle 64).
+[2026-03-17T23:46:35Z] END telegram_sender (exit 0)
+[2026-03-17T23:46:40Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0746.txt).
+[2026-03-17T23:46:40Z] END performance_analyzer (exit 0)
+=== Cycle 56 @ 2026-03-17T23:47:10Z ===
+[2026-03-17T23:47:10Z] START market_scanner
+📊 Scanner 2026-03-18T07:47: 80 signals
+• ANIME: +16.2% | $226,743,940 vol | steady
+• HYPER: +13.9% | $100,244,142 vol | steady
+• POLYX: +28.9% | $143,947,840 vol | steady
+[2026-03-17T23:47:11Z] END market_scanner (exit 0)
+[2026-03-17T23:47:16Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.33%
+BTW +1.82%
+F +0.57%
+HYPER -1.70%
+LIT -0.78%
+VANRY +1.00%
+
+Closed trades:
+None
+[2026-03-17T23:47:17Z] END paper_trader (exit 0)
+[2026-03-17T23:47:22Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:47:22Z] END position_manager (exit 0)
+[2026-03-17T23:47:27Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:47:27Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:47:32Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0747.txt).
+[2026-03-17T23:47:32Z] END market_broadcaster (exit 0)
+[2026-03-17T23:47:37Z] START telegram_sender
+Telegram status pushed (cycle 65).
+[2026-03-17T23:47:39Z] END telegram_sender (exit 0)
+[2026-03-17T23:47:44Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0747.txt).
+[2026-03-17T23:47:44Z] END performance_analyzer (exit 0)
+=== Cycle 57 @ 2026-03-17T23:48:14Z ===
+[2026-03-17T23:48:14Z] START market_scanner
+📊 Scanner 2026-03-18T07:48: 61 signals
+• ANIME: +16.4% | $227,176,309 vol | isolated spike
+• OGN: +44.6% | $15,320,077 vol | steady
+• HYPER: +14.0% | $100,457,094 vol | steady
+[2026-03-17T23:48:15Z] END market_scanner (exit 0)
+[2026-03-17T23:48:20Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.40%
+BTW +2.37%
+F +0.56%
+HYPER -1.57%
+LIT -0.78%
+VANRY +0.48%
+
+Closed trades:
+None
+[2026-03-17T23:48:21Z] END paper_trader (exit 0)
+[2026-03-17T23:48:26Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:48:26Z] END position_manager (exit 0)
+[2026-03-17T23:48:31Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:48:31Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:48:36Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0748.txt).
+[2026-03-17T23:48:37Z] END market_broadcaster (exit 0)
+[2026-03-17T23:48:42Z] START telegram_sender
+Telegram status pushed (cycle 66).
+[2026-03-17T23:48:43Z] END telegram_sender (exit 0)
+[2026-03-17T23:48:48Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0748.txt).
+[2026-03-17T23:48:48Z] END performance_analyzer (exit 0)
+=== Cycle 58 @ 2026-03-17T23:49:18Z ===
+[2026-03-17T23:49:18Z] START market_scanner
+📊 Scanner 2026-03-18T07:49: 65 signals
+• POLYX: +27.6% | $145,153,668 vol | steady
+• HYPER: +14.0% | $100,494,839 vol | steady
+• OGN: +44.6% | $15,320,077 vol | steady
+[2026-03-17T23:49:20Z] END market_scanner (exit 0)
+[2026-03-17T23:49:25Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.46%
+BTW +2.52%
+F +0.70%
+HYPER -1.59%
+LIT -0.78%
+VANRY +1.70%
+
+Closed trades:
+None
+[2026-03-17T23:49:25Z] END paper_trader (exit 0)
+[2026-03-17T23:49:30Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:49:30Z] END position_manager (exit 0)
+[2026-03-17T23:49:35Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:49:36Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:49:41Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0749.txt).
+[2026-03-17T23:49:41Z] END market_broadcaster (exit 0)
+[2026-03-17T23:49:46Z] START telegram_sender
+Telegram status pushed (cycle 67).
+[2026-03-17T23:49:47Z] END telegram_sender (exit 0)
+[2026-03-17T23:49:52Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0749.txt).
+[2026-03-17T23:49:52Z] END performance_analyzer (exit 0)
+=== Cycle 59 @ 2026-03-17T23:50:22Z ===
+[2026-03-17T23:50:22Z] START market_scanner
+📊 Scanner 2026-03-18T07:50: 63 signals
+• POLYX: +27.7% | $145,361,027 vol | steady
+• HYPER: +14.0% | $100,513,774 vol | steady
+• TONIC: +109.7% | $257,759 vol | steady
+[2026-03-17T23:50:24Z] END market_scanner (exit 0)
+[2026-03-17T23:50:29Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.52%
+BTW +2.40%
+F +0.71%
+HYPER -1.59%
+LIT -0.78%
+VANRY +1.84%
+
+Closed trades:
+None
+[2026-03-17T23:50:30Z] END paper_trader (exit 0)
+[2026-03-17T23:50:35Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:50:35Z] END position_manager (exit 0)
+[2026-03-17T23:50:40Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:50:40Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:50:45Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0750.txt).
+[2026-03-17T23:50:45Z] END market_broadcaster (exit 0)
+[2026-03-17T23:50:50Z] START telegram_sender
+Telegram status pushed (cycle 68).
+[2026-03-17T23:50:52Z] END telegram_sender (exit 0)
+[2026-03-17T23:50:57Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0750.txt).
+[2026-03-17T23:50:57Z] END performance_analyzer (exit 0)
+=== Cycle 60 @ 2026-03-17T23:51:27Z ===
+[2026-03-17T23:51:27Z] START market_scanner
+📊 Scanner 2026-03-18T07:51: 51 signals
+• POLYX: +27.9% | $145,376,884 vol | steady
+• HYPER: +14.1% | $100,577,965 vol | steady
+• STIBA: +49099.5% | $700,247 vol | steady
+[2026-03-17T23:51:28Z] END market_scanner (exit 0)
+[2026-03-17T23:51:33Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.86%
+BTW +2.56%
+F +0.59%
+HYPER -1.63%
+LIT -0.78%
+VANRY +2.16%
+
+Closed trades:
+None
+[2026-03-17T23:51:34Z] END paper_trader (exit 0)
+[2026-03-17T23:51:39Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:51:39Z] END position_manager (exit 0)
+[2026-03-17T23:51:44Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:51:45Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:51:50Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0751.txt).
+[2026-03-17T23:51:50Z] END market_broadcaster (exit 0)
+[2026-03-17T23:51:55Z] START telegram_sender
+Telegram status pushed (cycle 69).
+[2026-03-17T23:51:56Z] END telegram_sender (exit 0)
+[2026-03-17T23:52:01Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0752.txt).
+[2026-03-17T23:52:01Z] END performance_analyzer (exit 0)
+=== Cycle 61 @ 2026-03-17T23:52:31Z ===
+[2026-03-17T23:52:31Z] START market_scanner
+📊 Scanner 2026-03-18T07:52: 56 signals
+• POLYX: +28.0% | $145,412,782 vol | steady
+• HYPER: +14.5% | $100,988,955 vol | isolated spike
+• VANRY: +21.9% | $64,295,298 vol | steady
+[2026-03-17T23:52:33Z] END market_scanner (exit 0)
+[2026-03-17T23:52:38Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.87%
+BTW +2.41%
+F +0.75%
+HYPER -1.31%
+LIT -0.78%
+VANRY +3.35%
+
+Closed trades:
+None
+[2026-03-17T23:52:38Z] END paper_trader (exit 0)
+[2026-03-17T23:52:43Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:52:44Z] END position_manager (exit 0)
+[2026-03-17T23:52:49Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:52:50Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:52:55Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0752.txt).
+[2026-03-17T23:52:55Z] END market_broadcaster (exit 0)
+[2026-03-17T23:53:00Z] START telegram_sender
+Telegram status pushed (cycle 70).
+[2026-03-17T23:53:01Z] END telegram_sender (exit 0)
+[2026-03-17T23:53:06Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0753.txt).
+[2026-03-17T23:53:06Z] END performance_analyzer (exit 0)
+=== Cycle 62 @ 2026-03-17T23:53:36Z ===
+[2026-03-17T23:53:36Z] START market_scanner
+📊 Scanner 2026-03-18T07:53: 66 signals
+• HYPER: +14.5% | $101,034,707 vol | isolated spike
+• VANRY: +22.0% | $64,367,885 vol | steady
+• HUMA: +7.6% | $52,333,126 vol | isolated spike
+[2026-03-17T23:53:38Z] END market_scanner (exit 0)
+[2026-03-17T23:53:43Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT -1.87%
+BTW +2.29%
+F +0.40%
+HYPER -1.26%
+LIT -0.78%
+VANRY +3.47%
+
+Closed trades:
+None
+[2026-03-17T23:53:44Z] END paper_trader (exit 0)
+[2026-03-17T23:53:49Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:53:49Z] END position_manager (exit 0)
+[2026-03-17T23:53:54Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:53:54Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:53:59Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0753.txt).
+[2026-03-17T23:53:59Z] END market_broadcaster (exit 0)
+[2026-03-17T23:54:04Z] START telegram_sender
+Telegram status pushed (cycle 71).
+[2026-03-17T23:54:06Z] END telegram_sender (exit 0)
+[2026-03-17T23:54:11Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0754.txt).
+[2026-03-17T23:54:11Z] END performance_analyzer (exit 0)
+=== Cycle 63 @ 2026-03-17T23:54:41Z ===
+[2026-03-17T23:54:41Z] START market_scanner
+📊 Scanner 2026-03-18T07:54: 55 signals
+• VANRY: +23.9% | $58,053,284 vol | isolated spike
+• ANOME: +57.3% | $1,620,706 vol | steady
+• ANIME: +16.2% | $226,384,722 vol | steady
+[2026-03-17T23:54:42Z] END market_scanner (exit 0)
+[2026-03-17T23:54:47Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.24%
+F +0.64%
+HYPER -1.09%
+LIT -0.78%
+VANRY +5.03%
+
+Closed trades:
+AKT -2.54% (SL)
+[2026-03-17T23:54:47Z] END paper_trader (exit 0)
+[2026-03-17T23:54:52Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:54:52Z] END position_manager (exit 0)
+[2026-03-17T23:54:57Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:54:58Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:55:03Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0754.txt).
+[2026-03-17T23:55:03Z] END market_broadcaster (exit 0)
+[2026-03-17T23:55:08Z] START telegram_sender
+Telegram status pushed (cycle 72).
+[2026-03-17T23:55:09Z] END telegram_sender (exit 0)
+[2026-03-17T23:55:14Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0755.txt).
+[2026-03-17T23:55:14Z] END performance_analyzer (exit 0)
+=== Cycle 64 @ 2026-03-17T23:55:44Z ===
+[2026-03-17T23:55:44Z] START market_scanner
+📊 Scanner 2026-03-18T07:55: 97 signals
+• STIBA: +66524.1% | $950,731 vol | steady
+• ANIME: +16.3% | $226,363,504 vol | steady
+• VANRY: +23.9% | $58,014,569 vol | isolated spike
+[2026-03-17T23:55:45Z] END market_scanner (exit 0)
+[2026-03-17T23:55:50Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.24%
+F +0.65%
+HYPER -1.07%
+LIT -0.78%
+VANRY +5.08%
+
+Closed trades:
+None
+[2026-03-17T23:55:51Z] END paper_trader (exit 0)
+[2026-03-17T23:55:56Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:55:57Z] END position_manager (exit 0)
+[2026-03-17T23:56:02Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:56:02Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:56:07Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0755.txt).
+[2026-03-17T23:56:07Z] END market_broadcaster (exit 0)
+[2026-03-17T23:56:12Z] START telegram_sender
+Telegram status pushed (cycle 73).
+[2026-03-17T23:56:13Z] END telegram_sender (exit 0)
+[2026-03-17T23:56:18Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0756.txt).
+[2026-03-17T23:56:18Z] END performance_analyzer (exit 0)
+=== Cycle 65 @ 2026-03-17T23:56:48Z ===
+[2026-03-17T23:56:48Z] START market_scanner
+📊 Scanner 2026-03-18T07:56: 63 signals
+• STIBA: +66524.1% | $950,731 vol | isolated spike
+• HYPER: +14.9% | $101,329,672 vol | isolated spike
+• POLYX: +28.8% | $143,202,856 vol | isolated spike
+[2026-03-17T23:56:50Z] END market_scanner (exit 0)
+[2026-03-17T23:56:55Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.08%
+F +0.67%
+HYPER -1.04%
+LIT +0.00%
+VANRY +5.61%
+
+Closed trades:
+None
+[2026-03-17T23:56:56Z] END paper_trader (exit 0)
+[2026-03-17T23:57:01Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:57:01Z] END position_manager (exit 0)
+[2026-03-17T23:57:06Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:57:06Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:57:11Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0756.txt).
+[2026-03-17T23:57:11Z] END market_broadcaster (exit 0)
+[2026-03-17T23:57:16Z] START telegram_sender
+Telegram status pushed (cycle 74).
+[2026-03-17T23:57:17Z] END telegram_sender (exit 0)
+[2026-03-17T23:57:22Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0757.txt).
+[2026-03-17T23:57:22Z] END performance_analyzer (exit 0)
+=== Cycle 66 @ 2026-03-17T23:57:52Z ===
+[2026-03-17T23:57:52Z] START market_scanner
+📊 Scanner 2026-03-18T07:57: 64 signals
+• STIBA: +66524.1% | $950,731 vol | steady
+• ANIME: +15.9% | $226,405,310 vol | steady
+• HYPER: +14.8% | $101,377,432 vol | isolated spike
+[2026-03-17T23:57:54Z] END market_scanner (exit 0)
+[2026-03-17T23:57:59Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.09%
+F +0.70%
+HYPER -1.05%
+LIT +0.00%
+VANRY +4.31%
+
+Closed trades:
+None
+[2026-03-17T23:58:00Z] END paper_trader (exit 0)
+[2026-03-17T23:58:05Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:58:05Z] END position_manager (exit 0)
+[2026-03-17T23:58:10Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:58:11Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:58:16Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0757.txt).
+[2026-03-17T23:58:16Z] END market_broadcaster (exit 0)
+[2026-03-17T23:58:21Z] START telegram_sender
+Telegram status pushed (cycle 75).
+[2026-03-17T23:58:22Z] END telegram_sender (exit 0)
+[2026-03-17T23:58:27Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0758.txt).
+[2026-03-17T23:58:27Z] END performance_analyzer (exit 0)
+=== Cycle 67 @ 2026-03-17T23:58:57Z ===
+[2026-03-17T23:58:57Z] START market_scanner
+📊 Scanner 2026-03-18T07:58: 65 signals
+• STIBA: +66524.1% | $950,731 vol | steady
+• ANIME: +15.9% | $226,445,374 vol | steady
+• HYPER: +14.9% | $101,422,675 vol | isolated spike
+[2026-03-17T23:58:58Z] END market_scanner (exit 0)
+[2026-03-17T23:59:03Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.56%
+F +0.35%
+HYPER -1.05%
+LIT +0.00%
+VANRY +3.80%
+
+Closed trades:
+None
+[2026-03-17T23:59:04Z] END paper_trader (exit 0)
+[2026-03-17T23:59:09Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-17T23:59:09Z] END position_manager (exit 0)
+[2026-03-17T23:59:14Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-17T23:59:14Z] END sol_paper_trader (exit 0)
+[2026-03-17T23:59:19Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0758.txt).
+[2026-03-17T23:59:20Z] END market_broadcaster (exit 0)
+[2026-03-17T23:59:25Z] START telegram_sender
+Telegram status pushed (cycle 76).
+[2026-03-17T23:59:26Z] END telegram_sender (exit 0)
+[2026-03-17T23:59:31Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0759.txt).
+[2026-03-17T23:59:31Z] END performance_analyzer (exit 0)
+=== Cycle 68 @ 2026-03-18T00:00:01Z ===
+[2026-03-18T00:00:01Z] START market_scanner
+📊 Scanner 2026-03-18T08:00: 75 signals
+• STIBA: +66524.1% | $950,731 vol | steady
+• F: +5.1% | $60,727,904 vol | steady
+• BSB: +7.8% | $35,678,022 vol | steady
+[2026-03-18T00:00:03Z] END market_scanner (exit 0)
+[2026-03-18T00:00:08Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.05%
+F +0.35%
+HYPER -1.05%
+LIT +0.00%
+VANRY +3.80%
+
+Closed trades:
+None
+[2026-03-18T00:00:09Z] END paper_trader (exit 0)
+[2026-03-18T00:00:14Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:00:14Z] END position_manager (exit 0)
+[2026-03-18T00:00:19Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:00:20Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:00:25Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0800.txt).
+[2026-03-18T00:00:25Z] END market_broadcaster (exit 0)
+[2026-03-18T00:00:30Z] START telegram_sender
+Telegram status pushed (cycle 77).
+[2026-03-18T00:00:31Z] END telegram_sender (exit 0)
+[2026-03-18T00:00:36Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0800.txt).
+[2026-03-18T00:00:36Z] END performance_analyzer (exit 0)
+=== Cycle 69 @ 2026-03-18T00:01:06Z ===
+[2026-03-18T00:01:06Z] START market_scanner
+📊 Scanner 2026-03-18T08:01: 83 signals
+• ANIME: +15.9% | $226,673,025 vol | steady
+• SIREN: +53.1% | $38,344,770 vol | steady
+• TONIC: +106.2% | $262,622 vol | steady
+[2026-03-18T00:01:12Z] END market_scanner (exit 0)
+[2026-03-18T00:01:17Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +0.85%
+F +0.36%
+HYPER -1.10%
+LIT +0.00%
+SIREN +0.00%
+VANRY +5.72%
+
+Closed trades:
+None
+[2026-03-18T00:01:18Z] END paper_trader (exit 0)
+[2026-03-18T00:01:23Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:01:23Z] END position_manager (exit 0)
+[2026-03-18T00:01:28Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:01:29Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:01:34Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0801.txt).
+[2026-03-18T00:01:34Z] END market_broadcaster (exit 0)
+[2026-03-18T00:01:39Z] START telegram_sender
+Telegram status pushed (cycle 78).
+[2026-03-18T00:01:40Z] END telegram_sender (exit 0)
+[2026-03-18T00:01:45Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0801.txt).
+[2026-03-18T00:01:45Z] END performance_analyzer (exit 0)
+=== Cycle 70 @ 2026-03-18T00:02:15Z ===
+[2026-03-18T00:02:15Z] START market_scanner
+📊 Scanner 2026-03-18T08:02: 69 signals
+• VANRY: +30.3% | $54,556,439 vol | isolated spike
+• LIT: +11.6% | $49,773,682 vol | isolated spike
+• F: +5.1% | $63,639,600 vol | isolated spike
+[2026-03-18T00:02:16Z] END market_scanner (exit 0)
+[2026-03-18T00:02:21Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +0.98%
+F +0.36%
+HYPER -1.75%
+LIT +0.00%
+SIREN -0.09%
+VANRY +5.71%
+
+Closed trades:
+None
+[2026-03-18T00:02:22Z] END paper_trader (exit 0)
+[2026-03-18T00:02:27Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:02:27Z] END position_manager (exit 0)
+[2026-03-18T00:02:32Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:02:32Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:02:37Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0802.txt).
+[2026-03-18T00:02:37Z] END market_broadcaster (exit 0)
+[2026-03-18T00:02:42Z] START telegram_sender
+Telegram status pushed (cycle 79).
+[2026-03-18T00:02:44Z] END telegram_sender (exit 0)
+[2026-03-18T00:02:49Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0802.txt).
+[2026-03-18T00:02:49Z] END performance_analyzer (exit 0)
+=== Cycle 71 @ 2026-03-18T00:03:19Z ===
+[2026-03-18T00:03:19Z] START market_scanner
+📊 Scanner 2026-03-18T08:03: 59 signals
+• F: +4.7% | $64,359,906 vol | steady
+• LIT: +11.6% | $49,822,105 vol | isolated spike
+• DAO: +28.7% | $6,155,110 vol | isolated spike
+[2026-03-18T00:03:20Z] END market_scanner (exit 0)
+[2026-03-18T00:03:25Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.19%
+F +0.92%
+LIT +0.00%
+SIREN +0.07%
+VANRY +4.83%
+
+Closed trades:
+HYPER -2.11% (SL)
+[2026-03-18T00:03:26Z] END paper_trader (exit 0)
+[2026-03-18T00:03:31Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:03:31Z] END position_manager (exit 0)
+[2026-03-18T00:03:36Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:03:36Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:03:41Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0803.txt).
+[2026-03-18T00:03:42Z] END market_broadcaster (exit 0)
+[2026-03-18T00:03:47Z] START telegram_sender
+Telegram status pushed (cycle 80).
+[2026-03-18T00:03:48Z] END telegram_sender (exit 0)
+[2026-03-18T00:03:53Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0803.txt).
+[2026-03-18T00:03:53Z] END performance_analyzer (exit 0)
+=== Cycle 72 @ 2026-03-18T00:04:23Z ===
+[2026-03-18T00:04:23Z] START market_scanner
+📊 Scanner 2026-03-18T08:04: 61 signals
+• F: +6.8% | $66,834,591 vol | isolated spike
+• LIT: +11.7% | $49,532,443 vol | isolated spike
+• HUMA: +8.3% | $52,521,799 vol | isolated spike
+[2026-03-18T00:04:24Z] END market_scanner (exit 0)
+[2026-03-18T00:04:29Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.20%
+F +2.96%
+HUMA +0.00%
+LIT +0.78%
+SIREN +0.11%
+VANRY +4.79%
+
+Closed trades:
+None
+[2026-03-18T00:04:30Z] END paper_trader (exit 0)
+[2026-03-18T00:04:35Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:04:35Z] END position_manager (exit 0)
+[2026-03-18T00:04:40Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:04:41Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:04:46Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0804.txt).
+[2026-03-18T00:04:46Z] END market_broadcaster (exit 0)
+[2026-03-18T00:04:51Z] START telegram_sender
+Telegram status pushed (cycle 81).
+[2026-03-18T00:04:52Z] END telegram_sender (exit 0)
+[2026-03-18T00:04:57Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0804.txt).
+[2026-03-18T00:04:57Z] END performance_analyzer (exit 0)
+=== Cycle 73 @ 2026-03-18T00:05:27Z ===
+[2026-03-18T00:05:27Z] START market_scanner
+📊 Scanner 2026-03-18T08:05: 65 signals
+• AA: +148.3% | $209,964 vol | isolated spike
+• POLYX: +28.3% | $147,553,604 vol | steady
+• F: +7.2% | $67,196,347 vol | isolated spike
+[2026-03-18T00:05:28Z] END market_scanner (exit 0)
+[2026-03-18T00:05:33Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.27%
+F +3.32%
+HUMA +0.00%
+LIT +0.00%
+SIREN +0.10%
+VANRY +4.73%
+ZETA +0.00%
+
+Closed trades:
+None
+[2026-03-18T00:05:35Z] END paper_trader (exit 0)
+[2026-03-18T00:05:40Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:05:40Z] END position_manager (exit 0)
+[2026-03-18T00:05:45Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:05:46Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:05:51Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0805.txt).
+[2026-03-18T00:05:51Z] END market_broadcaster (exit 0)
+[2026-03-18T00:05:56Z] START telegram_sender
+Telegram status pushed (cycle 82).
+[2026-03-18T00:05:57Z] END telegram_sender (exit 0)
+[2026-03-18T00:06:02Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0806.txt).
+[2026-03-18T00:06:02Z] END performance_analyzer (exit 0)
+=== Cycle 74 @ 2026-03-18T00:06:32Z ===
+[2026-03-18T00:06:32Z] START market_scanner
+📊 Scanner 2026-03-18T08:06: 68 signals
+• VANRY: +28.4% | $58,058,966 vol | isolated spike
+• AKT: +7.9% | $31,824,809 vol | steady
+• ZETA: +6.1% | $20,560,167 vol | steady
+[2026-03-18T00:06:33Z] END market_scanner (exit 0)
+[2026-03-18T00:06:38Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.32%
+F -1.24%
+HUMA -0.16%
+LIT +0.00%
+SIREN -0.18%
+VANRY +4.14%
+ZETA -0.05%
+
+Closed trades:
+None
+[2026-03-18T00:06:39Z] END paper_trader (exit 0)
+[2026-03-18T00:06:44Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:06:44Z] END position_manager (exit 0)
+[2026-03-18T00:06:49Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:06:50Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:06:55Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0806.txt).
+[2026-03-18T00:06:55Z] END market_broadcaster (exit 0)
+[2026-03-18T00:07:00Z] START telegram_sender
+Telegram status pushed (cycle 83).
+[2026-03-18T00:07:01Z] END telegram_sender (exit 0)
+[2026-03-18T00:07:06Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0807.txt).
+[2026-03-18T00:07:06Z] END performance_analyzer (exit 0)
+=== Cycle 75 @ 2026-03-18T00:07:36Z ===
+[2026-03-18T00:07:36Z] START market_scanner
+📊 Scanner 2026-03-18T08:07: 64 signals
+• STIBA: +37289.5% | $547,014 vol | steady
+• TRX: +4.0% | $621,298,667 vol | steady
+• ZETA: +6.1% | $20,560,167 vol | steady
+[2026-03-18T00:07:38Z] END market_scanner (exit 0)
+[2026-03-18T00:07:43Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +1.56%
+F -1.49%
+HUMA -0.13%
+LIT +0.00%
+SIREN -0.21%
+VANRY +1.83%
+ZETA +0.07%
+
+Closed trades:
+None
+[2026-03-18T00:07:43Z] END paper_trader (exit 0)
+[2026-03-18T00:07:48Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:07:49Z] END position_manager (exit 0)
+[2026-03-18T00:07:54Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:07:54Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:07:59Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0807.txt).
+[2026-03-18T00:07:59Z] END market_broadcaster (exit 0)
+[2026-03-18T00:08:04Z] START telegram_sender
+Telegram status pushed (cycle 84).
+[2026-03-18T00:08:06Z] END telegram_sender (exit 0)
+[2026-03-18T00:08:11Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0808.txt).
+[2026-03-18T00:08:11Z] END performance_analyzer (exit 0)
+=== Cycle 76 @ 2026-03-18T00:08:41Z ===
+[2026-03-18T00:08:41Z] START market_scanner
+📊 Scanner 2026-03-18T08:08: 58 signals
+• STIBA: +37289.5% | $547,014 vol | steady
+• TRX: +4.0% | $631,176,797 vol | steady
+• ZETA: +6.1% | $20,560,167 vol | steady
+[2026-03-18T00:08:42Z] END market_scanner (exit 0)
+[2026-03-18T00:08:47Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.20%
+HUMA -0.10%
+LIT +0.00%
+SIREN -0.29%
+VANRY +1.69%
+ZETA +0.14%
+
+Closed trades:
+F -2.13% (SL)
+[2026-03-18T00:08:48Z] END paper_trader (exit 0)
+[2026-03-18T00:08:53Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:08:53Z] END position_manager (exit 0)
+[2026-03-18T00:08:58Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:08:59Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:09:04Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0808.txt).
+[2026-03-18T00:09:04Z] END market_broadcaster (exit 0)
+[2026-03-18T00:09:09Z] START telegram_sender
+Telegram status pushed (cycle 85).
+[2026-03-18T00:09:10Z] END telegram_sender (exit 0)
+[2026-03-18T00:09:15Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0809.txt).
+[2026-03-18T00:09:15Z] END performance_analyzer (exit 0)
+=== Cycle 77 @ 2026-03-18T00:09:45Z ===
+[2026-03-18T00:09:45Z] START market_scanner
+📊 Scanner 2026-03-18T08:09: 55 signals
+• STIBA: +37289.5% | $547,014 vol | steady
+• TRX: +4.1% | $632,384,621 vol | steady
+• ZETA: +6.1% | $20,560,167 vol | steady
+[2026-03-18T00:09:46Z] END market_scanner (exit 0)
+[2026-03-18T00:09:51Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.28%
+HUMA -0.03%
+LIT +0.00%
+SIREN -0.31%
+VANRY +1.44%
+ZETA +0.17%
+
+Closed trades:
+None
+[2026-03-18T00:09:52Z] END paper_trader (exit 0)
+[2026-03-18T00:09:57Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:09:57Z] END position_manager (exit 0)
+[2026-03-18T00:10:02Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:10:03Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:10:08Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0809.txt).
+[2026-03-18T00:10:08Z] END market_broadcaster (exit 0)
+[2026-03-18T00:10:13Z] START telegram_sender
+Telegram status pushed (cycle 86).
+[2026-03-18T00:10:14Z] END telegram_sender (exit 0)
+[2026-03-18T00:10:19Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0810.txt).
+[2026-03-18T00:10:19Z] END performance_analyzer (exit 0)
+=== Cycle 78 @ 2026-03-18T00:10:49Z ===
+[2026-03-18T00:10:49Z] START market_scanner
+📊 Scanner 2026-03-18T08:10: 75 signals
+• STIBA: +41927.1% | $617,589 vol | steady
+• TRX: +4.1% | $627,123,614 vol | steady
+• SHAPE: +26.0% | $441,790 vol | isolated spike
+[2026-03-18T00:10:50Z] END market_scanner (exit 0)
+[2026-03-18T00:10:55Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +2.37%
+HUMA +0.33%
+LIT +0.00%
+SIREN -0.29%
+VANRY +0.69%
+ZETA +1.05%
+
+Closed trades:
+None
+[2026-03-18T00:10:56Z] END paper_trader (exit 0)
+[2026-03-18T00:11:01Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:11:01Z] END position_manager (exit 0)
+[2026-03-18T00:11:06Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:11:07Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:11:12Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0810.txt).
+[2026-03-18T00:11:12Z] END market_broadcaster (exit 0)
+[2026-03-18T00:11:17Z] START telegram_sender
+Telegram status pushed (cycle 87).
+[2026-03-18T00:11:18Z] END telegram_sender (exit 0)
+[2026-03-18T00:11:23Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0811.txt).
+[2026-03-18T00:11:23Z] END performance_analyzer (exit 0)
+=== Cycle 79 @ 2026-03-18T00:11:53Z ===
+[2026-03-18T00:11:53Z] START market_scanner
+📊 Scanner 2026-03-18T08:11: 51 signals
+• TRX: +4.1% | $629,788,769 vol | steady
+• ANKR: +20.6% | $49,261,454 vol | steady
+• CPH: +19.0% | $80,580 vol | isolated spike
+[2026-03-18T00:11:54Z] END market_scanner (exit 0)
+[2026-03-18T00:11:59Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +0.00%
+BTW +2.42%
+HUMA +0.35%
+LIT +0.00%
+SIREN -0.21%
+VANRY +0.47%
+ZETA +1.21%
+
+Closed trades:
+None
+[2026-03-18T00:12:01Z] END paper_trader (exit 0)
+[2026-03-18T00:12:06Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:12:06Z] END position_manager (exit 0)
+[2026-03-18T00:12:11Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:12:11Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:12:16Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0811.txt).
+[2026-03-18T00:12:16Z] END market_broadcaster (exit 0)
+[2026-03-18T00:12:21Z] START telegram_sender
+Telegram status pushed (cycle 88).
+[2026-03-18T00:12:22Z] END telegram_sender (exit 0)
+[2026-03-18T00:12:27Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0812.txt).
+[2026-03-18T00:12:28Z] END performance_analyzer (exit 0)
+=== Cycle 80 @ 2026-03-18T00:12:58Z ===
+[2026-03-18T00:12:58Z] START market_scanner
+📊 Scanner 2026-03-18T08:12: 62 signals
+• TRX: +4.2% | $625,868,624 vol | isolated spike
+• ANKR: +23.1% | $51,231,192 vol | steady
+• CREAM: +65.4% | $276,098 vol | steady
+[2026-03-18T00:12:59Z] END market_scanner (exit 0)
+[2026-03-18T00:13:04Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +2.06%
+BTW +2.42%
+HUMA +0.49%
+LIT +0.00%
+SIREN -0.31%
+VANRY -0.34%
+ZETA +1.28%
+
+Closed trades:
+None
+[2026-03-18T00:13:04Z] END paper_trader (exit 0)
+[2026-03-18T00:13:09Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:13:10Z] END position_manager (exit 0)
+[2026-03-18T00:13:15Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:13:15Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:13:20Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0812.txt).
+[2026-03-18T00:13:20Z] END market_broadcaster (exit 0)
+[2026-03-18T00:13:25Z] START telegram_sender
+Telegram status pushed (cycle 89).
+[2026-03-18T00:13:26Z] END telegram_sender (exit 0)
+[2026-03-18T00:13:31Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0813.txt).
+[2026-03-18T00:13:31Z] END performance_analyzer (exit 0)
+=== Cycle 81 @ 2026-03-18T00:14:01Z ===
+[2026-03-18T00:14:01Z] START market_scanner
+📊 Scanner 2026-03-18T08:14: 51 signals
+• TRX: +4.2% | $613,089,078 vol | isolated spike
+• ANKR: +23.7% | $51,717,546 vol | isolated spike
+• SIREN: +50.5% | $38,251,418 vol | steady
+[2026-03-18T00:14:03Z] END market_scanner (exit 0)
+[2026-03-18T00:14:08Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +2.55%
+BTW +2.46%
+HUMA +0.73%
+LIT +0.00%
+SIREN -0.32%
+VANRY -1.66%
+ZETA +0.64%
+
+Closed trades:
+None
+[2026-03-18T00:14:09Z] END paper_trader (exit 0)
+[2026-03-18T00:14:14Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:14:14Z] END position_manager (exit 0)
+[2026-03-18T00:14:19Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:14:19Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:14:24Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0814.txt).
+[2026-03-18T00:14:24Z] END market_broadcaster (exit 0)
+[2026-03-18T00:14:29Z] START telegram_sender
+Telegram status pushed (cycle 90).
+[2026-03-18T00:14:31Z] END telegram_sender (exit 0)
+[2026-03-18T00:14:36Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0814.txt).
+[2026-03-18T00:14:36Z] END performance_analyzer (exit 0)
+=== Cycle 82 @ 2026-03-18T00:15:06Z ===
+[2026-03-18T00:15:06Z] START market_scanner
+📊 Scanner 2026-03-18T08:15: 46 signals
+• ANKR: +24.7% | $53,811,996 vol | isolated spike
+• TRX: +4.2% | $611,465,856 vol | isolated spike
+• CPH: +19.0% | $80,580 vol | steady
+[2026-03-18T00:15:07Z] END market_scanner (exit 0)
+[2026-03-18T00:15:12Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +3.44%
+BTW +2.45%
+HUMA +0.91%
+LIT -0.78%
+SIREN -0.34%
+VANRY -2.10%
+ZETA +0.61%
+
+Closed trades:
+None
+[2026-03-18T00:15:12Z] END paper_trader (exit 0)
+[2026-03-18T00:15:17Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:15:17Z] END position_manager (exit 0)
+[2026-03-18T00:15:22Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:15:23Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:15:28Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0815.txt).
+[2026-03-18T00:15:28Z] END market_broadcaster (exit 0)
+[2026-03-18T00:15:33Z] START telegram_sender
+Telegram status pushed (cycle 91).
+[2026-03-18T00:15:34Z] END telegram_sender (exit 0)
+[2026-03-18T00:15:39Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0815.txt).
+[2026-03-18T00:15:39Z] END performance_analyzer (exit 0)
+=== Cycle 83 @ 2026-03-18T00:16:09Z ===
+[2026-03-18T00:16:09Z] START market_scanner
+📊 Scanner 2026-03-18T08:16: 71 signals
+• TRX: +4.2% | $614,314,079 vol | isolated spike
+• AA: +194.9% | $268,370 vol | isolated spike
+• ANKR: +25.9% | $54,415,799 vol | isolated spike
+[2026-03-18T00:16:11Z] END market_scanner (exit 0)
+[2026-03-18T00:16:16Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +4.43%
+BTW +2.34%
+HUMA +0.90%
+LIT -0.78%
+SIREN -0.41%
+VANRY -2.30%
+ZETA +0.52%
+
+Closed trades:
+None
+[2026-03-18T00:16:16Z] END paper_trader (exit 0)
+[2026-03-18T00:16:21Z] START position_manager
+Position manager actions: 1 trade(s) evaluated.
+[2026-03-18T00:16:22Z] END position_manager (exit 0)
+[2026-03-18T00:16:27Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:16:27Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:16:32Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0816.txt).
+[2026-03-18T00:16:32Z] END market_broadcaster (exit 0)
+[2026-03-18T00:16:37Z] START telegram_sender
+Telegram status pushed (cycle 92).
+[2026-03-18T00:16:39Z] END telegram_sender (exit 0)
+[2026-03-18T00:16:44Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0816.txt).
+[2026-03-18T00:16:44Z] END performance_analyzer (exit 0)
+=== Cycle 84 @ 2026-03-18T00:17:14Z ===
+[2026-03-18T00:17:14Z] START market_scanner
+📊 Scanner 2026-03-18T08:17: 58 signals
+• TRX: +4.2% | $614,579,355 vol | isolated spike
+• STIBA: +39036.1% | $582,331 vol | steady
+• ANKR: +27.4% | $56,346,417 vol | isolated spike
+[2026-03-18T00:17:15Z] END market_scanner (exit 0)
+[2026-03-18T00:17:20Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +5.41%
+BTW +2.54%
+HUMA +1.11%
+LIT -0.78%
+SIREN -0.68%
+VANRY -3.33%
+ZETA +0.49%
+
+Closed trades:
+None
+[2026-03-18T00:17:21Z] END paper_trader (exit 0)
+[2026-03-18T00:17:26Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:17:26Z] END position_manager (exit 0)
+[2026-03-18T00:17:31Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:17:31Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:17:36Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0817.txt).
+[2026-03-18T00:17:36Z] END market_broadcaster (exit 0)
+[2026-03-18T00:17:41Z] START telegram_sender
+Telegram status pushed (cycle 93).
+[2026-03-18T00:17:42Z] END telegram_sender (exit 0)
+[2026-03-18T00:17:47Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0817.txt).
+[2026-03-18T00:17:48Z] END performance_analyzer (exit 0)
+=== Cycle 85 @ 2026-03-18T00:18:18Z ===
+[2026-03-18T00:18:18Z] START market_scanner
+📊 Scanner 2026-03-18T08:18: 52 signals
+• TRX: +4.1% | $615,238,335 vol | steady
+• STIBA: +39036.1% | $582,331 vol | steady
+• ANKR: +27.2% | $57,931,067 vol | isolated spike
+[2026-03-18T00:18:19Z] END market_scanner (exit 0)
+[2026-03-18T00:18:24Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +5.26%
+BTW +2.62%
+HUMA +1.04%
+LIT -1.55%
+SIREN -0.97%
+VANRY -3.30%
+ZETA +0.49%
+
+Closed trades:
+None
+[2026-03-18T00:18:25Z] END paper_trader (exit 0)
+[2026-03-18T00:18:30Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:18:30Z] END position_manager (exit 0)
+[2026-03-18T00:18:35Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:18:35Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:18:40Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0818.txt).
+[2026-03-18T00:18:40Z] END market_broadcaster (exit 0)
+[2026-03-18T00:18:45Z] START telegram_sender
+Telegram status pushed (cycle 94).
+[2026-03-18T00:18:47Z] END telegram_sender (exit 0)
+[2026-03-18T00:18:52Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0818.txt).
+[2026-03-18T00:18:52Z] END performance_analyzer (exit 0)
+=== Cycle 86 @ 2026-03-18T00:19:22Z ===
+[2026-03-18T00:19:22Z] START market_scanner
+📊 Scanner 2026-03-18T08:19: 63 signals
+• TRX: +4.2% | $615,139,016 vol | steady
+• STIBA: +39036.1% | $582,331 vol | steady
+• ANKR: +26.8% | $57,983,407 vol | isolated spike
+[2026-03-18T00:19:23Z] END market_scanner (exit 0)
+[2026-03-18T00:19:28Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +4.91%
+BTW +2.58%
+HUMA +1.04%
+LIT -1.55%
+SIREN -1.05%
+VANRY -3.53%
+ZETA +0.47%
+
+Closed trades:
+None
+[2026-03-18T00:19:29Z] END paper_trader (exit 0)
+[2026-03-18T00:19:34Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:19:35Z] END position_manager (exit 0)
+[2026-03-18T00:19:40Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:19:40Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:19:45Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0819.txt).
+[2026-03-18T00:19:45Z] END market_broadcaster (exit 0)
+[2026-03-18T00:19:50Z] START telegram_sender
+Telegram status pushed (cycle 95).
+[2026-03-18T00:19:52Z] END telegram_sender (exit 0)
+[2026-03-18T00:19:57Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0819.txt).
+[2026-03-18T00:19:57Z] END performance_analyzer (exit 0)
+=== Cycle 87 @ 2026-03-18T00:20:27Z ===
+[2026-03-18T00:20:27Z] START market_scanner
+📊 Scanner 2026-03-18T08:20: 69 signals
+• TRX: +4.2% | $619,253,546 vol | steady
+• AIN: +561.1% | $1,108,354 vol | steady
+• ANKR: +27.3% | $60,280,223 vol | isolated spike
+[2026-03-18T00:20:28Z] END market_scanner (exit 0)
+[2026-03-18T00:20:33Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +5.37%
+BTW +2.73%
+HUMA +1.00%
+LIT -1.55%
+SIREN -1.49%
+VANRY -3.02%
+ZETA +0.45%
+
+Closed trades:
+None
+[2026-03-18T00:20:34Z] END paper_trader (exit 0)
+[2026-03-18T00:20:39Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:20:40Z] END position_manager (exit 0)
+[2026-03-18T00:20:45Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:20:45Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:20:50Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0820.txt).
+[2026-03-18T00:20:50Z] END market_broadcaster (exit 0)
+[2026-03-18T00:20:55Z] START telegram_sender
+Telegram status pushed (cycle 96).
+[2026-03-18T00:20:56Z] END telegram_sender (exit 0)
+[2026-03-18T00:21:01Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0821.txt).
+[2026-03-18T00:21:01Z] END performance_analyzer (exit 0)
+=== Cycle 88 @ 2026-03-18T00:21:31Z ===
+[2026-03-18T00:21:31Z] START market_scanner
+📊 Scanner 2026-03-18T08:21: 53 signals
+• TRX: +4.2% | $620,806,286 vol | steady
+• AIN: +561.1% | $1,108,354 vol | isolated spike
+• ANKR: +27.5% | $60,896,289 vol | isolated spike
+[2026-03-18T00:21:33Z] END market_scanner (exit 0)
+[2026-03-18T00:21:38Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +5.52%
+BTW +2.74%
+HUMA +1.05%
+LIT -1.55%
+SIREN -1.54%
+ZETA +0.42%
+
+Closed trades:
+VANRY -4.49% (SL)
+[2026-03-18T00:21:38Z] END paper_trader (exit 0)
+[2026-03-18T00:21:43Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:21:43Z] END position_manager (exit 0)
+[2026-03-18T00:21:48Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:21:49Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:21:54Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0821.txt).
+[2026-03-18T00:21:54Z] END market_broadcaster (exit 0)
+[2026-03-18T00:21:59Z] START telegram_sender
+Telegram status pushed (cycle 97).
+[2026-03-18T00:22:00Z] END telegram_sender (exit 0)
+[2026-03-18T00:22:05Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0822.txt).
+[2026-03-18T00:22:05Z] END performance_analyzer (exit 0)
+=== Cycle 89 @ 2026-03-18T00:22:35Z ===
+[2026-03-18T00:22:35Z] START market_scanner
+📊 Scanner 2026-03-18T08:22: 61 signals
+• TRX: +4.2% | $617,642,018 vol | isolated spike
+• AIN: +561.1% | $1,108,354 vol | steady
+• POLYX: +19.8% | $141,256,732 vol | steady
+[2026-03-18T00:22:37Z] END market_scanner (exit 0)
+[2026-03-18T00:22:42Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +5.65%
+BTW +2.91%
+HUMA +1.24%
+LIT -1.55%
+SIREN -1.83%
+ZETA +0.40%
+
+Closed trades:
+None
+[2026-03-18T00:22:42Z] END paper_trader (exit 0)
+[2026-03-18T00:22:47Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:22:48Z] END position_manager (exit 0)
+[2026-03-18T00:22:53Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:22:53Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:22:58Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0822.txt).
+[2026-03-18T00:22:58Z] END market_broadcaster (exit 0)
+[2026-03-18T00:23:03Z] START telegram_sender
+Telegram status pushed (cycle 98).
+[2026-03-18T00:23:05Z] END telegram_sender (exit 0)
+[2026-03-18T00:23:10Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0823.txt).
+[2026-03-18T00:23:10Z] END performance_analyzer (exit 0)
+=== Cycle 90 @ 2026-03-18T00:23:40Z ===
+[2026-03-18T00:23:40Z] START market_scanner
+📊 Scanner 2026-03-18T08:23: 65 signals
+• TRX: +4.2% | $617,958,664 vol | isolated spike
+• AIN: +561.1% | $1,108,354 vol | steady
+• ANKR: +29.4% | $63,553,089 vol | isolated spike
+[2026-03-18T00:23:41Z] END market_scanner (exit 0)
+[2026-03-18T00:23:46Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +7.11%
+BTW +2.95%
+HUMA +1.26%
+LIT -1.55%
+SIREN -1.90%
+ZETA +0.47%
+
+Closed trades:
+None
+[2026-03-18T00:23:47Z] END paper_trader (exit 0)
+[2026-03-18T00:23:52Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:23:52Z] END position_manager (exit 0)
+[2026-03-18T00:23:57Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:23:58Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:24:03Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0823.txt).
+[2026-03-18T00:24:03Z] END market_broadcaster (exit 0)
+[2026-03-18T00:24:08Z] START telegram_sender
+Telegram API error 504: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+[2026-03-18T00:26:09Z] END telegram_sender (exit 0)
+[2026-03-18T00:26:14Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0826.txt).
+[2026-03-18T00:26:14Z] END performance_analyzer (exit 0)
+=== Cycle 91 @ 2026-03-18T00:26:44Z ===
+[2026-03-18T00:26:44Z] START market_scanner
+📊 Scanner 2026-03-18T08:26: 77 signals
+• TRX: +4.3% | $622,641,359 vol | isolated spike
+• STIBA: +39040.9% | $581,239 vol | isolated spike
+• HUMA: +7.7% | $53,305,093 vol | steady
+[2026-03-18T00:26:46Z] END market_scanner (exit 0)
+[2026-03-18T00:26:51Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +6.59%
+BTW +3.39%
+HUMA +1.07%
+LIT -1.55%
+SIREN -2.07%
+ZETA +0.49%
+
+Closed trades:
+None
+[2026-03-18T00:26:51Z] END paper_trader (exit 0)
+[2026-03-18T00:26:56Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:26:56Z] END position_manager (exit 0)
+[2026-03-18T00:27:01Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:27:02Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:27:07Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0826.txt).
+[2026-03-18T00:27:07Z] END market_broadcaster (exit 0)
+[2026-03-18T00:27:12Z] START telegram_sender
+Telegram status pushed (cycle 99).
+[2026-03-18T00:28:00Z] END telegram_sender (exit 0)
+[2026-03-18T00:28:05Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0828.txt).
+[2026-03-18T00:28:05Z] END performance_analyzer (exit 0)
+=== Cycle 92 @ 2026-03-18T00:28:35Z ===
+[2026-03-18T00:28:35Z] START market_scanner
+📊 Scanner 2026-03-18T08:28: 66 signals
+• TRX: +4.3% | $623,033,569 vol | isolated spike
+• STIBA: +39040.9% | $581,239 vol | steady
+• MBOX: +11.9% | $25,035,603 vol | isolated spike
+[2026-03-18T00:28:36Z] END market_scanner (exit 0)
+[2026-03-18T00:28:41Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +6.29%
+BTW +3.93%
+HUMA +0.97%
+LIT -1.55%
+SIREN -2.31%
+ZETA +0.75%
+
+Closed trades:
+None
+[2026-03-18T00:28:42Z] END paper_trader (exit 0)
+[2026-03-18T00:28:47Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:28:47Z] END position_manager (exit 0)
+[2026-03-18T00:28:52Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:28:53Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:28:58Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0828.txt).
+[2026-03-18T00:28:58Z] END market_broadcaster (exit 0)
+[2026-03-18T00:29:03Z] START telegram_sender
+Telegram status pushed (cycle 100).
+[2026-03-18T00:29:04Z] END telegram_sender (exit 0)
+[2026-03-18T00:29:09Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0829.txt).
+[2026-03-18T00:29:09Z] END performance_analyzer (exit 0)
+=== Cycle 93 @ 2026-03-18T00:29:39Z ===
+[2026-03-18T00:29:39Z] START market_scanner
+📊 Scanner 2026-03-18T08:29: 61 signals
+• TRX: +4.4% | $623,898,619 vol | isolated spike
+• STIBA: +39040.9% | $581,239 vol | steady
+• ANKR: +28.5% | $68,220,813 vol | steady
+[2026-03-18T00:29:40Z] END market_scanner (exit 0)
+[2026-03-18T00:29:45Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +6.77%
+BTW +3.75%
+HUMA +1.19%
+LIT -1.55%
+SIREN -1.75%
+ZETA +1.01%
+
+Closed trades:
+None
+[2026-03-18T00:29:46Z] END paper_trader (exit 0)
+[2026-03-18T00:29:51Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:29:51Z] END position_manager (exit 0)
+[2026-03-18T00:29:56Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:29:56Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:30:01Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0829.txt).
+[2026-03-18T00:30:01Z] END market_broadcaster (exit 0)
+[2026-03-18T00:30:06Z] START telegram_sender
+Telegram status pushed (cycle 101).
+[2026-03-18T00:30:08Z] END telegram_sender (exit 0)
+[2026-03-18T00:30:13Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0830.txt).
+[2026-03-18T00:30:13Z] END performance_analyzer (exit 0)
+=== Cycle 94 @ 2026-03-18T00:30:43Z ===
+[2026-03-18T00:30:43Z] START market_scanner
+📊 Scanner 2026-03-18T08:30: 65 signals
+• TRX: +4.4% | $624,711,249 vol | isolated spike
+• TONIC: +112.8% | $297,467 vol | steady
+• ANKR: +28.9% | $68,930,510 vol | steady
+[2026-03-18T00:30:44Z] END market_scanner (exit 0)
+[2026-03-18T00:30:49Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +7.08%
+BTW +3.80%
+HUMA +1.29%
+LIT -1.55%
+SIREN -1.52%
+ZETA +1.03%
+
+Closed trades:
+None
+[2026-03-18T00:30:50Z] END paper_trader (exit 0)
+[2026-03-18T00:30:55Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:30:55Z] END position_manager (exit 0)
+[2026-03-18T00:31:00Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:31:01Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:31:06Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0830.txt).
+[2026-03-18T00:31:06Z] END market_broadcaster (exit 0)
+[2026-03-18T00:31:11Z] START telegram_sender
+Telegram status pushed (cycle 102).
+[2026-03-18T00:31:12Z] END telegram_sender (exit 0)
+[2026-03-18T00:31:17Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0831.txt).
+[2026-03-18T00:31:17Z] END performance_analyzer (exit 0)
+=== Cycle 95 @ 2026-03-18T00:31:47Z ===
+[2026-03-18T00:31:47Z] START market_scanner
+📊 Scanner 2026-03-18T08:31: 46 signals
+• TRX: +4.4% | $625,050,587 vol | isolated spike
+• ANOME: +57.9% | $1,536,110 vol | steady
+• OGN: +44.6% | $15,261,016 vol | steady
+[2026-03-18T00:31:49Z] END market_scanner (exit 0)
+[2026-03-18T00:31:54Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +6.98%
+BTW +3.77%
+HUMA +1.35%
+LIT -1.55%
+SIREN -1.51%
+ZETA +1.08%
+
+Closed trades:
+None
+[2026-03-18T00:31:55Z] END paper_trader (exit 0)
+[2026-03-18T00:32:00Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:32:01Z] END position_manager (exit 0)
+[2026-03-18T00:32:06Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:32:06Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:32:11Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0831.txt).
+[2026-03-18T00:32:11Z] END market_broadcaster (exit 0)
+[2026-03-18T00:32:16Z] START telegram_sender
+Telegram status pushed (cycle 103).
+[2026-03-18T00:32:18Z] END telegram_sender (exit 0)
+[2026-03-18T00:32:23Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0832.txt).
+[2026-03-18T00:32:23Z] END performance_analyzer (exit 0)
+=== Cycle 96 @ 2026-03-18T00:32:53Z ===
+[2026-03-18T00:32:53Z] START market_scanner
+📊 Scanner 2026-03-18T08:32: 60 signals
+• TRX: +4.4% | $626,242,658 vol | isolated spike
+• AIN: +559.7% | $1,107,743 vol | steady
+• OGN: +44.6% | $15,261,016 vol | steady
+[2026-03-18T00:32:54Z] END market_scanner (exit 0)
+[2026-03-18T00:32:59Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +7.00%
+BTW +3.77%
+HUMA +1.46%
+LIT -0.78%
+SIREN -1.52%
+ZETA +1.13%
+
+Closed trades:
+None
+[2026-03-18T00:33:00Z] END paper_trader (exit 0)
+[2026-03-18T00:33:05Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:33:05Z] END position_manager (exit 0)
+[2026-03-18T00:33:10Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:33:10Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:33:15Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0832.txt).
+[2026-03-18T00:33:15Z] END market_broadcaster (exit 0)
+[2026-03-18T00:33:20Z] START telegram_sender
+Telegram status pushed (cycle 104).
+[2026-03-18T00:33:22Z] END telegram_sender (exit 0)
+[2026-03-18T00:33:27Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0833.txt).
+[2026-03-18T00:33:27Z] END performance_analyzer (exit 0)
+=== Cycle 97 @ 2026-03-18T00:33:57Z ===
+[2026-03-18T00:33:57Z] START market_scanner
+📊 Scanner 2026-03-18T08:33: 61 signals
+• POLYX: +16.9% | $136,085,774 vol | steady
+• ANKR: +29.3% | $70,113,013 vol | isolated spike
+• AIN: +559.7% | $1,107,743 vol | steady
+[2026-03-18T00:33:58Z] END market_scanner (exit 0)
+[2026-03-18T00:34:03Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +7.28%
+BTW +3.75%
+HUMA +1.49%
+LIT -0.78%
+SIREN -1.51%
+ZETA +1.16%
+
+Closed trades:
+None
+[2026-03-18T00:34:04Z] END paper_trader (exit 0)
+[2026-03-18T00:34:09Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:34:09Z] END position_manager (exit 0)
+[2026-03-18T00:34:14Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:34:15Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:34:20Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0833.txt).
+[2026-03-18T00:34:20Z] END market_broadcaster (exit 0)
+[2026-03-18T00:34:25Z] START telegram_sender
+Telegram status pushed (cycle 105).
+[2026-03-18T00:34:26Z] END telegram_sender (exit 0)
+[2026-03-18T00:34:31Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0834.txt).
+[2026-03-18T00:34:31Z] END performance_analyzer (exit 0)
+=== Cycle 98 @ 2026-03-18T00:35:01Z ===
+[2026-03-18T00:35:01Z] START market_scanner
+📊 Scanner 2026-03-18T08:35: 72 signals
+• TRX: +4.4% | $628,680,057 vol | isolated spike
+• AIN: +559.7% | $1,107,743 vol | steady
+• VANRY: +19.4% | $63,336,316 vol | steady
+[2026-03-18T00:35:02Z] END market_scanner (exit 0)
+[2026-03-18T00:35:07Z] START paper_trader
+Paper trading update
+
+Open positions:
+ANKR +7.38%
+BTW +3.76%
+HUMA +1.48%
+LIT -0.78%
+SIREN -1.44%
+ZETA +1.17%
+
+Closed trades:
+None
+[2026-03-18T00:35:08Z] END paper_trader (exit 0)
+[2026-03-18T00:35:13Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:35:14Z] END position_manager (exit 0)
+[2026-03-18T00:35:19Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:35:19Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:35:24Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0835.txt).
+[2026-03-18T00:35:24Z] END market_broadcaster (exit 0)
+[2026-03-18T00:35:29Z] START telegram_sender
+Telegram status pushed (cycle 106).
+[2026-03-18T00:35:30Z] END telegram_sender (exit 0)
+[2026-03-18T00:35:35Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0835.txt).
+[2026-03-18T00:35:36Z] END performance_analyzer (exit 0)
+=== Cycle 99 @ 2026-03-18T00:36:06Z ===
+[2026-03-18T00:36:06Z] START market_scanner
+📊 Scanner 2026-03-18T08:36: 84 signals
+• TRX: +4.4% | $628,875,932 vol | steady
+• STIBA: +39120.4% | $583,700 vol | steady
+• ANKR: +30.7% | $72,783,132 vol | isolated spike
+[2026-03-18T00:36:18Z] END market_scanner (exit 0)
+[2026-03-18T00:36:23Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +3.83%
+HUMA +1.61%
+LIT -0.78%
+SIREN -1.32%
+ZETA +1.44%
+
+Closed trades:
+ANKR +8.46% (TP)
+[2026-03-18T00:36:24Z] END paper_trader (exit 0)
+[2026-03-18T00:36:29Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:36:29Z] END position_manager (exit 0)
+[2026-03-18T00:36:34Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:36:35Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:36:40Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0836.txt).
+[2026-03-18T00:36:40Z] END market_broadcaster (exit 0)
+[2026-03-18T00:36:45Z] START telegram_sender
+Telegram status pushed (cycle 107).
+[2026-03-18T00:36:46Z] END telegram_sender (exit 0)
+[2026-03-18T00:36:51Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0836.txt).
+[2026-03-18T00:36:51Z] END performance_analyzer (exit 0)
+=== Cycle 100 @ 2026-03-18T00:37:21Z ===
+[2026-03-18T00:37:21Z] START market_scanner
+📊 Scanner 2026-03-18T08:37: 55 signals
+• TRX: +4.4% | $629,002,078 vol | steady
+• OGN: +44.6% | $15,265,255 vol | steady
+• ANKR: +30.9% | $73,284,330 vol | isolated spike
+[2026-03-18T00:37:23Z] END market_scanner (exit 0)
+[2026-03-18T00:37:28Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +3.92%
+HUMA +1.50%
+LIT -0.78%
+SIREN -1.42%
+ZETA +1.45%
+
+Closed trades:
+None
+[2026-03-18T00:37:29Z] END paper_trader (exit 0)
+[2026-03-18T00:37:34Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:37:34Z] END position_manager (exit 0)
+[2026-03-18T00:37:39Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:37:39Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:37:44Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0837.txt).
+[2026-03-18T00:37:44Z] END market_broadcaster (exit 0)
+[2026-03-18T00:37:49Z] START telegram_sender
+Telegram status pushed (cycle 108).
+[2026-03-18T00:37:50Z] END telegram_sender (exit 0)
+[2026-03-18T00:37:55Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0837.txt).
+[2026-03-18T00:37:56Z] END performance_analyzer (exit 0)
+=== Cycle 101 @ 2026-03-18T00:38:26Z ===
+[2026-03-18T00:38:26Z] START market_scanner
+📊 Scanner 2026-03-18T08:38: 51 signals
+• TRX: +4.4% | $631,072,530 vol | steady
+• OGN: +44.6% | $15,265,255 vol | steady
+• ANKR: +30.9% | $73,669,437 vol | isolated spike
+[2026-03-18T00:38:27Z] END market_scanner (exit 0)
+[2026-03-18T00:38:32Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +3.97%
+HUMA +1.64%
+LIT -1.55%
+POLYX +0.00%
+SIREN -1.40%
+ZETA +1.48%
+
+Closed trades:
+None
+[2026-03-18T00:38:34Z] END paper_trader (exit 0)
+[2026-03-18T00:38:39Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:38:39Z] END position_manager (exit 0)
+[2026-03-18T00:38:44Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:38:44Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:38:49Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0838.txt).
+[2026-03-18T00:38:49Z] END market_broadcaster (exit 0)
+[2026-03-18T00:38:54Z] START telegram_sender
+Telegram status pushed (cycle 109).
+[2026-03-18T00:38:56Z] END telegram_sender (exit 0)
+[2026-03-18T00:39:01Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0839.txt).
+[2026-03-18T00:39:01Z] END performance_analyzer (exit 0)
+=== Cycle 102 @ 2026-03-18T00:39:31Z ===
+[2026-03-18T00:39:31Z] START market_scanner
+📊 Scanner 2026-03-18T08:39: 52 signals
+• TRX: +4.3% | $631,907,159 vol | steady
+• OGN: +44.6% | $15,265,255 vol | steady
+• HOME: +45.6% | $4,264,431 vol | steady
+[2026-03-18T00:39:32Z] END market_scanner (exit 0)
+[2026-03-18T00:39:37Z] START paper_trader
+Paper trading update
+
+Open positions:
+BTW +4.03%
+HUMA +1.50%
+LIT -1.55%
+POLYX -0.17%
+SIREN -1.46%
+ZETA +1.62%
+
+Closed trades:
+None
+[2026-03-18T00:39:38Z] END paper_trader (exit 0)
+[2026-03-18T00:39:43Z] START position_manager
+Position manager actions: 1 trade(s) evaluated.
+[2026-03-18T00:39:44Z] END position_manager (exit 0)
+[2026-03-18T00:39:49Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:39:49Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:39:54Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0839.txt).
+[2026-03-18T00:39:54Z] END market_broadcaster (exit 0)
+[2026-03-18T00:39:59Z] START telegram_sender
+Telegram status pushed (cycle 110).
+[2026-03-18T00:40:00Z] END telegram_sender (exit 0)
+[2026-03-18T00:40:05Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0840.txt).
+[2026-03-18T00:40:05Z] END performance_analyzer (exit 0)
+=== Cycle 103 @ 2026-03-18T00:40:35Z ===
+[2026-03-18T00:40:35Z] START market_scanner
+📊 Scanner 2026-03-18T08:40: 58 signals
+• ANKR: +30.7% | $73,921,300 vol | isolated spike
+• WTRX: +4.2% | $60,369,319 vol | steady
+• LIT: +10.4% | $49,347,157 vol | isolated spike
+[2026-03-18T00:40:37Z] END market_scanner (exit 0)
+[2026-03-18T00:40:42Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.00%
+BTW +4.05%
+HUMA +1.37%
+LIT -1.55%
+POLYX -0.32%
+SIREN -0.89%
+ZETA +1.56%
+
+Closed trades:
+None
+[2026-03-18T00:40:43Z] END paper_trader (exit 0)
+[2026-03-18T00:40:48Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:40:48Z] END position_manager (exit 0)
+[2026-03-18T00:40:53Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:40:53Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:40:58Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0840.txt).
+[2026-03-18T00:40:59Z] END market_broadcaster (exit 0)
+[2026-03-18T00:41:04Z] START telegram_sender
+Telegram status pushed (cycle 111).
+[2026-03-18T00:41:05Z] END telegram_sender (exit 0)
+[2026-03-18T00:41:10Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0841.txt).
+[2026-03-18T00:41:10Z] END performance_analyzer (exit 0)
+=== Cycle 104 @ 2026-03-18T00:41:40Z ===
+[2026-03-18T00:41:40Z] START market_scanner
+📊 Scanner 2026-03-18T08:41: 60 signals
+• ANKR: +30.7% | $74,228,128 vol | isolated spike
+• WTRX: +4.2% | $60,369,319 vol | steady
+• VANRY: +20.7% | $52,485,634 vol | isolated spike
+[2026-03-18T00:41:41Z] END market_scanner (exit 0)
+[2026-03-18T00:41:46Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.47%
+BTW +4.02%
+HUMA +1.32%
+LIT -1.55%
+POLYX -0.41%
+SIREN -0.89%
+ZETA +1.20%
+
+Closed trades:
+None
+[2026-03-18T00:41:47Z] END paper_trader (exit 0)
+[2026-03-18T00:41:52Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:41:52Z] END position_manager (exit 0)
+[2026-03-18T00:41:57Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:41:58Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:42:03Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0841.txt).
+[2026-03-18T00:42:03Z] END market_broadcaster (exit 0)
+[2026-03-18T00:42:08Z] START telegram_sender
+Telegram status pushed (cycle 112).
+[2026-03-18T00:42:09Z] END telegram_sender (exit 0)
+[2026-03-18T00:42:14Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0842.txt).
+[2026-03-18T00:42:14Z] END performance_analyzer (exit 0)
+=== Cycle 105 @ 2026-03-18T00:42:44Z ===
+[2026-03-18T00:42:44Z] START market_scanner
+📊 Scanner 2026-03-18T08:42: 60 signals
+• ANKR: +31.2% | $75,002,894 vol | isolated spike
+• WTRX: +4.2% | $60,369,319 vol | steady
+• VANRY: +21.0% | $52,582,421 vol | steady
+[2026-03-18T00:42:46Z] END market_scanner (exit 0)
+[2026-03-18T00:42:51Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.61%
+BTW +4.05%
+HUMA +1.34%
+LIT -1.55%
+POLYX -0.39%
+SIREN -0.77%
+ZETA +1.11%
+
+Closed trades:
+None
+[2026-03-18T00:42:52Z] END paper_trader (exit 0)
+[2026-03-18T00:42:57Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:42:57Z] END position_manager (exit 0)
+[2026-03-18T00:43:02Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:43:03Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:43:08Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0842.txt).
+[2026-03-18T00:43:08Z] END market_broadcaster (exit 0)
+[2026-03-18T00:43:13Z] START telegram_sender
+Telegram status pushed (cycle 113).
+[2026-03-18T00:43:14Z] END telegram_sender (exit 0)
+[2026-03-18T00:43:19Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0843.txt).
+[2026-03-18T00:43:19Z] END performance_analyzer (exit 0)
+=== Cycle 106 @ 2026-03-18T00:43:49Z ===
+[2026-03-18T00:43:49Z] START market_scanner
+📊 Scanner 2026-03-18T08:43: 51 signals
+• ANKR: +31.2% | $75,312,560 vol | isolated spike
+• WTRX: +4.2% | $60,369,319 vol | steady
+• STIBA: +39007.8% | $582,927 vol | steady
+[2026-03-18T00:43:51Z] END market_scanner (exit 0)
+[2026-03-18T00:43:56Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.62%
+BTW +4.10%
+HUMA +1.32%
+LIT -1.55%
+POLYX -0.35%
+SIREN -0.35%
+ZETA +1.09%
+
+Closed trades:
+None
+[2026-03-18T00:43:56Z] END paper_trader (exit 0)
+[2026-03-18T00:44:01Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:44:02Z] END position_manager (exit 0)
+[2026-03-18T00:44:07Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:44:07Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:44:12Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0843.txt).
+[2026-03-18T00:44:12Z] END market_broadcaster (exit 0)
+[2026-03-18T00:44:17Z] START telegram_sender
+Telegram status pushed (cycle 114).
+[2026-03-18T00:44:18Z] END telegram_sender (exit 0)
+[2026-03-18T00:44:23Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0844.txt).
+[2026-03-18T00:44:23Z] END performance_analyzer (exit 0)
+=== Cycle 107 @ 2026-03-18T00:44:53Z ===
+[2026-03-18T00:44:53Z] START market_scanner
+📊 Scanner 2026-03-18T08:44: 52 signals
+• STIBA: +39007.8% | $582,927 vol | steady
+• ANKR: +30.8% | $76,622,396 vol | steady
+• WTRX: +4.2% | $60,369,319 vol | steady
+[2026-03-18T00:44:54Z] END market_scanner (exit 0)
+[2026-03-18T00:44:59Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.20%
+BTW +4.41%
+HUMA +1.35%
+LIT -1.55%
+POLYX -0.13%
+SIREN -0.32%
+ZETA +1.22%
+
+Closed trades:
+None
+[2026-03-18T00:45:00Z] END paper_trader (exit 0)
+[2026-03-18T00:45:05Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:45:05Z] END position_manager (exit 0)
+[2026-03-18T00:45:10Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:45:11Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:45:16Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0844.txt).
+[2026-03-18T00:45:16Z] END market_broadcaster (exit 0)
+[2026-03-18T00:45:21Z] START telegram_sender
+Telegram status pushed (cycle 115).
+[2026-03-18T00:45:22Z] END telegram_sender (exit 0)
+[2026-03-18T00:45:27Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0845.txt).
+[2026-03-18T00:45:27Z] END performance_analyzer (exit 0)
+=== Cycle 108 @ 2026-03-18T00:45:57Z ===
+[2026-03-18T00:45:57Z] START market_scanner
+📊 Scanner 2026-03-18T08:45: 85 signals
+• STIBA: +39170.6% | $583,039 vol | steady
+• TRX: +4.3% | $631,395,925 vol | steady
+• PEAQ: +10.2% | $19,630,013 vol | steady
+[2026-03-18T00:45:58Z] END market_scanner (exit 0)
+[2026-03-18T00:46:03Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.19%
+BTW +4.35%
+HUMA +1.54%
+LIT -1.55%
+POLYX -0.12%
+SIREN +2.29%
+ZETA +1.26%
+
+Closed trades:
+None
+[2026-03-18T00:46:04Z] END paper_trader (exit 0)
+[2026-03-18T00:46:09Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:46:09Z] END position_manager (exit 0)
+[2026-03-18T00:46:14Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:46:14Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:46:19Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0845.txt).
+[2026-03-18T00:46:20Z] END market_broadcaster (exit 0)
+[2026-03-18T00:46:25Z] START telegram_sender
+Telegram status pushed (cycle 116).
+[2026-03-18T00:46:26Z] END telegram_sender (exit 0)
+[2026-03-18T00:46:31Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0846.txt).
+[2026-03-18T00:46:31Z] END performance_analyzer (exit 0)
+=== Cycle 109 @ 2026-03-18T00:47:01Z ===
+[2026-03-18T00:47:01Z] START market_scanner
+📊 Scanner 2026-03-18T08:47: 48 signals
+• STIBA: +39170.6% | $583,039 vol | isolated spike
+• TRX: +4.3% | $629,584,054 vol | steady
+• ANKR: +30.7% | $77,481,589 vol | steady
+[2026-03-18T00:47:02Z] END market_scanner (exit 0)
+[2026-03-18T00:47:07Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.20%
+BTW +4.27%
+HUMA +1.47%
+LIT -1.55%
+POLYX -0.10%
+SIREN +2.11%
+ZETA +1.23%
+
+Closed trades:
+None
+[2026-03-18T00:47:08Z] END paper_trader (exit 0)
+[2026-03-18T00:47:13Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:47:13Z] END position_manager (exit 0)
+[2026-03-18T00:47:18Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:47:19Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:47:24Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0847.txt).
+[2026-03-18T00:47:24Z] END market_broadcaster (exit 0)
+[2026-03-18T00:47:29Z] START telegram_sender
+Telegram status pushed (cycle 117).
+[2026-03-18T00:47:30Z] END telegram_sender (exit 0)
+[2026-03-18T00:47:35Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0847.txt).
+[2026-03-18T00:47:35Z] END performance_analyzer (exit 0)
+=== Cycle 110 @ 2026-03-18T00:48:05Z ===
+[2026-03-18T00:48:05Z] START market_scanner
+📊 Scanner 2026-03-18T08:48: 63 signals
+• STIBA: +39170.6% | $583,039 vol | isolated spike
+• TRX: +4.3% | $629,764,661 vol | steady
+• ANKR: +30.5% | $78,025,758 vol | steady
+[2026-03-18T00:48:07Z] END market_scanner (exit 0)
+[2026-03-18T00:48:12Z] START paper_trader
+Paper trading update
+
+Open positions:
+AKT +0.20%
+BTW +4.23%
+HUMA +1.65%
+LIT -1.55%
+POLYX +0.54%
+SIREN +2.03%
+ZETA +1.18%
+
+Closed trades:
+None
+[2026-03-18T00:48:12Z] END paper_trader (exit 0)
+[2026-03-18T00:48:17Z] START position_manager
+Position manager actions: 0 trade(s) evaluated.
+[2026-03-18T00:48:17Z] END position_manager (exit 0)
+[2026-03-18T00:48:22Z] START sol_paper_trader
+Sol paper trader open positions: 0; closed this run: 0.
+[2026-03-18T00:48:23Z] END sol_paper_trader (exit 0)
+[2026-03-18T00:48:28Z] START market_broadcaster
+Market broadcaster post ready (/data/.openclaw/workspace/x_posts/post_2026_03_18_0848.txt).
+[2026-03-18T00:48:28Z] END market_broadcaster (exit 0)
+[2026-03-18T00:48:33Z] START telegram_sender
+Telegram status pushed (cycle 118).
+[2026-03-18T00:48:34Z] END telegram_sender (exit 0)
+[2026-03-18T00:48:39Z] START performance_analyzer
+Performance report refreshed (/data/.openclaw/workspace/performance_reports/report_2026_03_18_0848.txt).
+[2026-03-18T00:48:39Z] END performance_analyzer (exit 0)
+Manual loop completed at 2026-03-18T00:48:39Z

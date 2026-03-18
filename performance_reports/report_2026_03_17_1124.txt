@@ -1,0 +1,32 @@
+Paper Trader Performance Report — 2026-03-17 11:24
+
+Metrics:
+- Total trades: 49
+- Win rate: 59.18%
+- Average win: +2.82%
+- Average loss: -1.66%
+- Total PnL: +50.28%
+- TP hits: 1
+- SL hits: 1
+
+Best performing tokens:
+- DEGO: +7.48%
+- FARTCOIN: +6.75%
+- G: +4.07%
+
+Worst performing tokens:
+- REZ: -3.09%
+- ZRO: -1.81%
+- EDGE: -1.48%
+
+Currently open positions:
+FARTCOIN +1.72%
+HYPE -1.50%
+ETH -0.59%
+ZEC -0.64%
+FET -1.25%
+XRP +1.95%
+RVN +0.77%
+
+Strategy Notes:
+Thresholds appear acceptable based on 1 TP vs 1 SL hits and total PnL +50.28%.

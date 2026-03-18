@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 06:02 17 Mar
+Signals detected: 26
+
+🔥 Top opportunities:
+
+1️⃣ CFG
+   📈 Momentum: +52.4%
+   💰 Volume: $175.3M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Steady
+
+2️⃣ G
+   📈 Momentum: +47.6%
+   💰 Volume: $277.3M
+   ♻️ Persistence: 2 scans
+   🧭 Trend: Steady
+
+3️⃣ PEPE
+   📈 Momentum: +17.0%
+   💰 Volume: $1.1B
+   ♻️ Persistence: 1 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

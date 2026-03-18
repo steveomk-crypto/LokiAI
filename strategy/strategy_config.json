@@ -1,0 +1,7 @@
+{
+  "momentum_threshold": 4.0,
+  "persistence_requirement": 4,
+  "time_stop_hours": 3.5,
+  "stop_loss_pct": -4.0,
+  "last_optimized_trade_count": 0
+}

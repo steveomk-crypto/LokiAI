@@ -1,0 +1,20 @@
+🚨 Market Radar
+
+Strength detected in:
+
+1️⃣ SOL
+Momentum: +7.0%
+Volume spike: $6.3B
+Persistence: 5 scans
+
+2️⃣ CFG
+Momentum: +62.9%
+Volume spike: $169.2M
+Persistence: 3 scans
+
+3️⃣ XRP
+Momentum: +6.7%
+Volume spike: $3.7B
+Persistence: 5 scans
+
+Scanner runs every 2 minutes.

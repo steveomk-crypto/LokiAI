@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 17:02 18 Mar
+Signals detected: 74
+
+🔥 Top opportunities:
+
+1️⃣ ANKR
+   📈 Momentum: +31.1%
+   💰 Volume: $174.0M (deep)
+   ♻️ Persistence: 4 scans (sticky)
+   🧭 Trend: Steady
+
+2️⃣ BLY
+   📈 Momentum: +125.0%
+   💰 Volume: $159.7K (micro)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+3️⃣ ENJ
+   📈 Momentum: +55.9%
+   💰 Volume: $122.0M (deep)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

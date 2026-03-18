@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 20:20 17 Mar
+Signals detected: 90
+
+🔥 Top opportunities:
+
+1️⃣ ANIME
+   📈 Momentum: +29.2%
+   💰 Volume: $213.9M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ PAIN
+   📈 Momentum: +194.6%
+   💰 Volume: $369.6K
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ POLYX
+   📈 Momentum: +38.6%
+   💰 Volume: $85.1M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Fading
+
+Scanner runs every 60 seconds.

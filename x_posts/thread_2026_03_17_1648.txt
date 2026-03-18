@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 16:48 17 Mar.
+Breakdown #1: HYPER
+Momentum: +242.54%
+Volume spike: $8.0M
+Persistence: 4 scans
+Signal: Strengthening
+Breakdown #2: ZEC
+Momentum: +16.31%
+Volume spike: $636.6M
+Persistence: 3 scans
+Signal: Strengthening
+Breakdown #3: NEAR
+Momentum: +6.59%
+Volume spike: $328.6M
+Persistence: 5 scans
+Signal: Strengthening

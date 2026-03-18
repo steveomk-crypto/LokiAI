@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 09:18 17 Mar
+Signals detected: 36
+
+🔥 Top opportunities:
+
+1️⃣ BTC
+   📈 Momentum: +4.6%
+   💰 Volume: $60.4B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ DEGO
+   📈 Momentum: +41.9%
+   💰 Volume: $61.3M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+3️⃣ CFG
+   📈 Momentum: +40.1%
+   💰 Volume: $176.7M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

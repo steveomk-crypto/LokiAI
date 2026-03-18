@@ -1,0 +1,37 @@
+{
+  "coingecko": {
+    "day": "2026-03-18",
+    "count": 627,
+    "updated_at": "2026-03-18T11:36:52Z"
+  },
+  "binance": {
+    "day": "2026-03-18",
+    "count": 1212,
+    "updated_at": "2026-03-18T11:35:46Z"
+  },
+  "coinpaprika": {
+    "day": "2026-03-17",
+    "count": 4,
+    "updated_at": "2026-03-17T16:39:34Z"
+  },
+  "cryptocompare": {
+    "day": "2026-03-17",
+    "count": 3,
+    "updated_at": "2026-03-17T16:47:10Z"
+  },
+  "github": {
+    "day": "2026-03-17",
+    "count": 2,
+    "updated_at": "2026-03-17T16:53:45Z"
+  },
+  "wikipedia": {
+    "day": "2026-03-17",
+    "count": 1,
+    "updated_at": "2026-03-17T16:54:48Z"
+  },
+  "coindesk": {
+    "day": "2026-03-17",
+    "count": 1,
+    "updated_at": "2026-03-17T16:58:31Z"
+  }
+}

@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Measured risk-on flow
+Last scan: 13:55 18 Mar
+Signals detected: 122
+
+🔥 Top opportunities:
+
+1️⃣ STIBA
+   📈 Momentum: +227338.7%
+   💰 Volume: $4.1M (thin)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+2️⃣ ANKR
+   📈 Momentum: +40.8%
+   💰 Volume: $146.6M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+3️⃣ LIGHT
+   📈 Momentum: +22.4%
+   💰 Volume: $3.5M (thin)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

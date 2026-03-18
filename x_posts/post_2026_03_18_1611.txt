@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 16:11 18 Mar
+Signals detected: 122
+
+🔥 Top opportunities:
+
+1️⃣ POLYX
+   📈 Momentum: +16.7%
+   💰 Volume: $150.4M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ STIBA
+   📈 Momentum: +226898.1%
+   💰 Volume: $4.1M (thin)
+   ♻️ Persistence: 2 scans (building)
+   🧭 Trend: Isolated Spike
+
+3️⃣ ENJ
+   📈 Momentum: +41.3%
+   💰 Volume: $92.4M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+⚠️ Liquid leaders — momentum is stretched.
+
+Scanner runs every 60 seconds.

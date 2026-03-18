@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 08:43 18 Mar
+Signals detected: 51
+
+🔥 Top opportunities:
+
+1️⃣ ANKR
+   📈 Momentum: +31.2%
+   💰 Volume: $75.3M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ WTRX
+   📈 Momentum: +4.2%
+   💰 Volume: $60.4M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+3️⃣ STIBA
+   📈 Momentum: +39007.8%
+   💰 Volume: $582.9K (micro)
+   ♻️ Persistence: 2 scans (building)
+   🧭 Trend: Steady
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

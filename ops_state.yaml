@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "draft_only": true,
+  "channels": {
+    "market_radar": {
+      "enabled": true,
+      "mode": "draft",
+      "targets": [
+        "queue"
+      ],
+      "notes": "Keep generator producing packets, manual review downstream."
+    },
+    "x_autoposter": {
+      "enabled": false,
+      "mode": "manual",
+      "notes": "Flip enabled + mode=auto only after you re-approve autonomous posting."
+    },
+    "telegram_sender": {
+      "enabled": true,
+      "mode": "auto"
+    }
+  },
+  "queue": {
+    "packet_dir": "/data/.openclaw/workspace/queues/market_radar",
+    "retention_minutes": 120
+  },
+  "notes": "State file owned by you. Edit with caution."
+}

@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 07:27 17 Mar
+Signals detected: 34
+
+🔥 Top opportunities:
+
+1️⃣ ETH
+   📈 Momentum: +7.8%
+   💰 Volume: $38.6B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ G
+   📈 Momentum: +64.6%
+   💰 Volume: $315.0M
+   ♻️ Persistence: 3 scans
+   🧭 Trend: Steady
+
+3️⃣ UP
+   📈 Momentum: +48.5%
+   💰 Volume: $63.2M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

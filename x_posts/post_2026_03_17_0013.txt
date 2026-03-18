@@ -1,0 +1,20 @@
+🚨 Market Radar
+
+Strength detected in:
+
+1️⃣ XRP
+Momentum: +5.6%
+Volume spike: $3.7B
+Persistence: 5 scans
+
+2️⃣ DOGE
+Momentum: +5.5%
+Volume spike: $2.3B
+Persistence: 5 scans
+
+3️⃣ CFG
+Momentum: +61.6%
+Volume spike: $165.6M
+Persistence: 1 scans
+
+Scanner runs every 2 minutes.

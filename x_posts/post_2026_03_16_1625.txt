@@ -1,0 +1,20 @@
+🚨 Market Radar
+
+Strength detected in:
+
+1️⃣ UP
+Momentum: +40.0%
+Volume spike: $87.0M
+Persistence: 5 scans
+
+2️⃣ ETH
+Momentum: +6.9%
+Volume spike: $26.3B
+Persistence: 5 scans
+
+3️⃣ G
+Momentum: +41.4%
+Volume spike: $87.7M
+Persistence: 5 scans
+
+Scanner runs every 2 minutes.

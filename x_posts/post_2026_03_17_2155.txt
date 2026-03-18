@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 21:55 17 Mar
+Signals detected: 79
+
+🔥 Top opportunities:
+
+1️⃣ ASTER
+   📈 Momentum: +6.4%
+   💰 Volume: $287.7M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ PAIN
+   📈 Momentum: +196.6%
+   💰 Volume: $366.0K
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ POLYX
+   📈 Momentum: +44.8%
+   💰 Volume: $124.4M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

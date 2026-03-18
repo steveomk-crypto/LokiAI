@@ -1,0 +1,20 @@
+🚨 Market Radar
+
+Strength detected in:
+
+1️⃣ DOGE
+Momentum: +5.6%
+Volume spike: $2.0B
+Persistence: 4 scans
+
+2️⃣ G
+Momentum: +64.1%
+Volume spike: $270.8M
+Persistence: 2 scans
+
+3️⃣ TAO
+Momentum: +11.8%
+Volume spike: $594.9M
+Persistence: 5 scans
+
+Scanner runs every 2 minutes.

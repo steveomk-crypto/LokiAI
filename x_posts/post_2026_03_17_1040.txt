@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 10:40 17 Mar
+Signals detected: 238
+
+🔥 Top opportunities:
+
+1️⃣ GODS
+   📈 Momentum: +44.5%
+   💰 Volume: $429.2K
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ CLUDE
+   📈 Momentum: +78.3%
+   💰 Volume: $593.9K
+   ♻️ Persistence: 3 scans
+   🧭 Trend: Steady
+
+3️⃣ ETH
+   📈 Momentum: +8.4%
+   💰 Volume: $40.6B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

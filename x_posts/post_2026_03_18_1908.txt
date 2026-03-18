@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 19:08 18 Mar
+Signals detected: 81
+
+🔥 Top opportunities:
+
+1️⃣ ENJ
+   📈 Momentum: +44.0%
+   💰 Volume: $144.9M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ STIBA
+   📈 Momentum: +224527.8%
+   💰 Volume: $4.0M (thin)
+   ♻️ Persistence: 1 scans (fresh)
+   🧭 Trend: Steady
+
+3️⃣ AKT
+   📈 Momentum: +13.1%
+   💰 Volume: $69.5M (deep)
+   ♻️ Persistence: 4 scans (sticky)
+   🧭 Trend: Steady
+
+⚠️ Liquid leaders — momentum is stretched.
+
+Scanner runs every 60 seconds.

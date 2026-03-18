@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 07:39 17 Mar
+Signals detected: 34
+
+🔥 Top opportunities:
+
+1️⃣ SOL
+   📈 Momentum: +4.5%
+   💰 Volume: $6.5B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ DEGO
+   📈 Momentum: +35.1%
+   💰 Volume: $52.3M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+3️⃣ FARTCOIN
+   📈 Momentum: +23.2%
+   💰 Volume: $81.3M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

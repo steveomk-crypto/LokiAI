@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Measured risk-on flow
+Last scan: 15:06 18 Mar
+Signals detected: 77
+
+🔥 Top opportunities:
+
+1️⃣ ENJ
+   📈 Momentum: +26.1%
+   💰 Volume: $62.0M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+2️⃣ VANRY
+   📈 Momentum: +18.0%
+   💰 Volume: $66.0M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Fading
+
+3️⃣ AKT
+   📈 Momentum: +14.5%
+   💰 Volume: $38.7M (liquid)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Fading
+
+⚠️ Liquid leaders — momentum is stretched.
+
+Scanner runs every 60 seconds.

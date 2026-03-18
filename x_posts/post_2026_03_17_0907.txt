@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 09:07 17 Mar
+Signals detected: 22
+
+🔥 Top opportunities:
+
+1️⃣ ETH
+   📈 Momentum: +8.4%
+   💰 Volume: $40.5B
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Steady
+
+2️⃣ FARTCOIN
+   📈 Momentum: +26.2%
+   💰 Volume: $96.6M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ CFG
+   📈 Momentum: +43.2%
+   💰 Volume: $181.7M
+   ♻️ Persistence: 1 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

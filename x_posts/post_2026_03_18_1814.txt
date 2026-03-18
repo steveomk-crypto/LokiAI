@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Measured risk-on flow
+Last scan: 18:14 18 Mar
+Signals detected: 50
+
+🔥 Top opportunities:
+
+1️⃣ INCOME
+   📈 Momentum: +91.9%
+   💰 Volume: $1.6M (micro)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ ZEC
+   📈 Momentum: +4.2%
+   💰 Volume: $553.2M (deep)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+3️⃣ CLUDE
+   📈 Momentum: +11.4%
+   💰 Volume: $266.2K (micro)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+⚠️ Mostly micro caps — size down.
+
+Scanner runs every 60 seconds.

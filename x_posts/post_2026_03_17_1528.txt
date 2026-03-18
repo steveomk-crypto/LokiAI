@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 15:28 17 Mar
+Signals detected: 146
+
+🔥 Top opportunities:
+
+1️⃣ THINK 
+   📈 Momentum: +210.6%
+   💰 Volume: $215.9K
+   ♻️ Persistence: 3 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ ZEC
+   📈 Momentum: +14.2%
+   💰 Volume: $644.4M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ PAIN
+   📈 Momentum: +193.0%
+   💰 Volume: $373.1K
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

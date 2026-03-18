@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 18:08 18 Mar
+Signals detected: 62
+
+🔥 Top opportunities:
+
+1️⃣ INCOME
+   📈 Momentum: +79.1%
+   💰 Volume: $1.5M (micro)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ AKT
+   📈 Momentum: +18.6%
+   💰 Volume: $57.6M (deep)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+3️⃣ AUCTION
+   📈 Momentum: +6.1%
+   💰 Volume: $44.6M (liquid)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Steady
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

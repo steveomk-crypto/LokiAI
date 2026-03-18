@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 08:06 17 Mar
+Signals detected: 15
+
+🔥 Top opportunities:
+
+1️⃣ DOGE
+   📈 Momentum: +5.4%
+   💰 Volume: $2.5B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ DEGO
+   📈 Momentum: +36.5%
+   💰 Volume: $53.8M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ CFG
+   📈 Momentum: +50.4%
+   💰 Volume: $182.7M
+   ♻️ Persistence: 1 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

@@ -1,0 +1,20 @@
+[
+  {
+    "tweet_id": "2033411761362354562",
+    "timestamp": "2026-03-16T05:15:17Z",
+    "post_file": "/data/.openclaw/workspace/x_posts/post_2026_03_16_1236.txt",
+    "text_preview": "\ud83d\udea8 Market Radar\n\nStrength detected in:\n\n1\ufe0f\u20e3 ETH\nMomentum: +7.3%\nVolume spike: $20.3B\nPersistence: 5 s"
+  },
+  {
+    "tweet_id": "2034011160333455462",
+    "timestamp": "2026-03-17T20:57:22Z",
+    "post_file": "manual-test",
+    "text_preview": "Test ping \u2014 wiring check. SIREN +63.3% | $42.8M vol (steady). PAIN +169.8% | $365K vol (accelerating). AA +150.3% | $235"
+  },
+  {
+    "tweet_id": "2034021080617390523",
+    "timestamp": "2026-03-17T21:36:38Z",
+    "post_file": "manual-draft",
+    "text_preview": "Radar: high-beta rotation. SIREN +63% | $42.8M (liquid, sticky). PAIN +170% | $365K (micro, sticky). AA +150% | $235K (m"
+  }
+]

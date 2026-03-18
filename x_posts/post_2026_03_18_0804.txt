@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Measured risk-on flow
+Last scan: 08:04 18 Mar
+Signals detected: 61
+
+🔥 Top opportunities:
+
+1️⃣ F
+   📈 Momentum: +6.8%
+   💰 Volume: $66.8M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ LIT
+   📈 Momentum: +11.7%
+   💰 Volume: $49.5M (liquid)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+3️⃣ HUMA
+   📈 Momentum: +8.3%
+   💰 Volume: $52.5M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+⚠️ Liquid leaders — momentum is stretched.
+
+Scanner runs every 60 seconds.

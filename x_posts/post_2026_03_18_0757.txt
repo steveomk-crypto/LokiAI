@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 07:57 18 Mar
+Signals detected: 64
+
+🔥 Top opportunities:
+
+1️⃣ STIBA
+   📈 Momentum: +66524.1%
+   💰 Volume: $950.7K (micro)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+2️⃣ ANIME
+   📈 Momentum: +15.9%
+   💰 Volume: $226.4M (deep)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+3️⃣ HYPER
+   📈 Momentum: +14.8%
+   💰 Volume: $101.4M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

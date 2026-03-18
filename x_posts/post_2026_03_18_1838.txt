@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 18:38 18 Mar
+Signals detected: 63
+
+🔥 Top opportunities:
+
+1️⃣ STIBA
+   📈 Momentum: +226379.1%
+   💰 Volume: $4.1M (thin)
+   ♻️ Persistence: 2 scans (building)
+   🧭 Trend: Steady
+
+2️⃣ AKT
+   📈 Momentum: +19.1%
+   💰 Volume: $68.3M (deep)
+   ♻️ Persistence: 2 scans (building)
+   🧭 Trend: Steady
+
+3️⃣ VANRY
+   📈 Momentum: +10.4%
+   💰 Volume: $50.2M (deep)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+⚠️ Liquid leaders — momentum is stretched.
+
+Scanner runs every 60 seconds.

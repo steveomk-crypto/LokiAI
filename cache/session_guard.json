@@ -1,0 +1,11 @@
+{
+  "session_start": "2026-03-18T00:00:00Z",
+  "kill_switch": false,
+  "cooldown_runs": 0,
+  "net_pnl": -0.9202,
+  "realized_pnl": 0.956,
+  "unrealized_pnl": -1.8762,
+  "current_heat": 100.0,
+  "threshold": -15.6,
+  "mode": "baseline"
+}

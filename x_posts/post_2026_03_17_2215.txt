@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 22:15 17 Mar
+Signals detected: 82
+
+🔥 Top opportunities:
+
+1️⃣ GODS
+   📈 Momentum: +44.5%
+   💰 Volume: $9.4M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ SHAPE
+   📈 Momentum: +35.0%
+   💰 Volume: $598.7K
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ ZEC
+   📈 Momentum: +15.8%
+   💰 Volume: $728.9M
+   ♻️ Persistence: 3 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

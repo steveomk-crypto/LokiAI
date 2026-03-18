@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 06:00 17 Mar
+Signals detected: 28
+
+🔥 Top opportunities:
+
+1️⃣ ADA
+   📈 Momentum: +8.0%
+   💰 Volume: $1.1B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ CFG
+   📈 Momentum: +54.3%
+   💰 Volume: $159.2M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Steady
+
+3️⃣ LINK
+   📈 Momentum: +7.3%
+   💰 Volume: $788.9M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

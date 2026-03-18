@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 11:43 17 Mar.
+Breakdown #1: NEAR
+Momentum: +4.01%
+Volume spike: $335.8M
+Persistence: 1 scans
+Signal: New
+Breakdown #2: HYPER
+Momentum: +242.54%
+Volume spike: $4.3M
+Persistence: 1 scans
+Signal: New
+Breakdown #3: DONKEY
+Momentum: +10.32%
+Volume spike: $574.8K
+Persistence: 5 scans
+Signal: Strengthening

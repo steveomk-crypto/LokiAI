@@ -1,0 +1,21 @@
+{
+  "cycle_count": 204,
+  "metrics": {
+    "open_positions": 1,
+    "closed_total": 9,
+    "win_rate": 33.33333333333333,
+    "realized_pnl_usd": -5.44393,
+    "unrealized_pnl_usd": -1.8762
+  },
+  "trade_count": 9,
+  "open_tokens": [
+    "ATH"
+  ],
+  "top_movers": [
+    "STIBA",
+    "ENJ",
+    "KAS"
+  ],
+  "alert_count": 8,
+  "last_success_ts": "2026-03-18T11:35:47.500104Z"
+}

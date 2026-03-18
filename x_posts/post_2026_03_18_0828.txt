@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 08:28 18 Mar
+Signals detected: 66
+
+🔥 Top opportunities:
+
+1️⃣ TRX
+   📈 Momentum: +4.3%
+   💰 Volume: $623.0M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ STIBA
+   📈 Momentum: +39040.9%
+   💰 Volume: $581.2K (micro)
+   ♻️ Persistence: 2 scans (building)
+   🧭 Trend: Steady
+
+3️⃣ MBOX
+   📈 Momentum: +11.9%
+   💰 Volume: $25.0M (liquid)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

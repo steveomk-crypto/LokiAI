@@ -1,0 +1,39 @@
+{
+  "type": "standard",
+  "title": "Swing trading",
+  "displaytitle": "<span class=\"mw-page-title-main\">Swing trading</span>",
+  "namespace": {
+    "id": 0,
+    "text": ""
+  },
+  "wikibase_item": "Q1439154",
+  "titles": {
+    "canonical": "Swing_trading",
+    "normalized": "Swing trading",
+    "display": "<span class=\"mw-page-title-main\">Swing trading</span>"
+  },
+  "pageid": 1537118,
+  "lang": "en",
+  "dir": "ltr",
+  "revision": "1338251892",
+  "tid": "ec2d17e1-0944-11f1-a359-02842fc3b65a",
+  "timestamp": "2026-02-14T01:31:45Z",
+  "description": "Speculative trading strategy",
+  "description_source": "local",
+  "content_urls": {
+    "desktop": {
+      "page": "https://en.wikipedia.org/wiki/Swing_trading",
+      "revisions": "https://en.wikipedia.org/wiki/Swing_trading?action=history",
+      "edit": "https://en.wikipedia.org/wiki/Swing_trading?action=edit",
+      "talk": "https://en.wikipedia.org/wiki/Talk:Swing_trading"
+    },
+    "mobile": {
+      "page": "https://en.wikipedia.org/wiki/Swing_trading",
+      "revisions": "https://en.wikipedia.org/wiki/Special:History/Swing_trading",
+      "edit": "https://en.wikipedia.org/wiki/Swing_trading?action=edit",
+      "talk": "https://en.wikipedia.org/wiki/Talk:Swing_trading"
+    }
+  },
+  "extract": "Swing trading is a speculative trading strategy in financial markets where a tradable asset is held for one or more days in an effort to profit from price changes or swings. A swing trading position is typically held longer than a day trading position, but shorter than buy-and-hold investment strategies that can be held for months or years. Profits can be sought by either buying an asset or short selling. Momentum signals have been shown to be used by financial analysts in their buy and sell recommendations that can be applied in swing trading.",
+  "extract_html": "<p><b>Swing trading</b> is a speculative trading strategy in financial markets where a tradable asset is held for one or more days in an effort to profit from price changes or <i>swings</i>. A swing trading position is typically held longer than a day trading position, but shorter than buy-and-hold investment strategies that can be held for months or years. Profits can be sought by either buying an asset or short selling. Momentum signals have been shown to be used by financial analysts in their buy and sell recommendations that can be applied in swing trading.</p>"
+}

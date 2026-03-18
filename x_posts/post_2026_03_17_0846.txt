@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 08:46 17 Mar
+Signals detected: 21
+
+🔥 Top opportunities:
+
+1️⃣ FARTCOIN
+   📈 Momentum: +25.4%
+   💰 Volume: $94.0M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ DOGE
+   📈 Momentum: +5.6%
+   💰 Volume: $2.5B
+   ♻️ Persistence: 1 scans
+   🧭 Trend: Steady
+
+3️⃣ DOT
+   📈 Momentum: +13.1%
+   💰 Volume: $387.8M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

@@ -1,0 +1,28 @@
+📊 Market Radar
+Regime: Momentum squeeze in liquid names
+Last scan: 07:54 18 Mar
+Signals detected: 55
+
+🔥 Top opportunities:
+
+1️⃣ VANRY
+   📈 Momentum: +23.9%
+   💰 Volume: $58.1M (deep)
+   ♻️ Persistence: 5 scans (sticky)
+   🧭 Trend: Isolated Spike
+
+2️⃣ ANOME
+   📈 Momentum: +57.3%
+   💰 Volume: $1.6M (micro)
+   ♻️ Persistence: 3 scans (building)
+   🧭 Trend: Steady
+
+3️⃣ ANIME
+   📈 Momentum: +16.2%
+   💰 Volume: $226.4M (deep)
+   ♻️ Persistence: 1 scans (fresh)
+   🧭 Trend: Steady
+
+⚠️ Mixed liquidity — pick spots.
+
+Scanner runs every 60 seconds.

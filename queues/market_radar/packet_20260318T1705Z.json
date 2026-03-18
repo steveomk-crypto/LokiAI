@@ -1,0 +1,119 @@
+{
+  "packet_id": "market_radar::20260318T1705Z",
+  "created_at": "2026-03-18T09:05:49Z",
+  "source_task": "market_broadcaster",
+  "status": "draft",
+  "expires_at": "2026-03-18T11:05:49Z",
+  "channels": [
+    "market_radar",
+    "telegram_sender"
+  ],
+  "channel_snapshot": {
+    "market_radar": {
+      "enabled": true,
+      "mode": "draft",
+      "targets": [
+        "queue"
+      ],
+      "notes": "Keep generator producing packets, manual review downstream."
+    },
+    "x_autoposter": {
+      "enabled": false,
+      "mode": "manual",
+      "last_change": null,
+      "notes": "Flip enabled + mode=auto only after you re-approve autonomous posting."
+    },
+    "telegram_sender": {
+      "enabled": true,
+      "mode": "auto"
+    }
+  },
+  "assets": {
+    "headline": "\ud83d\udcca Market Radar\nRegime: Momentum squeeze in liquid names\nLast scan: 17:05 18 Mar\nSignals detected: 99\n\n\ud83d\udd25 Top opportunities:\n\n1\ufe0f\u20e3 ENJ\n   \ud83d\udcc8 Momentum: +58.3%\n   \ud83d\udcb0 Volume: $125.2M (deep)\n   \u267b\ufe0f Persistence: 4 scans (sticky)\n   \ud83e\udded Trend: Steady\n\n2\ufe0f\u20e3 W\n   \ud83d\udcc8 Momentum: +10.4%\n   \ud83d\udcb0 Volume: $72.1M (deep)\n   \u267b\ufe0f Persistence: 5 scans (sticky)\n   \ud83e\udded Trend: Isolated Spike\n\n3\ufe0f\u20e3 STIBA\n   \ud83d\udcc8 Momentum: +226052.8%\n   \ud83d\udcb0 Volume: $4.1M (thin)\n   \u267b\ufe0f Persistence: 1 scans (fresh)\n   \ud83e\udded Trend: Steady\n\n\u26a0\ufe0f Liquid leaders \u2014 momentum is stretched.\n\nScanner runs every 60 seconds.",
+    "thread": [
+      "Market radar update. Latest scan: 17:05 18 Mar.",
+      "Breakdown #1: ENJ\nMomentum: +58.27%\nVolume spike: $125.2M\nPersistence: 4 scans\nSignal: Strengthening",
+      "Breakdown #2: W\nMomentum: +10.38%\nVolume spike: $72.1M\nPersistence: 5 scans\nSignal: Strengthening",
+      "Breakdown #3: STIBA\nMomentum: +226052.77%\nVolume spike: $4.1M\nPersistence: 1 scans\nSignal: New"
+    ],
+    "raw_post_path": "/data/.openclaw/workspace/x_posts/post_2026_03_18_1705.txt",
+    "raw_thread_path": "/data/.openclaw/workspace/x_posts/thread_2026_03_18_1705.txt"
+  },
+  "signals": [
+    {
+      "timestamp": "2026-03-18T17:05",
+      "token": "ENJ",
+      "volume": 125215350.0,
+      "momentum": 58.2711,
+      "status": "strengthening",
+      "persistence": 4,
+      "liquidity_change_ratio": 1.016007,
+      "volume_acceleration_ratio": 0.003042,
+      "buy_pressure_proxy": 0.028386,
+      "liquidity_health": 0.507916,
+      "momentum_5m": null,
+      "momentum_15m": null,
+      "momentum_60m": null,
+      "momentum_alignment_score": 0.5,
+      "momentum_trend": "steady",
+      "momentum_score": 0.000258,
+      "volume_score": 1.0,
+      "persistence_score": 0.8,
+      "liquidity_score": 0.507916,
+      "alignment_score": 0.5,
+      "score": 0.561252
+    },
+    {
+      "timestamp": "2026-03-18T17:05",
+      "token": "W",
+      "volume": 72089358.0,
+      "momentum": 10.37795,
+      "status": "strengthening",
+      "persistence": 5,
+      "liquidity_change_ratio": 1.008579,
+      "volume_acceleration_ratio": 0.002552,
+      "buy_pressure_proxy": 0.015913,
+      "liquidity_health": 0.504485,
+      "momentum_5m": 0.38132,
+      "momentum_15m": null,
+      "momentum_60m": null,
+      "momentum_alignment_score": 0.338132,
+      "momentum_trend": "isolated spike",
+      "momentum_score": 4.6e-05,
+      "volume_score": 0.575723,
+      "persistence_score": 1.0,
+      "liquidity_score": 0.504485,
+      "alignment_score": 0.338132,
+      "score": 0.470335
+    },
+    {
+      "timestamp": "2026-03-18T17:05",
+      "token": "STIBA",
+      "volume": 4067001.276047,
+      "momentum": 226052.77,
+      "status": "new",
+      "persistence": 1,
+      "liquidity_change_ratio": null,
+      "volume_acceleration_ratio": null,
+      "buy_pressure_proxy": null,
+      "liquidity_health": 0.5,
+      "momentum_5m": null,
+      "momentum_15m": null,
+      "momentum_60m": null,
+      "momentum_alignment_score": 0.5,
+      "momentum_trend": "steady",
+      "momentum_score": 1.0,
+      "volume_score": 0.03248,
+      "persistence_score": 0.2,
+      "liquidity_score": 0.5,
+      "alignment_score": 0.5,
+      "score": 0.44812
+    }
+  ],
+  "meta": {
+    "total_signals": 99,
+    "top_ranked_count": 3,
+    "scan_timestamp": "2026-03-18T17:05",
+    "regime": "Momentum squeeze in liquid names"
+  }
+}

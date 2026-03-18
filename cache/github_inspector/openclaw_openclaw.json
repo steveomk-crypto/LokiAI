@@ -1,0 +1,20 @@
+{
+  "repo": "openclaw/openclaw",
+  "fetched_at": "2026-03-17T16:53:45Z",
+  "meta": {
+    "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. \ud83e\udd9e ",
+    "stars": 319784,
+    "forks": 61402,
+    "open_issues": 14314,
+    "default_branch": "main",
+    "pushed_at": "2026-03-17T16:51:46Z"
+  },
+  "top_issues": [
+    {
+      "number": 49146,
+      "title": "Bug: LCM/lossless recall misses stored facts; possible hardcoded GPT model path",
+      "user": "lleong8",
+      "url": "https://github.com/openclaw/openclaw/issues/49146"
+    }
+  ]
+}

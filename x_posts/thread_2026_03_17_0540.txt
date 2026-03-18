@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 05:40 17 Mar.
+Breakdown #1: BTC
+Momentum: +3.37%
+Volume spike: $58.1B
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #2: CFG
+Momentum: +55.49%
+Volume spike: $177.3M
+Persistence: 4 scans
+Signal: Strengthening
+Breakdown #3: ETH
+Momentum: +10.42%
+Volume spike: $40.5B
+Persistence: 5 scans
+Signal: Strengthening

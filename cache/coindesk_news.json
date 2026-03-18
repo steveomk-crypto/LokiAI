@@ -1,0 +1,37 @@
+{
+  "source": "CoinDesk RSS",
+  "fetched_at": "2026-03-17T16:58:31Z",
+  "count": 5,
+  "articles": [
+    {
+      "title": "Facing a crisis, Bitcoin treasury companies need to pivot to survive",
+      "link": "https://www.coindesk.com/opinion/2026/03/17/facing-a-crisis-bitcoin-treasury-companies-need-to-pivot-to-survive",
+      "pubDate": "Tue, 17 Mar 2026 16:30:00 +0000",
+      "description": "Here, Wellener offers tactics that firms must use to prove they\u2019re more than just a crypto play."
+    },
+    {
+      "title": "Strategy\u2019s latest massive bitcoin purchase offers insight into its evolving funding model",
+      "link": "https://www.coindesk.com/markets/2026/03/17/strategy-s-massive-bitcoin-purchase-offers-insight-into-its-evolving-funding-model",
+      "pubDate": "Tue, 17 Mar 2026 15:44:01 +0000",
+      "description": "A $1.18 billion preferred stock raise, roughly equivalent to 16,800 BTC, signals a shift away from common stock as dividend obligations top $1 billion."
+    },
+    {
+      "title": "Popular Solana wallet Phantom wins CFTC nod to access regulated derivatives markets",
+      "link": "https://www.coindesk.com/policy/2026/03/17/phantom-wins-cftc-no-action-relief-clearing-path-for-crypto-wallet-access-to-regulated-derivatives-markets",
+      "pubDate": "Tue, 17 Mar 2026 15:06:21 +0000",
+      "description": "This means Phantom can act as a non-custodial interface connecting users to registered derivatives platforms, removing the need for broker registration under specific conditions."
+    },
+    {
+      "title": "Sam Altman's World teams up with Coinbase to prove there is a real person behind every AI transaction",
+      "link": "https://www.coindesk.com/tech/2026/03/17/sam-altman-s-world-teams-up-with-coinbase-to-prove-there-is-a-real-person-behind-every-ai-transaction",
+      "pubDate": "Tue, 17 Mar 2026 15:00:00 +0000",
+      "description": "World said some estimates suggest agentic commerce could reach $3 trillion to $5 trillion by 2030, with agents accounting for up to 25% of U.S. e-commerce."
+    },
+    {
+      "title": "Vietnam pushes local crypto exchanges as Hanoi moves to block offshore trading: Reuters",
+      "link": "https://www.coindesk.com/policy/2026/03/17/vietnam-pushes-local-crypto-exchanges-as-hanoi-moves-to-block-offshore-trading-reuters",
+      "pubDate": "Tue, 17 Mar 2026 14:45:13 +0000",
+      "description": "The move aims to regulate the country's growing crypto market and restrict trading on foreign platforms."
+    }
+  ]
+}

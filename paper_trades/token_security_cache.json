@@ -1,0 +1,148 @@
+{
+  "solana": {
+    "token": "SOL",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773615757.637156
+  },
+  "unitas": {
+    "token": "UP",
+    "safe": true,
+    "reason": "ok",
+    "checked_at": 1773615757.910746,
+    "contract": {
+      "chain_id": "1",
+      "address": "0x00007ac313f4f4c1ad809e8a4ca42bc613aa0000"
+    }
+  },
+  "renzo": {
+    "token": "REZ",
+    "safe": true,
+    "reason": "ok",
+    "checked_at": 1773615758.349444,
+    "contract": {
+      "chain_id": "1",
+      "address": "0x3b50805453023a91a8bf641e279401a0b23fa6f9"
+    }
+  },
+  "pepe": {
+    "token": "PEPE",
+    "safe": false,
+    "reason": "blacklist",
+    "checked_at": 1773615758.722327,
+    "contract": {
+      "chain_id": "1",
+      "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+    }
+  },
+  "ethereum": {
+    "token": "ETH",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773654824.364225
+  },
+  "g-token": {
+    "token": "G",
+    "safe": true,
+    "reason": "ok",
+    "checked_at": 1773654824.62967,
+    "contract": {
+      "chain_id": "1",
+      "address": "0x9c7beba8f6ef6643abd725e45a4e8387ef260649"
+    }
+  },
+  "fetch-ai": {
+    "token": "FET",
+    "safe": false,
+    "reason": "transfer_pause",
+    "checked_at": 1773654825.126481,
+    "contract": {
+      "chain_id": "1",
+      "address": "0xaea46a60368a7bd060eec7df8cba43b7ef41ad85"
+    }
+  },
+  "centrifuge-2": {
+    "token": "CFG",
+    "safe": true,
+    "reason": "ok",
+    "checked_at": 1773654912.253589,
+    "contract": {
+      "chain_id": "1",
+      "address": "0xcccccccccc33d538dbc2ee4feab0a7a1ff4e8a94"
+    }
+  },
+  "eigenlayer": {
+    "token": "EIGEN",
+    "safe": false,
+    "reason": "proxy_contract",
+    "checked_at": 1773655044.226487,
+    "contract": {
+      "chain_id": "1",
+      "address": "0xec53bf9167f50cdeb3ae105f56099aaab9061f83"
+    }
+  },
+  "sonic-3": {
+    "token": "S",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655044.621116
+  },
+  "ripple": {
+    "token": "XRP",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655213.209913
+  },
+  "cardano": {
+    "token": "ADA",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655213.547705
+  },
+  "filecoin": {
+    "token": "FIL",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655213.84737
+  },
+  "plasma": {
+    "token": "XPL",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655512.463886
+  },
+  "world-mobile-token": {
+    "token": "WMTX",
+    "safe": true,
+    "reason": "ok",
+    "checked_at": 1773655512.810847,
+    "contract": {
+      "chain_id": "1",
+      "address": "0xdbb5cf12408a3ac17d668037ce289f9ea75439d7"
+    }
+  },
+  "pump-fun": {
+    "token": "PUMP",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655513.27175
+  },
+  "bitcoin": {
+    "token": "BTC",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655814.062225
+  },
+  "definitive": {
+    "token": "EDGE",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773655814.403229
+  },
+  "zcash": {
+    "token": "ZEC",
+    "safe": true,
+    "reason": "no_contract_data",
+    "checked_at": 1773657146.06608
+  }
+}

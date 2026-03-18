@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 05:45 17 Mar.
+Breakdown #1: BTC
+Momentum: +3.26%
+Volume spike: $57.4B
+Persistence: 4 scans
+Signal: Strengthening
+Breakdown #2: ETH
+Momentum: +10.37%
+Volume spike: $39.2B
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #3: ZEC
+Momentum: +23.01%
+Volume spike: $629.6M
+Persistence: 5 scans
+Signal: Strengthening

@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 13:35 17 Mar
+Signals detected: 92
+
+🔥 Top opportunities:
+
+1️⃣ FET
+   📈 Momentum: +15.7%
+   💰 Volume: $351.7M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ ANIME
+   📈 Momentum: +44.2%
+   💰 Volume: $145.1M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ PAIN
+   📈 Momentum: +192.2%
+   💰 Volume: $374.8K
+   ♻️ Persistence: 2 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 13:01 17 Mar
+Signals detected: 95
+
+🔥 Top opportunities:
+
+1️⃣ HYPER
+   📈 Momentum: +242.5%
+   💰 Volume: $4.6M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ ZEC
+   📈 Momentum: +12.9%
+   💰 Volume: $686.1M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+3️⃣ FET
+   📈 Momentum: +15.4%
+   💰 Volume: $352.8M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

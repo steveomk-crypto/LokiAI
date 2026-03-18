@@ -1,0 +1,475 @@
+NiceGUI ready to go on http://localhost:8500, and http://172.18.0.2:8500
+Found top level layout element "Header" inside element "RefreshableContainer". Top level layout elements can not be nested but must be direct children of the page content.
+  + Exception Group Traceback (most recent call last):
+  |   File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 81, in collapse_excgroups
+  |     yield
+  |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 192, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "/data/.local/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |                                    ~~~~~~~~~~~~~~~~~~^^
+    |   File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |                                    ~~~~~~~~~~~~~~~~~~^^
+    |   File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 13, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 29, in __call__
+    |     await responder(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 46, in __call__
+    |     await self.app(scope, receive, self.send_with_compression)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 130, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 116, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 670, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 324, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 163, in decorated
+    |     return create_500_error_page(e, request)
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 130, in create_500_error_page
+    |     raise e
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 161, in decorated
+    |     result = func(*dec_args, **dec_kwargs)
+    |   File "/data/.openclaw/workspace/dashboard/main.py", line 320, in main_page
+    |     render_dashboard()
+    |     ~~~~~~~~~~~~~~~~^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 93, in __call__
+    |     return target.run(self.func)
+    |            ~~~~~~~~~~^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 51, in run
+    |     return func(*self.args, **self.kwargs)
+    |   File "/data/.openclaw/workspace/dashboard/main.py", line 246, in render_dashboard
+    |     with ui.header().classes('justify-between items-center'):
+    |          ~~~~~~~~~^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/defaults.py", line 65, in decorated
+    |     return original_func(*args, **kwargs)
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/elements/header.py", line 34, in __init__
+    |     require_top_level_layout(self)
+    |     ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/helpers.py", line 145, in require_top_level_layout
+    |     raise RuntimeError(
+    |     ...<2 lines>...
+    |     )
+    | RuntimeError: Found top level layout element "Header" inside element "RefreshableContainer". Top level layout elements can not be nested but must be direct children of the page content.
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 23, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 13, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 29, in __call__
+    await responder(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 46, in __call__
+    await self.app(scope, receive, self.send_with_compression)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/data/.local/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 670, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 324, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 163, in decorated
+    return create_500_error_page(e, request)
+  File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 130, in create_500_error_page
+    raise e
+  File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 161, in decorated
+    result = func(*dec_args, **dec_kwargs)
+  File "/data/.openclaw/workspace/dashboard/main.py", line 320, in main_page
+    render_dashboard()
+    ~~~~~~~~~~~~~~~~^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 93, in __call__
+    return target.run(self.func)
+           ~~~~~~~~~~^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 51, in run
+    return func(*self.args, **self.kwargs)
+  File "/data/.openclaw/workspace/dashboard/main.py", line 246, in render_dashboard
+    with ui.header().classes('justify-between items-center'):
+         ~~~~~~~~~^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/defaults.py", line 65, in decorated
+    return original_func(*args, **kwargs)
+  File "/data/.local/lib/python3.13/site-packages/nicegui/elements/header.py", line 34, in __init__
+    require_top_level_layout(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/helpers.py", line 145, in require_top_level_layout
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: Found top level layout element "Header" inside element "RefreshableContainer". Top level layout elements can not be nested but must be direct children of the page content.
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 81, in collapse_excgroups
+  |     yield
+  |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 192, in __call__
+  |     async with anyio.create_task_group() as task_group:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "/data/.local/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/data/.local/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    |     result = await app(  # type: ignore[func-returns-value]
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         self.scope, self.receive, self.send
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     )
+    |     ^
+    |   File "/data/.local/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    |     return await self.app(scope, receive, send)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/applications.py", line 1160, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |                                    ~~~~~~~~~~~~~~~~~~^^
+    |   File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 23, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    |     with recv_stream, send_stream, collapse_excgroups():
+    |                                    ~~~~~~~~~~~~~~~~~~^^
+    |   File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    |     self.gen.throw(value)
+    |     ~~~~~~~~~~~~~~^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 13, in dispatch
+    |     response = await call_next(request)
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    |     raise app_exc from app_exc.__cause__ or app_exc.__context__
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    |     await self.app(scope, receive_or_disconnect, send_no_error)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 29, in __call__
+    |     await responder(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 46, in __call__
+    |     await self.app(scope, receive, self.send_with_compression)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    |     await self.app(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    |     await route.handle(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    |     await self.app(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 130, in app
+    |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    |     raise exc
+    |   File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    |     await app(scope, receive, sender)
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 116, in app
+    |     response = await f(request)
+    |                ^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 670, in app
+    |     raw_response = await run_endpoint_function(
+    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     ...<3 lines>...
+    |     )
+    |     ^
+    |   File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 324, in run_endpoint_function
+    |     return await dependant.call(**values)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 163, in decorated
+    |     return create_500_error_page(e, request)
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 130, in create_500_error_page
+    |     raise e
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 161, in decorated
+    |     result = func(*dec_args, **dec_kwargs)
+    |   File "/data/.openclaw/workspace/dashboard/main.py", line 320, in main_page
+    |     render_dashboard()
+    |     ~~~~~~~~~~~~~~~~^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 93, in __call__
+    |     return target.run(self.func)
+    |            ~~~~~~~~~~^^^^^^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 51, in run
+    |     return func(*self.args, **self.kwargs)
+    |   File "/data/.openclaw/workspace/dashboard/main.py", line 246, in render_dashboard
+    |     with ui.header().classes('justify-between items-center'):
+    |          ~~~~~~~~~^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/defaults.py", line 65, in decorated
+    |     return original_func(*args, **kwargs)
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/elements/header.py", line 34, in __init__
+    |     require_top_level_layout(self)
+    |     ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+    |   File "/data/.local/lib/python3.13/site-packages/nicegui/helpers.py", line 145, in require_top_level_layout
+    |     raise RuntimeError(
+    |     ...<2 lines>...
+    |     )
+    | RuntimeError: Found top level layout element "Header" inside element "RefreshableContainer". Top level layout elements can not be nested but must be direct children of the page content.
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/data/.local/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/data/.local/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 23, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/middlewares.py", line 13, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 29, in __call__
+    await responder(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/gzip.py", line 46, in __call__
+    await self.app(scope, receive, self.send_with_compression)
+  File "/data/.local/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/data/.local/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/data/.local/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 670, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/data/.local/lib/python3.13/site-packages/fastapi/routing.py", line 324, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 163, in decorated
+    return create_500_error_page(e, request)
+  File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 130, in create_500_error_page
+    raise e
+  File "/data/.local/lib/python3.13/site-packages/nicegui/page.py", line 161, in decorated
+    result = func(*dec_args, **dec_kwargs)
+  File "/data/.openclaw/workspace/dashboard/main.py", line 320, in main_page
+    render_dashboard()
+    ~~~~~~~~~~~~~~~~^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 93, in __call__
+    return target.run(self.func)
+           ~~~~~~~~~~^^^^^^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/functions/refreshable.py", line 51, in run
+    return func(*self.args, **self.kwargs)
+  File "/data/.openclaw/workspace/dashboard/main.py", line 246, in render_dashboard
+    with ui.header().classes('justify-between items-center'):
+         ~~~~~~~~~^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/defaults.py", line 65, in decorated
+    return original_func(*args, **kwargs)
+  File "/data/.local/lib/python3.13/site-packages/nicegui/elements/header.py", line 34, in __init__
+    require_top_level_layout(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/data/.local/lib/python3.13/site-packages/nicegui/helpers.py", line 145, in require_top_level_layout
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: Found top level layout element "Header" inside element "RefreshableContainer". Top level layout elements can not be nested but must be direct children of the page content.

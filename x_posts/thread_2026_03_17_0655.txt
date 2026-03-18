@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 06:55 17 Mar.
+Breakdown #1: CFG
+Momentum: +54.37%
+Volume spike: $180.9M
+Persistence: 3 scans
+Signal: Strengthening
+Breakdown #2: DEGO
+Momentum: +33.59%
+Volume spike: $50.7M
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #3: ETH
+Momentum: +8.07%
+Volume spike: $39.5B
+Persistence: 1 scans
+Signal: New

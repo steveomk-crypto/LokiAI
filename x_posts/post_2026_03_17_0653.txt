@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 06:53 17 Mar
+Signals detected: 21
+
+🔥 Top opportunities:
+
+1️⃣ LINK
+   📈 Momentum: +5.6%
+   💰 Volume: $766.3M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ FET
+   📈 Momentum: +21.4%
+   💰 Volume: $343.1M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+3️⃣ DEGO
+   📈 Momentum: +32.7%
+   💰 Volume: $50.5M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

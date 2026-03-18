@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 06:52 17 Mar.
+Breakdown #1: DEGO
+Momentum: +31.91%
+Volume spike: $50.2M
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #2: FET
+Momentum: +21.41%
+Volume spike: $341.0M
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #3: SOL
+Momentum: +4.59%
+Volume spike: $6.8B
+Persistence: 1 scans
+Signal: New

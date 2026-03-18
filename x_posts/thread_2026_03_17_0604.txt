@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 06:04 17 Mar.
+Breakdown #1: G
+Momentum: +47.72%
+Volume spike: $277.6M
+Persistence: 4 scans
+Signal: Strengthening
+Breakdown #2: UP
+Momentum: +49.26%
+Volume spike: $65.2M
+Persistence: 3 scans
+Signal: Strengthening
+Breakdown #3: BTC
+Momentum: +3.14%
+Volume spike: $58.1B
+Persistence: 1 scans
+Signal: New

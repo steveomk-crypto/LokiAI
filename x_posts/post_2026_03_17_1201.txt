@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 12:01 17 Mar
+Signals detected: 137
+
+🔥 Top opportunities:
+
+1️⃣ XRP
+   📈 Momentum: +5.1%
+   💰 Volume: $4.9B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ HYPER
+   📈 Momentum: +242.5%
+   💰 Volume: $4.3M
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Steady
+
+3️⃣ PEAQ
+   📈 Momentum: +60.4%
+   💰 Volume: $4.5M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

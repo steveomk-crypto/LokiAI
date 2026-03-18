@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 08:35 17 Mar
+Signals detected: 48
+
+🔥 Top opportunities:
+
+1️⃣ CFG
+   📈 Momentum: +42.9%
+   💰 Volume: $178.9M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ XRP
+   📈 Momentum: +6.3%
+   💰 Volume: $4.7B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+3️⃣ ZEC
+   📈 Momentum: +22.6%
+   💰 Volume: $680.0M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

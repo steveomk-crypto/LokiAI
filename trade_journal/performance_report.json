@@ -1,0 +1,13 @@
+{
+  "win_rate": 0.0,
+  "average_gain": 0.0,
+  "average_loss": 0.0,
+  "max_drawdown": 0.0,
+  "best_signal_sources": [],
+  "worst_signal_sources": [],
+  "profitable_symbols": [],
+  "losing_symbols": [],
+  "winning_signals": [],
+  "losing_signals": [],
+  "duration_trends": []
+}

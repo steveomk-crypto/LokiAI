@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 10:42 17 Mar
+Signals detected: 208
+
+🔥 Top opportunities:
+
+1️⃣ CLUDE
+   📈 Momentum: +78.3%
+   💰 Volume: $593.9K
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+2️⃣ BTC
+   📈 Momentum: +4.1%
+   💰 Volume: $61.9B
+   ♻️ Persistence: 4 scans
+   🧭 Trend: Steady
+
+3️⃣ ETH
+   📈 Momentum: +8.4%
+   💰 Volume: $41.2B
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+Scanner runs every 60 seconds.

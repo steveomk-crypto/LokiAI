@@ -1,0 +1,30 @@
+Paper Trader Performance Report — 2026-03-17 21:25
+
+Metrics:
+- Total trades: 21
+- Win rate: 42.86%
+- Average win: +5.92%
+- Average loss: -5.03%
+- Total PnL: -2.03%
+- TP hits: 0
+- SL hits: 0
+
+Best performing tokens:
+- HYPER: +5.54%
+- F: +3.34%
+- CFG: +3.17%
+
+Worst performing tokens:
+- CPOOL: -14.48%
+- GUN: -4.64%
+- SIREN: -4.55%
+
+Currently open positions:
+ZEC -0.06%
+XPL +1.25%
+AWE -2.94%
+POLYX -1.55%
+AKT +0.00%
+
+Strategy Notes:
+Thresholds appear too loose based on 0 TP vs 0 SL hits and total PnL -2.03%.

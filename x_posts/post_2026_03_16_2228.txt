@@ -1,0 +1,20 @@
+🚨 Market Radar
+
+Strength detected in:
+
+1️⃣ SOL
+Momentum: +7.2%
+Volume spike: $5.6B
+Persistence: 5 scans
+
+2️⃣ G
+Momentum: +63.0%
+Volume spike: $149.4M
+Persistence: 3 scans
+
+3️⃣ EDGE
+Momentum: +40.0%
+Volume spike: $63.2M
+Persistence: 4 scans
+
+Scanner runs every 2 minutes.

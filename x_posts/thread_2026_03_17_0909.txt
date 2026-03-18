@@ -1,0 +1,16 @@
+Market radar update. Latest scan: 09:09 17 Mar.
+Breakdown #1: ETH
+Momentum: +8.64%
+Volume spike: $40.6B
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #2: FARTCOIN
+Momentum: +26.89%
+Volume spike: $96.8M
+Persistence: 5 scans
+Signal: Strengthening
+Breakdown #3: BTC
+Momentum: +4.04%
+Volume spike: $59.6B
+Persistence: 1 scans
+Signal: New

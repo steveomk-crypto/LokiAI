@@ -1,0 +1,23 @@
+{
+  "symbols": [
+    "BTC",
+    "ETH"
+  ],
+  "fetched_at": "2026-03-17T16:39:34Z",
+  "results": {
+    "BTC": {
+      "coin_id": "btc-bitcoin",
+      "price_usd": 74067.93218004132,
+      "volume_24h": 38296109370.83681,
+      "percent_change_24h": 0.54,
+      "market_cap": 1481594994372
+    },
+    "ETH": {
+      "coin_id": "eth-ethereum",
+      "price_usd": 2322.8152729957806,
+      "volume_24h": 23368899833.1048,
+      "percent_change_24h": 0.64,
+      "market_cap": 279728086075
+    }
+  }
+}

@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 20:30 17 Mar
+Signals detected: 92
+
+🔥 Top opportunities:
+
+1️⃣ POLYX
+   📈 Momentum: +39.2%
+   💰 Volume: $87.0M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Isolated Spike
+
+2️⃣ ZRO
+   📈 Momentum: +5.2%
+   💰 Volume: $83.1M
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+3️⃣ PEACE
+   📈 Momentum: +54.7%
+   💰 Volume: $615.2K
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Fading
+
+Scanner runs every 60 seconds.

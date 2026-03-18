@@ -1,0 +1,39 @@
+{
+  "mode": "baseline",
+  "computed_at": "2026-03-18T19:35",
+  "metrics": {
+    "avg_top_score": 0.4753416,
+    "high_quality_signals": 1,
+    "breadth_positive": 4,
+    "total_signals": 50
+  },
+  "top_opportunities": [
+    {
+      "token": "STIBA",
+      "score": 0.651676,
+      "momentum": 224787.3,
+      "volume": 4042939.863983,
+      "persistence": 5,
+      "status": "strengthening",
+      "trend": "isolated spike"
+    },
+    {
+      "token": "ENJ",
+      "score": 0.5609,
+      "momentum": 44.84124,
+      "volume": 150612541.0,
+      "persistence": 4,
+      "status": "strengthening",
+      "trend": "steady"
+    },
+    {
+      "token": "KAS",
+      "score": 0.418544,
+      "momentum": 10.50984,
+      "volume": 42652502.0,
+      "persistence": 5,
+      "status": "strengthening",
+      "trend": "steady"
+    }
+  ]
+}

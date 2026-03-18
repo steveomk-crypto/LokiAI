@@ -1,0 +1,35 @@
+Paper Trader Performance Report — 2026-03-17 05:10
+
+Metrics:
+- Total trades: 16
+- Win rate: 50.00%
+- Average win: +2.35%
+- Average loss: -1.04%
+- Total PnL: +10.42%
+- TP hits: 1
+- SL hits: 1
+
+Best performing tokens:
+- G: +7.77%
+- UP: +7.63%
+- ETH: +0.81%
+
+Worst performing tokens:
+- REZ: -3.09%
+- ZRO: -1.81%
+- S: -0.85%
+
+Currently open positions:
+G +1.90%
+CFG +1.85%
+FIL +5.55%
+UP +2.54%
+ZEC +2.38%
+FARTCOIN -0.70%
+BTC +0.39%
+ETH +0.35%
+DEGO +0.00%
+FET +0.00%
+
+Strategy Notes:
+Thresholds appear acceptable based on 1 TP vs 1 SL hits and total PnL +10.42%.

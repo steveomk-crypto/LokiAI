@@ -1,0 +1,25 @@
+📊 Market Radar
+Last scan: 11:43 17 Mar
+Signals detected: 119
+
+🔥 Top opportunities:
+
+1️⃣ NEAR
+   📈 Momentum: +4.0%
+   💰 Volume: $335.8M
+   ♻️ Persistence: 1 scans
+   🧭 Trend: Steady
+
+2️⃣ HYPER
+   📈 Momentum: +242.5%
+   💰 Volume: $4.3M
+   ♻️ Persistence: 1 scans
+   🧭 Trend: Steady
+
+3️⃣ DONKEY
+   📈 Momentum: +10.3%
+   💰 Volume: $574.8K
+   ♻️ Persistence: 5 scans
+   🧭 Trend: Steady
+
+Scanner runs every 60 seconds.

@@ -1,0 +1,30 @@
+Paper Trader Performance Report — 2026-03-18 08:13
+
+Metrics:
+- Total trades: 6
+- Win rate: 0.00%
+- Average win: +0.00%
+- Average loss: -2.19%
+- Total PnL: -10.95%
+- TP hits: 0
+- SL hits: 0
+
+Best performing tokens:
+None
+
+Worst performing tokens:
+- AKT: -2.54%
+- F: -2.13%
+- COTI: -2.10%
+
+Currently open positions:
+BTW +2.42%
+LIT +0.00%
+VANRY -0.34%
+SIREN -0.31%
+HUMA +0.49%
+ZETA +1.28%
+ANKR +2.06%
+
+Strategy Notes:
+Thresholds appear too loose based on 0 TP vs 0 SL hits and total PnL -10.95%.

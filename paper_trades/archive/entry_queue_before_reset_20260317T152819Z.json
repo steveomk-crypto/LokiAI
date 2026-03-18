@@ -1,0 +1,52 @@
+{
+  "BTC": {
+    "state": "ready",
+    "ready_time": "2026-03-17T03:07",
+    "last_timestamp": "2026-03-17T03:07",
+    "last_persistence": 4,
+    "last_trend": "steady"
+  },
+  "ETH": {
+    "state": "ready",
+    "ready_time": "2026-03-17T03:07",
+    "last_timestamp": "2026-03-17T03:07",
+    "last_persistence": 5,
+    "last_trend": "steady"
+  },
+  "UP": {
+    "state": "ready",
+    "ready_time": "2026-03-17T03:07",
+    "last_timestamp": "2026-03-17T03:07",
+    "last_persistence": 5,
+    "last_trend": "isolated spike"
+  },
+  "CFG": {
+    "state": "ready",
+    "ready_time": "2026-03-17T03:07",
+    "last_timestamp": "2026-03-17T03:07",
+    "last_persistence": 1,
+    "last_trend": "steady"
+  },
+  "last_entry_ts": {
+    "UP": "2026-03-17T08:51Z",
+    "RVN": "2026-03-17T10:45Z",
+    "G": "2026-03-17T12:46Z",
+    "ZEC": "2026-03-17T12:59Z",
+    "CFG": "2026-03-17T16:58Z",
+    "DEGO": "2026-03-17T13:05Z",
+    "XPL": "2026-03-17T13:20Z",
+    "F": "2026-03-17T13:30Z",
+    "ANIME": "2026-03-17T16:18Z",
+    "AWE": "2026-03-17T13:33Z",
+    "SIREN": "2026-03-17T15:07Z",
+    "HYPER": "2026-03-17T18:59Z",
+    "PEAQ": "2026-03-17T19:20Z",
+    "CPOOL": "2026-03-17T15:48Z",
+    "BTW": "2026-03-17T16:28Z",
+    "OGN": "2026-03-17T16:28Z",
+    "HUMA": "2026-03-17T18:29Z",
+    "POLYX": "2026-03-17T21:04Z",
+    "GUN": "2026-03-17T19:30Z",
+    "AKT": "2026-03-17T21:25Z"
+  }
+}
