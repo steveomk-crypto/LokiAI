@@ -1,0 +1,17 @@
+# Secrets
+secrets/*.env
+secrets/*.json
+secrets/*.key
+secrets/*.pem
+secrets/*.p12
+secrets/*.pfx
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local runtime state
+system_logs/*.pid
+
+# Optional local artifacts
+.dashboard_state/
