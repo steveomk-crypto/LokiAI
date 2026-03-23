@@ -1,0 +1,10 @@
+{
+  "status": "connected",
+  "connected": true,
+  "started_at": "2026-03-23T20:13:18+00:00",
+  "last_message_at": "2026-03-23T23:54:17+00:00",
+  "last_flush_at": "2026-03-23T23:54:17+00:00",
+  "tracked_products": 40,
+  "messages_received": 773367,
+  "reconnect_count": 0
+}

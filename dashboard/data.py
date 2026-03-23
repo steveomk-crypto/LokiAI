@@ -1,124 +1,287 @@
 import json
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any
 
-WORKDIR = Path('/data/.openclaw/workspace')
-PACKET_DIR = WORKDIR / 'queues' / 'market_radar'
-OPEN_POSITION_CANDIDATES = [
-    WORKDIR / 'paper_trades' / 'open_positions.json',
-    WORKDIR / 'sol_paper_trades' / 'open_positions.json',
-]
-TRADES_LOG_CANDIDATES = [
-    WORKDIR / 'paper_trades' / 'trades_log.json',
-    WORKDIR / 'sol_paper_trades' / 'trades_log.json',
-]
-ENTRY_EVENTS_CANDIDATES = [
-    WORKDIR / 'paper_trades' / 'entry_events.jsonl',
-]
+import requests
+
+WORKDIR = Path('/home/lokiai/.openclaw/workspace')
+CACHE_DIR = WORKDIR / 'cache'
+MARKET_LOG_DIR = WORKDIR / 'market_logs'
+COINBASE_WS_LOG_DIR = MARKET_LOG_DIR / 'coinbase_ws'
 SYSTEM_LOG_DIR = WORKDIR / 'system_logs'
-RUN_STATE_PATH = WORKDIR / 'run_state.json'
+
+MARKET_STATE_PATH = CACHE_DIR / 'market_state.json'
+COINBASE_WS_STATE_PATH = CACHE_DIR / 'coinbase_ws_state.json'
+COINBASE_PRODUCTS_PATH = CACHE_DIR / 'coinbase_products.json'
+COINBASE_TICKERS_PATH = CACHE_DIR / 'coinbase_tickers.json'
+BTC_CANDLES_CACHE_PATH = CACHE_DIR / 'btc_usd_candles_5m.json'
+OPEN_POSITIONS_PATH = WORKDIR / 'paper_trades' / 'open_positions.json'
 
 
-def _load_json(path: Path, default):
+def _load_json(path: Path, default: Any):
     try:
         return json.loads(path.read_text())
     except Exception:
         return default
 
 
-def _select_latest_path(candidates: List[Path]) -> Optional[Path]:
-    existing = [path for path in candidates if path.exists()]
-    if not existing:
+def _safe_iso_to_dt(value: str | None) -> datetime | None:
+    if not value:
         return None
-    return max(existing, key=lambda p: p.stat().st_mtime)
-
-
-def _path_meta(path: Optional[Path]) -> Tuple[Optional[str], Optional[str]]:
-    if not path:
-        return None, None
-    mtime = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
-    return str(path), mtime.isoformat()
-
-
-def load_run_baseline() -> Tuple[Optional[str], Optional[datetime]]:
-    if not RUN_STATE_PATH.exists():
-        return None, None
+    formatted = value[:-1] + '+00:00' if value.endswith('Z') else value
     try:
-        payload = json.loads(RUN_STATE_PATH.read_text())
-    except json.JSONDecodeError:
-        return None, None
-    baseline = payload.get('run_id')
-    if not baseline:
-        return None, None
-    value = baseline
-    if value.endswith('Z'):
-        value = value[:-1] + '+00:00'
-    try:
-        dt_obj = datetime.fromisoformat(value)
+        dt = datetime.fromisoformat(formatted)
     except ValueError:
-        return baseline, None
-    return baseline, dt_obj
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt
 
 
-def load_latest_packet() -> Dict:
-    packets = sorted(PACKET_DIR.glob('packet_*.json'))
-    if not packets:
-        return {}
-    return _load_json(packets[-1], {})
+def _iso_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
-def load_open_positions() -> Tuple[List[Dict], Optional[str], Optional[str]]:
-    path = _select_latest_path(OPEN_POSITION_CANDIDATES)
-    if not path:
-        return [], None, None
-    data = _load_json(path, [])
-    path_str, iso_mtime = _path_meta(path)
-    return data, path_str, iso_mtime
+def _file_meta(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {'exists': False, 'path': str(path), 'updated_at': None}
+    updated_at = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).isoformat()
+    return {'exists': True, 'path': str(path), 'updated_at': updated_at}
 
 
-def load_trades() -> Tuple[List[Dict], Optional[str], Optional[str]]:
-    path = _select_latest_path(TRADES_LOG_CANDIDATES)
-    if not path:
-        return [], None, None
-    trades = _load_json(path, [])
-    path_str, iso_mtime = _path_meta(path)
-    return trades, path_str, iso_mtime
-
-
-def load_entry_events(limit: int = 10) -> Tuple[List[Dict], Optional[str], Optional[str]]:
-    events: List[Dict] = []
-    path = _select_latest_path(ENTRY_EVENTS_CANDIDATES)
-    if not path or not path.exists():
-        return events, None, None
-    with path.open('r') as handle:
-        for line in handle.readlines()[-limit:]:
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    rows = []
+    with path.open('r', encoding='utf-8') as fh:
+        for line in fh:
             line = line.strip()
             if not line:
                 continue
             try:
-                events.append(json.loads(line))
+                rows.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
-    path_str, iso_mtime = _path_meta(path)
-    return list(reversed(events)), path_str, iso_mtime
+    return rows
 
 
-def load_loop_status() -> Dict:
-    logs = sorted(SYSTEM_LOG_DIR.glob('manual_loop_*.log'))
-    if not logs:
-        return {'status': 'idle', 'last_cycle': '–'}
-    latest = logs[-1]
-    tail = latest.read_text().splitlines()[-40:]
-    last_cycle = next((line for line in reversed(tail) if line.startswith('=== Cycle')), None)
-    completed = any('Manual loop completed' in line for line in tail)
-    status = 'idle' if completed else 'running'
-    if last_cycle and '@' in last_cycle:
-        last_cycle_time = last_cycle.split('@', 1)[1].split('===')[0].strip()
-    else:
-        last_cycle_time = '–'
+def _atomic_json_write(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + '.tmp')
+    tmp.write_text(json.dumps(payload, indent=2))
+    tmp.replace(path)
+
+
+def load_market_state() -> dict[str, Any]:
+    return _load_json(MARKET_STATE_PATH, {})
+
+
+def load_coinbase_ws_state() -> dict[str, Any]:
+    return _load_json(COINBASE_WS_STATE_PATH, {})
+
+
+def load_coinbase_products() -> list[dict[str, Any]]:
+    return _load_json(COINBASE_PRODUCTS_PATH, [])
+
+
+def load_coinbase_tickers() -> dict[str, dict[str, Any]]:
+    return _load_json(COINBASE_TICKERS_PATH, {})
+
+
+def load_product_candles(product_id: str, limit: int = 48) -> dict[str, Any]:
+    safe_name = product_id.lower().replace('-', '_')
+    cache_path = CACHE_DIR / f'{safe_name}_candles_5m.json'
+    url = f'https://api.exchange.coinbase.com/products/{product_id}/candles?granularity=300'
+    try:
+        response = requests.get(url, timeout=20)
+        response.raise_for_status()
+        rows = response.json()
+        candles = []
+        for row in sorted(rows, key=lambda x: x[0])[-limit:]:
+            ts, low, high, open_, close, volume = row
+            candles.append(
+                {
+                    'time': datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(),
+                    'open': open_,
+                    'high': high,
+                    'low': low,
+                    'close': close,
+                    'volume': volume,
+                }
+            )
+        payload = {'pair': product_id, 'granularity': 300, 'candles': candles}
+        _atomic_json_write(cache_path, payload)
+        return payload
+    except Exception:
+        return _load_json(cache_path, {'pair': product_id, 'granularity': 300, 'candles': []})
+
+
+def load_btc_candles(limit: int = 48) -> dict[str, Any]:
+    return load_product_candles('BTC-USD', limit=limit)
+
+
+def load_open_positions() -> list[dict[str, Any]]:
+    return _load_json(OPEN_POSITIONS_PATH, [])
+
+
+def load_latest_market_log_entries(limit: int = 500) -> list[dict[str, Any]]:
+    path = MARKET_LOG_DIR / f'{datetime.now().date().isoformat()}.jsonl'
+    rows = _read_jsonl(path)
+    return rows[-limit:]
+
+
+def load_coinbase_ws_snapshots(limit: int = 200) -> list[dict[str, Any]]:
+    path = COINBASE_WS_LOG_DIR / f'{datetime.now().date().isoformat()}.jsonl'
+    rows = _read_jsonl(path)
+    return rows[-limit:]
+
+
+def build_scanner_run_history(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in entries:
+        ts = row.get('timestamp')
+        if ts:
+            grouped[ts].append(row)
+
+    history = []
+    for ts, rows in sorted(grouped.items()):
+        top_score = max((float(r.get('score') or 0.0) for r in rows), default=0.0)
+        high_quality = sum(1 for r in rows if float(r.get('score') or 0.0) >= 0.30)
+        history.append(
+            {
+                'timestamp': ts,
+                'signal_count': len(rows),
+                'top_score': round(top_score, 6),
+                'high_quality_count': high_quality,
+            }
+        )
+    return history[-20:]
+
+
+def build_persistence_summary(entries: list[dict[str, Any]], min_repeats: int = 2) -> list[dict[str, Any]]:
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in entries:
+        token = row.get('token')
+        if token:
+            grouped[token].append(row)
+
+    summary = []
+    for token, rows in grouped.items():
+        if len(rows) < min_repeats:
+            continue
+        latest = rows[-1]
+        summary.append(
+            {
+                'token': token,
+                'repeat_count': len(rows),
+                'latest_persistence': latest.get('persistence', 0),
+                'latest_score': float(latest.get('score') or 0.0),
+                'latest_trend': latest.get('momentum_trend', '–'),
+                'latest_momentum': float(latest.get('momentum') or 0.0),
+            }
+        )
+    summary.sort(key=lambda x: (x['repeat_count'], x['latest_score']), reverse=True)
+    return summary[:15]
+
+
+def build_coinbase_live_movers(tickers: dict[str, dict[str, Any]], limit: int = 15) -> list[dict[str, Any]]:
+    rows = [row for row in tickers.values() if row.get('price') is not None]
+    rows.sort(key=lambda x: abs(float(x.get('drift_300s') or 0.0)), reverse=True)
+    return rows[:limit]
+
+
+def build_coinbase_universe_health(products: list[dict[str, Any]], tickers: dict[str, dict[str, Any]], ws_state: dict[str, Any]) -> dict[str, Any]:
+    ticker_rows = list(tickers.values())
+    active = sum(1 for row in ticker_rows if row.get('price') is not None)
+    stale = sum(1 for row in ticker_rows if (row.get('freshness_seconds') or 10**9) > 300)
+    freshest = sorted(
+        [row for row in ticker_rows if row.get('freshness_seconds') is not None],
+        key=lambda x: x.get('freshness_seconds', 10**9),
+    )[:5]
     return {
-        'status': status,
-        'last_cycle': last_cycle_time,
-        'log': latest.name,
+        'tracked_products': len(products),
+        'active_products': active,
+        'stale_products': stale,
+        'reconnect_count': ws_state.get('reconnect_count', 0),
+        'freshest_symbols': freshest,
+    }
+
+
+def build_status_flags(market_state: dict[str, Any], ws_state: dict[str, Any]) -> list[dict[str, str]]:
+    flags = []
+    market_dt = _safe_iso_to_dt(market_state.get('computed_at'))
+    ws_dt = _safe_iso_to_dt(ws_state.get('last_message_at'))
+    now = datetime.now(timezone.utc)
+
+    if market_dt and market_dt.tzinfo is None:
+        market_dt = market_dt.replace(tzinfo=timezone.utc)
+    if ws_dt and ws_dt.tzinfo is None:
+        ws_dt = ws_dt.replace(tzinfo=timezone.utc)
+
+    if not market_dt:
+        flags.append({'level': 'warning', 'message': 'Scanner state missing'})
+    else:
+        scanner_age = (datetime.now(timezone.utc).timestamp() - market_dt.timestamp())
+        if scanner_age > 3600:
+            flags.append({'level': 'warning', 'message': 'Scanner data stale'})
+
+    if not ws_state:
+        flags.append({'level': 'warning', 'message': 'Websocket state missing'})
+    elif not ws_state.get('connected'):
+        flags.append({'level': 'danger', 'message': 'Coinbase websocket disconnected'})
+    elif not ws_dt:
+        flags.append({'level': 'warning', 'message': 'Coinbase websocket data stale'})
+    else:
+        ws_age = (datetime.now(timezone.utc).timestamp() - ws_dt.timestamp())
+        if ws_age > 300:
+            flags.append({'level': 'warning', 'message': 'Coinbase websocket data stale'})
+
+    return flags
+
+
+def build_controls_placeholder() -> list[dict[str, str]]:
+    return [
+        {'group': 'scanner', 'label': 'Scanner', 'state': 'locked'},
+        {'group': 'websocket', 'label': 'Coinbase WS', 'state': 'locked'},
+        {'group': 'dashboard', 'label': 'Dashboard', 'state': 'locked'},
+        {'group': 'loop', 'label': 'Main Loop', 'state': 'pending'},
+        {'group': 'trader', 'label': 'Trader', 'state': 'ready later'},
+        {'group': 'alerts', 'label': 'Alerts', 'state': 'locked'},
+        {'group': 'reports', 'label': 'Reports', 'state': 'locked'},
+    ]
+
+
+def compute_dashboard_state() -> dict[str, Any]:
+    market_state = load_market_state()
+    ws_state = load_coinbase_ws_state()
+    products = load_coinbase_products()
+    tickers = load_coinbase_tickers()
+    scanner_entries = load_latest_market_log_entries()
+    ws_snapshots = load_coinbase_ws_snapshots()
+    btc_candles = load_btc_candles()
+    open_positions = load_open_positions()
+
+    return {
+        'market_state': market_state,
+        'ws_state': ws_state,
+        'products': products,
+        'tickers': tickers,
+        'scanner_entries': scanner_entries,
+        'ws_snapshots': ws_snapshots,
+        'btc_candles': btc_candles,
+        'open_positions': open_positions,
+        'scanner_history': build_scanner_run_history(scanner_entries),
+        'persistence_summary': build_persistence_summary(scanner_entries),
+        'live_movers': build_coinbase_live_movers(tickers),
+        'universe_health': build_coinbase_universe_health(products, tickers, ws_state),
+        'status_flags': build_status_flags(market_state, ws_state),
+        'controls_placeholder': build_controls_placeholder(),
+        'meta': {
+            'market_state': _file_meta(MARKET_STATE_PATH),
+            'coinbase_ws_state': _file_meta(COINBASE_WS_STATE_PATH),
+            'coinbase_products': _file_meta(COINBASE_PRODUCTS_PATH),
+            'coinbase_tickers': _file_meta(COINBASE_TICKERS_PATH),
+        },
     }

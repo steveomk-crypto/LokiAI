@@ -1,0 +1,2 @@
+{"timestamp": "2026-03-23T23:15:03+00:00", "action": "open_position", "token": "ETH", "tier": "B", "score": 0.458193, "drift_300s": 0.0914, "freshness_seconds": 1.05, "reason": "scanner_rank_plus_websocket_confirmation"}
+{"timestamp": "2026-03-23T23:46:02+00:00", "action": "close_position", "token": "ETH", "tier": "B", "pnl_percent": 0.137, "exit_reason": "no_move", "exit_category": "NM", "move_character": "steady"}

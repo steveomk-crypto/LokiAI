@@ -1,0 +1,44 @@
+[
+  {
+    "slot_id": 1,
+    "token": "ETH",
+    "product_id": "ETH-USD",
+    "tier": "B",
+    "status": "closed",
+    "trade_state": "CLOSED",
+    "move_character": "steady",
+    "entry_time": "2026-03-23T23:15:03+00:00",
+    "last_update": "2026-03-23T23:46:02+00:00",
+    "entry_price": 2146.36,
+    "current_price": 2149.3,
+    "pnl_percent": 0.137,
+    "time_in_trade_minutes": 30,
+    "scanner_score": 0.458193,
+    "momentum": 4.76886,
+    "persistence": 1,
+    "trend": "steady",
+    "entry_reason": "scanner_rank_plus_websocket_confirmation",
+    "websocket_drift_300s": -0.0419,
+    "websocket_freshness_seconds": 1.79,
+    "guardrails": {
+      "stop_loss_pct": -3.0,
+      "profit_levels_pct": [
+        1.0,
+        2.0,
+        3.5
+      ],
+      "timeout_minutes": 90,
+      "trail_after_first_pct": 0.5,
+      "trail_after_second_pct": 0.9
+    },
+    "highest_pnl_percent": 0.137,
+    "trim_step": 0,
+    "trail_active": false,
+    "trail_distance_pct": 0.0,
+    "remaining_size_pct": 100.0,
+    "de_risked_fake_pump": false,
+    "exit_time": "2026-03-23T23:46:02+00:00",
+    "exit_reason": "no_move",
+    "exit_category": "NM"
+  }
+]

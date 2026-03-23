@@ -1,400 +1,404 @@
-from datetime import datetime, timezone
-from typing import Dict, List
+from __future__ import annotations
 
+from datetime import datetime, timezone
 import os
 
 from nicegui import ui
 
-from .data import (
-    load_entry_events,
-    load_latest_packet,
-    load_loop_status,
-    load_open_positions,
-    load_run_baseline,
-    load_trades,
-)
-
-DASHBOARD_FILTERS = {
-    'tier': 'All tiers',
-    'exit_reason': 'All exits',
-}
+from .data import compute_dashboard_state
 
 
-HEADER_REGIME_LABEL = None
-DATA_SOURCE_LABEL = None
+def _fmt_ts(value: str | None) -> str:
+    if not value:
+        return '–'
+    return value.replace('T', ' ').replace('+00:00', ' UTC')
 
 
-def compute_metrics() -> Dict:
-    packet = load_latest_packet()
-    baseline_str, baseline_dt = load_run_baseline()
-    positions, positions_path, positions_updated = load_open_positions()
-    trades_all, trades_path, trades_updated = load_trades()
-    entry_events_all, entry_events_path, entry_events_updated = load_entry_events()
+def _fmt_num(value, digits: int = 2) -> str:
+    try:
+        return f'{float(value):,.{digits}f}'
+    except Exception:
+        return '–'
 
-    def _parse_iso(value: str):
-        if not value:
-            return None
-        formatted = value[:-1] + '+00:00' if value.endswith('Z') else value
-        try:
-            return datetime.fromisoformat(formatted)
-        except ValueError:
-            return None
 
-    def _is_in_run(dt_obj):
-        if not baseline_dt or not dt_obj:
-            return True
-        return dt_obj >= baseline_dt
-
-    run_positions: List[Dict] = []
-    carryover_positions: List[Dict] = []
-    for pos in positions:
-        entry_dt = _parse_iso(pos.get('entry_time') or pos.get('last_update'))
-        (run_positions if _is_in_run(entry_dt) else carryover_positions).append(pos)
-
-    run_trades: List[Dict] = []
-    for trade in trades_all:
-        exit_dt = _parse_iso(trade.get('exit_time') or trade.get('last_update'))
-        if _is_in_run(exit_dt):
-            run_trades.append(trade)
-
-    run_entry_events: List[Dict] = []
-    for event in entry_events_all:
-        event_dt = _parse_iso(event.get('timestamp'))
-        if _is_in_run(event_dt):
-            run_entry_events.append(event)
-
-    def _open_pnl(bucket: List[Dict]):
-        return sum((float(pos.get('pnl_percent') or 0.0) / 100.0) * float(pos.get('position_size_usd') or 0.0) for pos in bucket)
-
-    def _exposure(bucket: List[Dict]):
-        return sum(float(pos.get('position_size_usd') or 0.0) for pos in bucket)
-
-    realized = sum(float(trade.get('pnl_usd') or 0.0) for trade in run_trades)
-    wins = sum(1 for trade in run_trades if float(trade.get('pnl_percent') or 0.0) > 0)
-    total = len(run_trades)
-    win_rate = (wins / total * 100) if total else 0.0
-
-    open_pnl = _open_pnl(run_positions)
-    exposure = _exposure(run_positions)
-
-    meta = packet.get('meta', {})
-    signal_rows = packet.get('signals', [])[:10]
-    signal_headline = packet.get('assets', {}).get('headline', '')
-
-    tier_options = sorted({pos.get('tier', '–') for pos in run_positions if pos.get('tier')})
-    exit_reason_options = sorted({get_trade_exit_label(trade) for trade in run_trades})
-
-    run_trades_preview = list(reversed(run_trades[-10:]))
-
+def _status_class(level: str) -> str:
     return {
-        'baseline': baseline_str,
-        'regime': meta.get('regime', '–'),
-        'signals': meta.get('total_signals', 0),
-        'scan_time': meta.get('scan_timestamp', '–'),
-        'open_positions': len(run_positions),
-        'run_positions_detail': run_positions,
-        'carryover_positions_detail': carryover_positions,
-        'run_trades': run_trades_preview,
-        'realized_pnl': realized,
-        'open_pnl': open_pnl,
-        'exposure': exposure,
-        'win_rate': win_rate,
-        'top_opportunities': packet.get('signals', [])[:3],
-        'signal_rows': signal_rows,
-        'signal_headline': signal_headline,
-        'entry_events': run_entry_events,
-        'loop_status': load_loop_status(),
-        'tier_options': tier_options,
-        'exit_reason_options': exit_reason_options,
-        'pnl_chart': build_pnl_chart_data(run_trades),
-        'open_positions_path': positions_path,
-        'open_positions_updated': positions_updated,
-        'trades_path': trades_path,
-        'trades_updated': trades_updated,
-        'entry_events_path': entry_events_path,
-        'entry_events_updated': entry_events_updated,
-    }
+        'healthy': 'status-healthy',
+        'warning': 'status-warning',
+        'danger': 'status-danger',
+        'info': 'status-info',
+        'locked': 'status-muted',
+        'pending': 'status-warning',
+        'ready later': 'status-info',
+    }.get(level, 'status-info')
 
 
-def format_positions_table(positions):
-    columns = [
-        {'name': 'token', 'label': 'Token', 'field': 'token'},
-        {'name': 'tier', 'label': 'Tier', 'field': 'tier'},
-        {'name': 'pnl', 'label': 'PnL %', 'field': 'pnl'},
-        {'name': 'size', 'label': 'Size USD', 'field': 'size'},
-    ]
-    rows = [
-        {
-            'token': pos.get('token', '?'),
-            'tier': pos.get('tier', '–'),
-            'pnl': f"{float(pos.get('pnl_percent') or 0.0):+.2f}%",
-            'size': f"${float(pos.get('position_size_usd') or 0.0):.2f}",
-        }
-        for pos in positions
-    ]
-    return columns, rows
+def _stale_state_label(seconds: float | None, warn_at: int) -> tuple[str, str]:
+    if seconds is None:
+        return 'unknown', 'status-warning'
+    if seconds > warn_at:
+        return f'stale • {int(seconds)}s', 'status-warning'
+    return f'fresh • {int(seconds)}s', 'status-healthy'
 
 
-def get_trade_exit_label(trade):
-    return trade.get('exit_category') or trade.get('exit_reason') or '–'
+def _panel(title: str, subtitle: str | None = None, extra_classes: str = ''):
+    card = ui.card().classes(f'glass-panel w-full h-full {extra_classes}'.strip())
+    with card:
+        with ui.row().classes('w-full justify-between items-start'):
+            with ui.column().classes('gap-0'):
+                ui.label(title).classes('panel-title')
+                if subtitle:
+                    ui.label(subtitle).classes('panel-subtitle')
+    return card
 
 
-def format_trades_table(trades):
-    columns = [
-        {'name': 'token', 'label': 'Token', 'field': 'token'},
-        {'name': 'pnl', 'label': 'PnL %', 'field': 'pnl'},
-        {'name': 'reason', 'label': 'Reason', 'field': 'reason'},
-    ]
-    rows = [
-        {
-            'token': trade.get('token', '?'),
-            'pnl': f"{float(trade.get('pnl_percent') or 0.0):+.2f}%",
-            'reason': get_trade_exit_label(trade),
-        }
-        for trade in trades
-    ]
-    return columns, rows
+def _telemetry_row(left: str, right: str, right_class: str = '') -> None:
+    with ui.row().classes('w-full justify-between items-center telemetry-row'):
+        ui.label(left).classes('telemetry-key')
+        ui.label(right).classes(f'telemetry-value {right_class}'.strip())
 
 
-def format_events_table(events):
-    columns = [
-        {'name': 'time', 'label': 'Time', 'field': 'time'},
-        {'name': 'token', 'label': 'Token', 'field': 'token'},
-        {'name': 'tier', 'label': 'Tier', 'field': 'tier'},
-        {'name': 'reason', 'label': 'Reason', 'field': 'reason'},
-    ]
-    rows = [
-        {
-            'time': event.get('timestamp', '')[-8:],
-            'token': event.get('token', '?'),
-            'tier': event.get('tier', '–'),
-            'reason': event.get('reason', '–'),
-        }
-        for event in events
-    ]
-    return columns, rows
-
-
-def format_signals_table(signals):
-    columns = [
-        {'name': 'token', 'label': 'Token', 'field': 'token'},
-        {'name': 'momentum', 'label': 'Momentum %', 'field': 'momentum'},
-        {'name': 'volume', 'label': 'Volume (USD)', 'field': 'volume'},
-        {'name': 'persistence', 'label': 'Persistence', 'field': 'persistence'},
-        {'name': 'status', 'label': 'Status', 'field': 'status'},
-    ]
-    rows = [
-        {
-            'token': sig.get('token', '?'),
-            'momentum': f"{float(sig.get('momentum') or 0.0):+.1f}%",
-            'volume': f"${float(sig.get('volume') or 0.0):,.0f}",
-            'persistence': sig.get('persistence', 0),
-            'status': sig.get('status', '–').title() if sig.get('status') else '–',
-        }
-        for sig in signals
-    ]
-    return columns, rows
-
-
-def render_top_opportunities(opps):
-    if not opps:
-        ui.label('No signals available').classes('text-gray-500')
-        return
-    for entry in opps:
-        with ui.card().classes('w-full sm:w-1/3'):
-            ui.label(entry.get('token', '?')).classes('text-lg font-semibold')
-            ui.label(f"Momentum: {entry.get('momentum', 0):+.1f}%")
-            ui.label(f"Volume: ${entry.get('volume', 0):,.0f}")
-            ui.label(f"Persistence: {entry.get('persistence', 0)} scans")
-            ui.label(f"Liquidity score: {entry.get('liquidity_score', 0):.2f}")
-
-
-def build_pnl_chart_data(trades: List[Dict]):
-    labels: List[str] = []
-    pnl_percent: List[float] = []
-    cumulative_usd: List[float] = []
-    running_total = 0.0
-    for trade in trades:
-        label = trade.get('token', '?')
-        pnl_pct = float(trade.get('pnl_percent') or 0.0)
-        position_size = float(trade.get('position_size_usd') or trade.get('position_size') or 0.0)
-        pnl_usd = float(trade.get('pnl_usd') or position_size * pnl_pct / 100.0)
-        running_total += pnl_usd
-        labels.append(label)
-        pnl_percent.append(round(pnl_pct, 2))
-        cumulative_usd.append(round(running_total, 2))
-    return {'labels': labels, 'percent': pnl_percent, 'cumulative': cumulative_usd}
-
-
-def render_pnl_chart(data: Dict):
-    if not data['labels']:
-        ui.label('Not enough closes to chart yet').classes('text-gray-500')
-        return
-    ui.echart(
-        {
-            'tooltip': {'trigger': 'axis'},
-            'legend': {'data': ['PnL %', 'Cumulative USD']},
-            'xAxis': {'type': 'category', 'data': data['labels']},
-            'yAxis': [
-                {'type': 'value', 'name': 'PnL %'},
-                {'type': 'value', 'name': 'Cum USD', 'position': 'right'},
-            ],
-            'series': [
-                {
-                    'name': 'PnL %',
-                    'type': 'bar',
-                    'data': data['percent'],
-                    'itemStyle': {
-                        'color': '#10b981',
-                    },
-                },
-                {
-                    'name': 'Cumulative USD',
-                    'type': 'line',
-                    'yAxisIndex': 1,
-                    'data': data['cumulative'],
-                    'smooth': True,
-                    'lineStyle': {'color': '#2563eb', 'width': 2},
-                },
-            ],
-        }
-    ).classes('w-full h-72')
-
-
-def filter_positions(positions: List[Dict]):
-    tier = DASHBOARD_FILTERS['tier']
-    if tier == 'All tiers':
-        return positions
-    return [pos for pos in positions if pos.get('tier') == tier]
-
-
-def filter_trades(trades: List[Dict]):
-    reason_filter = DASHBOARD_FILTERS['exit_reason']
-    if reason_filter == 'All exits':
-        return trades
-    return [trade for trade in trades if get_trade_exit_label(trade) == reason_filter]
-
-
-def update_tier_filter(value: str):
-    DASHBOARD_FILTERS['tier'] = value or 'All tiers'
-    render_dashboard.refresh()
-
-
-def update_exit_filter(value: str):
-    DASHBOARD_FILTERS['exit_reason'] = value or 'All exits'
-    render_dashboard.refresh()
+def _pill(text: str, level: str = 'info') -> None:
+    ui.label(text).classes(f'status-pill {_status_class(level)}')
 
 
 @ui.refreshable
-def render_dashboard():
-    metrics = compute_metrics()
+def operator_view():
+    state = compute_dashboard_state()
+    market_state = state['market_state']
+    ws_state = state['ws_state']
+    live_movers = state['live_movers']
+    top_opps = market_state.get('top_opportunities', [])
+    metrics = market_state.get('metrics', {})
 
-    run_positions = metrics['run_positions_detail']
-    carryover_positions = metrics['carryover_positions_detail']
-    positions_filtered = filter_positions(run_positions)
-    carryover_filtered = filter_positions(carryover_positions)
-    trades_filtered = filter_trades(metrics['run_trades'])
+    scanner_dt = market_state.get('computed_at')
+    ws_dt = ws_state.get('last_message_at')
+    now = datetime.now(timezone.utc)
+    scanner_age = None
+    ws_age = None
+    try:
+        if scanner_dt:
+            scanner_age = now.timestamp() - datetime.fromisoformat(scanner_dt.replace('Z', '+00:00')).replace(tzinfo=timezone.utc).timestamp()
+    except Exception:
+        scanner_age = None
+    try:
+        if ws_dt:
+            ws_age = now.timestamp() - datetime.fromisoformat(ws_dt.replace('Z', '+00:00')).timestamp()
+    except Exception:
+        ws_age = None
 
-    global HEADER_REGIME_LABEL, DATA_SOURCE_LABEL
-    if HEADER_REGIME_LABEL:
-        HEADER_REGIME_LABEL.text = f"Regime: {metrics['regime']}"
-    if DATA_SOURCE_LABEL:
-        data_source = metrics.get('open_positions_path') or 'Not found'
-        data_updated = metrics.get('open_positions_updated') or '–'
-        baseline = metrics.get('baseline') or 'not set'
-        DATA_SOURCE_LABEL.text = f"Data source: {data_source} (updated {data_updated}) | Run baseline: {baseline}"
+    scanner_text, scanner_class = _stale_state_label(scanner_age, 3600)
+    ws_text, ws_class = _stale_state_label(ws_age, 300)
+    alert_count = len(state['status_flags'])
 
-    with ui.row().classes('w-full q-col-gutter-md'):
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Open positions (this run)').classes('text-sm text-gray-500')
-            ui.label(str(metrics['open_positions'])).classes('text-2xl font-semibold')
-            carry_count = len(carryover_positions)
-            if carry_count:
-                ui.label(f"{carry_count} carryover").classes('text-xs text-gray-500')
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Realized PnL (this run)').classes('text-sm text-gray-500')
-            ui.label(f"{metrics['realized_pnl']:+.2f}").classes('text-2xl font-semibold')
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Win rate (this run)').classes('text-sm text-gray-500')
-            ui.label(f"{metrics['win_rate']:.1f}%").classes('text-2xl font-semibold')
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Loop status').classes('text-sm text-gray-500')
-            ui.label(metrics['loop_status']['status'].title()).classes('text-2xl font-semibold')
-            ui.label(f"Last cycle: {metrics['loop_status']['last_cycle']}").classes('text-sm text-gray-500')
+    with ui.column().classes('w-full gap-4'):
+        with ui.card().classes('top-bar w-full'):
+            with ui.row().classes('w-full justify-between items-center'):
+                with ui.column().classes('gap-0'):
+                    ui.label('LokiAI Operator Console').classes('hero-title')
+                    ui.label('Scanner + Coinbase live ingest command surface').classes('hero-subtitle')
+                with ui.row().classes('gap-3 items-center wrap'):
+                    _pill('MODE • REBUILD / PAPER ONLY', 'info')
+                    _pill(f'SCANNER • {scanner_text.upper()}', 'warning' if 'stale' in scanner_text else 'healthy')
+                    _pill(f'WEBSOCKET • {"ONLINE" if ws_state.get("connected") else "OFFLINE"}', 'healthy' if ws_state.get('connected') else 'danger')
+                    _pill(f'ALERTS • {alert_count}', 'warning' if alert_count else 'healthy')
 
-    with ui.row().classes('w-full q-col-gutter-md mt-2'):
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Open PnL (USD)').classes('text-sm text-gray-500')
-            ui.label(f"{metrics['open_pnl']:+.2f}").classes('text-2xl font-semibold')
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Exposure (USD)').classes('text-sm text-gray-500')
-            ui.label(f"${metrics['exposure']:.2f}").classes('text-2xl font-semibold')
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Signals scanned').classes('text-sm text-gray-500')
-            ui.label(str(metrics['signals'])).classes('text-2xl font-semibold')
-        with ui.card().classes('w-full sm:w-1/4'):
-            ui.label('Last scan').classes('text-sm text-gray-500')
-            ui.label(metrics['scan_time']).classes('text-lg font-semibold')
+        with ui.grid(columns=3).classes('w-full gap-4'):
+            with _panel('System Health', 'Immediate machine state'):
+                _telemetry_row('Scanner last run', _fmt_ts(scanner_dt), scanner_class)
+                _telemetry_row('Scanner freshness', scanner_text, scanner_class)
+                _telemetry_row('Signals this run', str(metrics.get('total_signals', 0)))
+                _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
+                _telemetry_row('Last websocket message', _fmt_ts(ws_dt), ws_class)
+                _telemetry_row('Tracked Coinbase products', str(ws_state.get('tracked_products', 0)))
+                _telemetry_row('Reconnect count', str(ws_state.get('reconnect_count', 0)))
 
-    ui.separator().classes('my-4')
-    ui.label('Market context').classes('text-lg font-semibold mb-2')
-    with ui.card().classes('w-full mb-4'):
-        ui.label(metrics['signal_headline'] or 'No packet headline available').classes('text-sm')
+            with _panel('Market State Summary', 'Latest scanner snapshot'):
+                _telemetry_row('Avg top score', _fmt_num(metrics.get('avg_top_score'), 4))
+                _telemetry_row('High-quality signals', str(metrics.get('high_quality_signals', 0)))
+                _telemetry_row('Breadth positive', _fmt_num(metrics.get('breadth_positive'), 2))
+                _telemetry_row('Top opportunities loaded', str(len(top_opps)))
+                _telemetry_row('Mode', market_state.get('mode', '–'))
 
-    ui.label('Top opportunities').classes('text-lg font-semibold mb-2')
-    with ui.row().classes('w-full q-col-gutter-md'):
-        render_top_opportunities(metrics['top_opportunities'])
+            with _panel('Alerts / Warnings', 'Operational exceptions'):
+                if not state['status_flags']:
+                    ui.label('No active warnings').classes('status-healthy font-semibold')
+                for flag in state['status_flags']:
+                    level_class = 'status-danger' if flag['level'] == 'danger' else 'status-warning'
+                    ui.label(f"• {flag['message']}").classes(f'text-sm telemetry-row {level_class}')
 
-    ui.separator().classes('my-4')
-    ui.label('PnL trend (this run)').classes('text-lg font-semibold mb-2')
-    render_pnl_chart(metrics['pnl_chart'])
+            with _panel('Top Scanner Opportunities', 'Primary ranked output', 'anchor-panel'):
+                if not top_opps:
+                    ui.label('No opportunities yet').classes('text-gray-400')
+                for opp in top_opps[:6]:
+                    with ui.row().classes('w-full justify-between items-center signal-row'):
+                        with ui.column().classes('gap-0'):
+                            ui.label(opp.get('token', '?')).classes('signal-symbol')
+                            ui.label(f"trend • {opp.get('trend', '–')}").classes('signal-meta')
+                        with ui.column().classes('items-end gap-0'):
+                            ui.label(f"{_fmt_num(opp.get('momentum'), 1)}%").classes('signal-momentum')
+                            ui.label(f"p{opp.get('persistence', 0)} • score {_fmt_num(opp.get('score'), 3)}").classes('signal-meta')
 
-    ui.separator().classes('my-4')
-    ui.label('Open positions (this run)').classes('text-lg font-semibold')
-    tier_options = ['All tiers'] + metrics['tier_options']
-    with ui.row().classes('items-end q-gutter-md mb-3'):
-        tier_select = ui.select(tier_options, label='Tier filter', value=DASHBOARD_FILTERS['tier'])
-        tier_select.on_value_change(lambda e: update_tier_filter(e.value))
-    columns, rows = format_positions_table(positions_filtered)
-    ui.table(columns=columns, rows=rows).classes('w-full mb-6')
+            with _panel('Persistence / Repeat Names', 'What is surviving multiple scans'):
+                if not state['persistence_summary']:
+                    ui.label('Need more scanner history').classes('text-gray-400')
+                for item in state['persistence_summary'][:8]:
+                    with ui.row().classes('w-full justify-between items-center telemetry-row'):
+                        ui.label(item['token']).classes('font-semibold')
+                        ui.label(f"r{item['repeat_count']} • {_fmt_num(item['latest_score'], 3)} • {item['latest_trend']}").classes('telemetry-value')
 
-    if carryover_positions:
-        ui.label('Carryover positions').classes('text-lg font-semibold mb-2')
-        carry_columns, carry_rows = format_positions_table(carryover_filtered)
-        ui.table(columns=carry_columns, rows=carry_rows).classes('w-full mb-6')
+            with _panel('Scanner Run History', 'Cadence and quality'):
+                if not state['scanner_history']:
+                    ui.label('No run history yet').classes('text-gray-400')
+                for row in state['scanner_history'][-8:]:
+                    with ui.row().classes('w-full justify-between items-center telemetry-row'):
+                        ui.label(row['timestamp'][-8:] if row['timestamp'] else '–').classes('telemetry-key')
+                        ui.label(f"sig {row['signal_count']} • HQ {row['high_quality_count']} • {_fmt_num(row['top_score'], 3)}").classes('telemetry-value')
 
-    trade_columns, trade_rows = format_trades_table(trades_filtered)
-    ui.label("This run's closes").classes('text-lg font-semibold')
-    exit_options = ['All exits'] + metrics['exit_reason_options']
-    with ui.row().classes('items-end q-gutter-md mb-3'):
-        reason_select = ui.select(exit_options, label='Exit filter', value=DASHBOARD_FILTERS['exit_reason'])
-        reason_select.on_value_change(lambda e: update_exit_filter(e.value))
-    ui.table(columns=trade_columns, rows=trade_rows).classes('w-full mb-6')
+            with _panel('Coinbase Live Movers', 'Short-horizon live pulse'):
+                if not live_movers:
+                    ui.label('Waiting for live ticker population').classes('text-gray-400')
+                for mover in live_movers[:8]:
+                    with ui.row().classes('w-full justify-between items-center telemetry-row'):
+                        with ui.column().classes('gap-0'):
+                            ui.label(mover['product_id']).classes('font-semibold')
+                            ui.label(f"px {_fmt_num(mover.get('price'), 4)}").classes('signal-meta')
+                        with ui.column().classes('items-end gap-0'):
+                            drift = float(mover.get('drift_300s') or 0.0)
+                            drift_cls = 'status-healthy' if drift > 0 else 'status-warning' if drift < 0 else 'telemetry-value'
+                            ui.label(f"{_fmt_num(drift, 3)}%").classes(f'font-semibold {drift_cls}')
+                            ui.label(f"fresh {_fmt_num(mover.get('freshness_seconds'), 1)}s").classes('signal-meta')
 
-    signal_columns, signal_rows = format_signals_table(metrics['signal_rows'])
-    ui.label('Signal depth (top 10)').classes('text-lg font-semibold mb-2')
-    ui.table(columns=signal_columns, rows=signal_rows).classes('w-full mb-6')
+            with _panel('Coinbase Universe Health', 'Tracked live universe status'):
+                health = state['universe_health']
+                _telemetry_row('Tracked products', str(health['tracked_products']))
+                _telemetry_row('Active products', str(health['active_products']))
+                _telemetry_row('Stale products', str(health['stale_products']), 'status-warning' if health['stale_products'] else 'status-healthy')
+                _telemetry_row('Reconnect count', str(health['reconnect_count']))
+                ui.separator().classes('my-2 opacity-20')
+                for row in health['freshest_symbols']:
+                    _telemetry_row(row['product_id'], f"{_fmt_num(row.get('freshness_seconds'), 1)}s")
 
-    event_columns, event_rows = format_events_table(metrics['entry_events'])
-    ui.label('Entry events (this run)').classes('text-lg font-semibold mb-2')
-    ui.table(columns=event_columns, rows=event_rows).classes('w-full')
+            with _panel('Websocket Activity History', 'Recent Coinbase snapshots'):
+                if not state['ws_snapshots']:
+                    ui.label('No websocket snapshots yet').classes('text-gray-400')
+                for snap in state['ws_snapshots'][-6:]:
+                    with ui.row().classes('w-full justify-between items-center telemetry-row'):
+                        ui.label(snap.get('timestamp', '–')[-8:]).classes('telemetry-key')
+                        ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
+
+            with _panel('Command / Controls Bay', 'Placeholder control surface'):
+                with ui.grid(columns=2).classes('w-full gap-2'):
+                    for item in state['controls_placeholder']:
+                        level = item['state'] if item['state'] in {'locked', 'pending', 'ready later'} else 'locked'
+                        ui.button(f"{item['label']} • {item['state']}").props('outline color=secondary').classes(f'w-full control-button {_status_class(level)}')
 
 
-@ui.page('/')
-def main_page():
-    global HEADER_REGIME_LABEL, DATA_SOURCE_LABEL
-    with ui.header().classes('justify-between items-center'):
-        ui.label('Trader Dashboard').classes('text-xl font-bold')
-        HEADER_REGIME_LABEL = ui.label('Regime: –')
-    DATA_SOURCE_LABEL = ui.label('Data source: –').classes('text-xs text-gray-500 mb-2')
-    render_dashboard()
-    ui.timer(30, render_dashboard.refresh)
+@ui.refreshable
+def stream_view():
+    state = compute_dashboard_state()
+    market_state = state['market_state']
+    ws_state = state['ws_state']
+    metrics = market_state.get('metrics', {})
+    top_opps = market_state.get('top_opportunities', [])
+    live_movers = state['live_movers']
+
+    with ui.column().classes('w-full gap-4'):
+        with ui.card().classes('top-bar w-full stream-hero'):
+            with ui.row().classes('w-full justify-between items-center'):
+                with ui.column().classes('gap-0'):
+                    ui.label('LokiAI Market Engine').classes('hero-title')
+                    ui.label('Live scanner + Coinbase pulse • paper-only rebuild phase').classes('hero-subtitle')
+                with ui.row().classes('gap-3 items-center wrap'):
+                    _pill('STREAM • LIVE', 'healthy')
+                    _pill(f"SCANNER • {market_state.get('metrics', {}).get('total_signals', 0)} signals", 'info')
+                    _pill(f"WEBSOCKET • {'ONLINE' if ws_state.get('connected') else 'OFFLINE'}", 'healthy' if ws_state.get('connected') else 'danger')
+
+        with ui.row().classes('w-full gap-4 no-wrap stream-main'):
+            with ui.column().classes('w-2/3 gap-4'):
+                with _panel('Live Coinbase Pulse', 'Short-horizon movers from tracked universe', 'anchor-panel'):
+                    if not live_movers:
+                        ui.label('Waiting for live ticker population').classes('text-gray-400')
+                    for mover in live_movers[:10]:
+                        with ui.row().classes('w-full justify-between items-center signal-row'):
+                            with ui.column().classes('gap-0'):
+                                ui.label(mover['product_id']).classes('signal-symbol')
+                                ui.label(f"fresh { _fmt_num(mover.get('freshness_seconds'), 1) }s").classes('signal-meta')
+                            with ui.column().classes('items-end gap-0'):
+                                drift = float(mover.get('drift_300s') or 0.0)
+                                drift_cls = 'status-healthy' if drift > 0 else 'status-warning' if drift < 0 else 'telemetry-value'
+                                ui.label(f"{_fmt_num(drift, 3)}%").classes(f'font-semibold {drift_cls}')
+                                ui.label(f"px {_fmt_num(mover.get('price'), 4)}").classes('signal-meta')
+
+                with _panel('Scanner Highlights', 'Top ranked opportunities from the latest scan'):
+                    if not top_opps:
+                        ui.label('No scanner highlights yet').classes('text-gray-400')
+                    for opp in top_opps[:6]:
+                        with ui.row().classes('w-full justify-between items-center signal-row'):
+                            with ui.column().classes('gap-0'):
+                                ui.label(opp.get('token', '?')).classes('signal-symbol')
+                                ui.label(f"trend • {opp.get('trend', '–')}").classes('signal-meta')
+                            with ui.column().classes('items-end gap-0'):
+                                ui.label(f"{_fmt_num(opp.get('momentum'), 1)}%").classes('signal-momentum')
+                                ui.label(f"p{opp.get('persistence', 0)} • score {_fmt_num(opp.get('score'), 3)}").classes('signal-meta')
+
+                with _panel('System Progress', 'What the machine has done today'):
+                    _telemetry_row('Signals logged', str(metrics.get('total_signals', 0)))
+                    _telemetry_row('High-quality signals', str(metrics.get('high_quality_signals', 0)))
+                    _telemetry_row('Tracked Coinbase products', str(ws_state.get('tracked_products', 0)))
+                    _telemetry_row('Current mode', 'rebuild / paper only')
+
+            with ui.column().classes('w-1/3 gap-4'):
+                with _panel('Operating Status', 'Transparency over hype'):
+                    ui.label('Paper-only mode.').classes('text-sm font-semibold status-info')
+                    ui.label('Live funds are staged but inactive until system stability is proven.').classes('text-sm panel-row')
+                    ui.label('No real-money execution is active.').classes('text-sm panel-row')
+
+                with _panel('Latest Intelligence', 'Current product + research surface'):
+                    ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold')
+                    ui.label('Daily Coinbase momentum brief while Atlas Loop runs in quality-only mode.').classes('text-sm panel-row')
+                    ui.label('Substack + Gumroad are being rebuilt as distribution layers.').classes('text-sm panel-row')
+
+                with _panel('Links / Support', 'Public conversion surface'):
+                    ui.label('Substack: lokiai.substack.com').classes('text-sm panel-row')
+                    ui.label('Gumroad: lokiclips.gumroad.com').classes('text-sm panel-row')
+                    ui.label('Tips / community: coming online').classes('text-sm panel-row')
+
+        with ui.card().classes('glass-panel w-full footer-ticker'):
+            ui.label('SCANNER LIVE • PAPER ONLY • QUALITY GATE ACTIVE • SUBSTACK + GUMROAD REBUILD IN PROGRESS').classes('ticker-text')
+
+
+def render_operator_page():
+    with ui.column().classes('w-full min-h-screen dashboard-shell p-6 gap-4'):
+        operator_view()
+    ui.timer(30, operator_view.refresh)
+
+
+def render_stream_page():
+    with ui.column().classes('w-full min-h-screen dashboard-shell p-6 gap-4'):
+        stream_view()
+    ui.timer(30, stream_view.refresh)
+
+
+def apply_theme() -> None:
+    ui.add_head_html(
+        '''
+        <style>
+            body {
+                background: radial-gradient(circle at top, rgba(78, 0, 146, 0.35), transparent 35%),
+                            radial-gradient(circle at 20% 20%, rgba(0, 200, 255, 0.18), transparent 25%),
+                            linear-gradient(180deg, #050816 0%, #090b1f 45%, #02040d 100%);
+                color: #eef6ff;
+                font-family: Inter, system-ui, sans-serif;
+            }
+            .dashboard-shell {
+                background-image:
+                    radial-gradient(circle at 50% -20%, rgba(0,255,255,0.08), transparent 40%),
+                    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+                background-size: auto, 24px 24px, 24px 24px;
+            }
+            .top-bar, .glass-panel {
+                background: rgba(7, 14, 32, 0.68);
+                border: 1px solid rgba(0, 255, 255, 0.16);
+                box-shadow: 0 0 18px rgba(0, 220, 255, 0.08), inset 0 0 28px rgba(180, 0, 255, 0.04);
+                backdrop-filter: blur(14px);
+                border-radius: 18px;
+            }
+            .anchor-panel {
+                border-color: rgba(115, 245, 255, 0.35);
+                box-shadow: 0 0 24px rgba(0, 220, 255, 0.12), inset 0 0 36px rgba(180, 0, 255, 0.06);
+            }
+            .hero-title {
+                font-size: 1.6rem;
+                font-weight: 700;
+                color: #f3fbff;
+                letter-spacing: 0.03em;
+            }
+            .hero-subtitle, .panel-subtitle, .signal-meta {
+                color: rgba(210, 225, 255, 0.72);
+                font-size: 0.78rem;
+            }
+            .panel-title {
+                color: #73f5ff;
+                font-size: 0.95rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin-bottom: 0.2rem;
+            }
+            .status-pill {
+                border: 1px solid rgba(255,255,255,0.1);
+                padding: 0.45rem 0.7rem;
+                border-radius: 999px;
+                font-size: 0.76rem;
+                font-weight: 600;
+                letter-spacing: 0.04em;
+            }
+            .status-healthy { color: #7bf7c6 !important; }
+            .status-warning { color: #ffd36b !important; }
+            .status-danger { color: #ff8d9b !important; }
+            .status-info { color: #8dd8ff !important; }
+            .status-muted { color: #b9c6e8 !important; opacity: 0.7; }
+            .telemetry-row {
+                padding: 0.2rem 0;
+                border-bottom: 1px solid rgba(255,255,255,0.04);
+            }
+            .telemetry-key {
+                color: rgba(220, 232, 255, 0.7);
+                font-size: 0.8rem;
+            }
+            .telemetry-value {
+                color: #eef6ff;
+                font-size: 0.82rem;
+                font-weight: 600;
+                text-align: right;
+            }
+            .signal-row {
+                padding: 0.35rem 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            .signal-symbol {
+                font-size: 1rem;
+                font-weight: 700;
+                color: #f4fbff;
+            }
+            .signal-momentum {
+                font-size: 1rem;
+                font-weight: 700;
+                color: #73f5ff;
+                text-align: right;
+            }
+            .control-button {
+                border-color: rgba(255,255,255,0.12) !important;
+                background: rgba(255,255,255,0.02) !important;
+            }
+            .stream-hero {
+                border-color: rgba(255, 0, 220, 0.18);
+                box-shadow: 0 0 26px rgba(0, 220, 255, 0.12), inset 0 0 40px rgba(255, 0, 220, 0.05);
+            }
+            .footer-ticker {
+                overflow: hidden;
+                border-color: rgba(255,255,255,0.12);
+            }
+            .ticker-text {
+                color: #dff7ff;
+                letter-spacing: 0.08em;
+                font-size: 0.78rem;
+                text-transform: uppercase;
+            }
+        </style>
+        ''', shared=True
+    )
 
 
 def run():
+    apply_theme()
+    ui.page('/')(render_operator_page)
+    import dashboard.stream  # noqa: F401
     host = os.getenv('DASHBOARD_HOST', '0.0.0.0')
-    port = int(os.getenv('DASHBOARD_PORT', '8501'))
-    ui.run(title='Trader Dashboard', reload=False, host=host, port=port)
+    port = int(os.getenv('DASHBOARD_PORT', '8500'))
+    ui.run(title='LokiAI Operator Console', reload=False, host=host, port=port)
 
 
 if __name__ == '__main__':
