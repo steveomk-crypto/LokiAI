@@ -338,6 +338,13 @@ def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'runn
     return entry
 
 
+def _is_recent(updated_at: str | None, threshold_seconds: int) -> bool:
+    dt = _safe_iso_to_dt(updated_at)
+    if not dt:
+        return False
+    return (datetime.now(timezone.utc) - dt).total_seconds() <= threshold_seconds
+
+
 def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
     scanner_pid = PID_DIR / 'coinbase_scanner.pid'
     websocket_pid = PID_DIR / 'coinbase_ws.pid'
@@ -363,16 +370,36 @@ def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
     log_outputs_log = PID_DIR / 'log_trading_outputs.log'
     reports_ready = any((WORKDIR / 'performance_reports').glob('*')) if (WORKDIR / 'performance_reports').exists() else False
 
+    scanner_entry = _runtime_entry('Scanner Engine', scanner_pid, log_path=scanner_log, state_running='running', state_stopped='idle', transient=True)
+    websocket_entry = _runtime_entry('Coinbase Feed', websocket_pid, log_path=websocket_log)
+    paper_trader_entry = _runtime_entry('Paper Trader V2', paper_trader_pid, log_path=trader_log)
+    flatten_entry = _runtime_entry('Flatten Paper Trades', flatten_pid, log_path=flatten_log, state_running='running', state_stopped='idle', transient=True)
+    operator_entry = _runtime_entry('Operator Dashboard', dashboard_pid, log_path=operator_log)
+    stream_entry = _runtime_entry('Stream Dashboard', stream_pid, log_path=stream_log)
+    loop_entry = _runtime_entry('Main Loop Daemon', loop_pid, log_path=loop_log)
+    log_outputs_entry = _runtime_entry('Log Trading Outputs', log_outputs_pid, log_path=log_outputs_log, state_running='running', state_stopped='idle', transient=True)
+    reports_entry = _runtime_entry('Reports Folder', None, state_running='available', state_stopped='empty', available=reports_ready)
+
+    ws_state = load_coinbase_ws_state()
+    market_state = load_market_state()
+    if ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
+        websocket_entry['running'] = True
+        websocket_entry['state'] = 'running (data healthy)'
+    if market_state.get('computed_at') and _is_recent(market_state.get('computed_at'), 300):
+        scanner_entry['state'] = 'recently completed'
+    if _is_recent((loop_entry.get('log_meta') or {}).get('updated_at'), 120):
+        loop_entry['state'] = 'active recently'
+
     return {
-        'scanner': _runtime_entry('Scanner Engine', scanner_pid, log_path=scanner_log, state_running='running', state_stopped='idle', transient=True),
-        'websocket': _runtime_entry('Coinbase Feed', websocket_pid, log_path=websocket_log),
-        'paper_trader_v2': _runtime_entry('Paper Trader V2', paper_trader_pid, log_path=trader_log),
-        'flatten': _runtime_entry('Flatten Paper Trades', flatten_pid, log_path=flatten_log, state_running='running', state_stopped='idle', transient=True),
-        'operator': _runtime_entry('Operator Dashboard', dashboard_pid, log_path=operator_log),
-        'stream': _runtime_entry('Stream Dashboard', stream_pid, log_path=stream_log),
-        'loop': _runtime_entry('Main Loop Daemon', loop_pid, log_path=loop_log),
-        'log_outputs': _runtime_entry('Log Trading Outputs', log_outputs_pid, log_path=log_outputs_log, state_running='running', state_stopped='idle', transient=True),
-        'reports': _runtime_entry('Reports Folder', None, state_running='available', state_stopped='empty', available=reports_ready),
+        'scanner': scanner_entry,
+        'websocket': websocket_entry,
+        'paper_trader_v2': paper_trader_entry,
+        'flatten': flatten_entry,
+        'operator': operator_entry,
+        'stream': stream_entry,
+        'loop': loop_entry,
+        'log_outputs': log_outputs_entry,
+        'reports': reports_entry,
     }
 
 
