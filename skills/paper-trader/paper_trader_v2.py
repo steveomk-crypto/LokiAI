@@ -17,24 +17,26 @@ V2_DECISIONS_PATH = TRADES_DIR / 'paper_trader_v2_decisions.jsonl'
 V2_AUDIT_SUMMARY_PATH = TRADES_DIR / 'paper_trader_v2_audit_summary.json'
 
 MAX_SLOTS = 3
-TIER_A_MIN_SCORE = 0.42
-TIER_B_MIN_SCORE = 0.30
+TIER_A_MIN_SCORE = 0.58
+TIER_B_MIN_SCORE = 0.45
 FRESHNESS_LIMIT_SECONDS = 180
-TIER_A_MIN_DRIFT_300S = 0.10
-TIER_B_MIN_DRIFT_300S = 0.08
-TIER_B_MIN_PERSISTENCE = 2
+TIER_A_MIN_DRIFT_300S = 0.12
+TIER_B_MIN_DRIFT_300S = 0.10
+TIER_A_MIN_PERSISTENCE = 5
+TIER_B_MIN_PERSISTENCE = 4
 COOLDOWN_MINUTES = 45
 TIER_A_STOP_LOSS_PCT = -4.0
 TIER_B_STOP_LOSS_PCT = -3.0
-TIER_A_TIMEOUT_MINUTES = 210
-TIER_B_TIMEOUT_MINUTES = 90
-NO_MOVE_THRESHOLD_PCT = 0.20
-TIER_A_TRIM_LEVELS = [1.5, 3.0, 5.0]
-TIER_B_TRIM_LEVELS = [1.0, 2.0, 3.5]
-TIER_A_TRAIL_AFTER_FIRST = 0.7
-TIER_A_TRAIL_AFTER_SECOND = 1.2
-TIER_B_TRAIL_AFTER_FIRST = 0.5
-TIER_B_TRAIL_AFTER_SECOND = 0.9
+TIER_A_TIMEOUT_MINUTES = 90
+TIER_B_TIMEOUT_MINUTES = 60
+NO_MOVE_THRESHOLD_PCT = 0.35
+NO_MOVE_MINUTES = 15
+TIER_A_TRIM_LEVELS = [0.75, 2.0, 4.0]
+TIER_B_TRIM_LEVELS = [0.6, 1.5, 3.0]
+TIER_A_TRAIL_AFTER_FIRST = 0.4
+TIER_A_TRAIL_AFTER_SECOND = 0.8
+TIER_B_TRAIL_AFTER_FIRST = 0.35
+TIER_B_TRAIL_AFTER_SECOND = 0.7
 FAKE_PUMP_DRIFT_THRESHOLD = 0.35
 FAKE_PUMP_DE_RISK_PCT = 25
 
@@ -108,14 +110,17 @@ def _candidate_tier(candidate: dict, ticker: dict) -> str:
         return ''
     if drift <= 0:
         return ''
-    if trend in {'isolated spike', 'fading'}:
+    if trend in {'isolated spike', 'fading', 'stalling'}:
         return ''
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
         return ''
 
     persistence = int(candidate.get('persistence') or 0)
 
-    if score >= TIER_A_MIN_SCORE and drift >= TIER_A_MIN_DRIFT_300S:
+    if persistence == 4 and score < 0.62:
+        return ''
+
+    if score >= TIER_A_MIN_SCORE and drift >= TIER_A_MIN_DRIFT_300S and persistence >= TIER_A_MIN_PERSISTENCE:
         return 'A'
     if score >= TIER_B_MIN_SCORE and drift >= TIER_B_MIN_DRIFT_300S and persistence >= TIER_B_MIN_PERSISTENCE:
         return 'B'
@@ -329,10 +334,18 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
             exit_reason = 'trailing_exit'
             exit_category = 'TRAIL'
             trade_state = 'TRAILING'
+        elif (
+            time_in_trade_minutes >= 20
+            and highest_pnl >= 0.3
+            and pnl_percent < 0.1
+            and drift_300s < 0
+        ):
+            exit_reason = 'failed_continuation'
+            exit_category = 'FC'
         elif time_in_trade_minutes >= timeout_limit and pnl_percent <= 0:
             exit_reason = 'timeout'
             exit_category = 'TIME'
-        elif time_in_trade_minutes >= 30 and abs(pnl_percent) < NO_MOVE_THRESHOLD_PCT:
+        elif time_in_trade_minutes >= NO_MOVE_MINUTES and highest_pnl < NO_MOVE_THRESHOLD_PCT and pnl_percent < NO_MOVE_THRESHOLD_PCT:
             exit_reason = 'no_move'
             exit_category = 'NM'
         elif de_risked and move_character in {'fading', 'stalling'} and pnl_percent < 0.25:
