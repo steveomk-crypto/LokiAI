@@ -351,12 +351,12 @@ def _is_recent(updated_at: str | None, threshold_seconds: int) -> bool:
 
 def _canonical_display_state(entry: dict[str, Any]) -> str:
     state = str(entry.get('state') or '').lower()
+    if any(term in state for term in ('running', 'data healthy')) or bool(entry.get('running')):
+        return 'RUNNING'
     if entry.get('dependency_health') == 'blocked':
         return 'BLOCKED'
     if entry.get('last_error') and 'blocked by dependencies' not in str(entry.get('last_error')).lower():
         return 'FAILED'
-    if any(term in state for term in ('running', 'data healthy')):
-        return 'RUNNING'
     if any(term in state for term in ('active recently', 'recently completed', 'available')):
         return 'ACTIVE'
     if 'degraded' in state or 'stale' in state:
