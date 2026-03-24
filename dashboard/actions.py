@@ -9,6 +9,7 @@ from typing import Tuple
 from .runtime_registry import COMPONENTS
 from .data import read_runtime_controls
 from .modes import get_modes, set_mode
+from scripts.x_actions import generate_draft, inspect_x, post_latest_queue, queue_latest_draft
 
 
 def run_root() -> Path:
@@ -97,6 +98,22 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
 
     if component_id == 'position_manager' and action == 'start':
         return run_script('run_market_cycle.sh')
+
+    if component_id == 'x_autoposter' and action == 'draft':
+        result = generate_draft('build_in_public')
+        return True, result['message']
+
+    if component_id == 'x_autoposter' and action == 'queue':
+        result = queue_latest_draft()
+        return True, result['message']
+
+    if component_id == 'x_autoposter' and action == 'post_now':
+        result = post_latest_queue()
+        return True, result['message']
+
+    if component_id == 'x_autoposter' and action == 'inspect':
+        result = inspect_x()
+        return True, f"X state: mode={result['state'].get('mode')} drafts={len(result.get('recentDrafts') or [])} queue={len(result.get('recentQueue') or [])}"
 
     if component_id == 'performance_analyzer' and action == 'run_outputs':
         return run_script('run_performance_analyzer.sh')

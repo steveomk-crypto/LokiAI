@@ -315,8 +315,13 @@ def operator_view():
                                     if str(item.get('desired_state')) == 'disabled':
                                         disable_btn.disable()
                                     disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
-                                    run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
-                                    run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                    if item['group'] == 'x_autoposter':
+                                        ui.button('Draft').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'draft'))
+                                        ui.button('Queue').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'queue'))
+                                        ui.button('Post').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'post_now'))
+                                    else:
+                                        run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                        run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                     inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
                                     inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
