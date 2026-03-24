@@ -11,6 +11,8 @@ import os
 
 from dashboard.runtime_registry import COMPONENTS
 from dashboard.modes import get_modes
+from scripts.x_state import get_x_state
+from scripts.telegram_lanes import load_telegram_lanes
 
 WORKDIR = Path('/home/lokiai/.openclaw/workspace')
 CACHE_DIR = WORKDIR / 'cache'
@@ -368,6 +370,8 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
     ws_state = load_coinbase_ws_state()
     market_state = load_market_state()
     loop_info = build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log') if 'main_loop' in runtime else {}
+    x_state = get_x_state() if 'x_autoposter' in runtime else {}
+    telegram_lanes = load_telegram_lanes() if 'telegram_sender' in runtime else {}
 
     if 'coinbase_feed' in runtime and ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
         runtime['coinbase_feed']['running'] = True
@@ -380,6 +384,14 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
         runtime['main_loop']['state'] = 'active recently'
     if 'main_loop' in runtime and loop_info.get('last_error'):
         runtime['main_loop']['last_error'] = loop_info.get('last_error')
+    if 'x_autoposter' in runtime:
+        runtime['x_autoposter']['state'] = str(x_state.get('mode') or 'draft_only')
+        runtime['x_autoposter']['last_success_at'] = x_state.get('lastPostAt') or x_state.get('lastDraftAt')
+        runtime['x_autoposter']['last_result'] = x_state.get('lastResult')
+    if 'telegram_sender' in runtime:
+        lane_count = len((telegram_lanes.get('lanes') or {})) if isinstance(telegram_lanes, dict) else 0
+        runtime['telegram_sender']['state'] = f'{lane_count} lanes configured' if lane_count else 'lanes missing'
+        runtime['telegram_sender']['last_result'] = f'{lane_count} lanes ready' if lane_count else 'lane config missing'
 
     return loop_info
 

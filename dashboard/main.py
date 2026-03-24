@@ -306,6 +306,7 @@ def operator_view():
                                 ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
                                 ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta')
                                 ui.label(_format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–').classes('signal-meta')
+                                ui.label(str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')).classes('signal-meta')
                                 with ui.row().classes('operator-actions'):
                                     enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
                                     if str(item.get('desired_state')) == 'enabled':
