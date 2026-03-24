@@ -268,44 +268,46 @@ def operator_view():
                                 inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
                                 inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
-                with ui.column().classes('w-full gap-4'):
+                with ui.column().classes('w-full gap-3'):
                     ui.label('System Controls').classes('panel-title')
-                    with ui.row().classes('w-full gap-2 wrap'):
-                        ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'start'))
-                        ui.button('Run Cycle Now').props('color=positive outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
-                        ui.button('Stop Automation').props('color=negative outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'stop'))
-                        ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
-                        ui.button('Run Reports').props('color=secondary outline').classes('min-w-[160px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
-                        ui.button('Inspect Loop Log').props('color=secondary outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'inspect'))
-
-                    ui.label('Core Systems').classes('panel-title')
                     with ui.card().classes('glass-panel w-full p-3'):
-                        with ui.column().classes('w-full gap-1'):
-                            for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
-                                compact_row(component_id)
+                        with ui.row().classes('w-full items-center gap-2 wrap'):
+                            ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[150px]').on('click', lambda: _control_action('main_loop', 'start'))
+                            ui.button('Run Cycle').props('color=positive outline').classes('min-w-[130px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
+                            ui.button('Stop Automation').props('color=negative outline').classes('min-w-[150px]').on('click', lambda: _control_action('main_loop', 'stop'))
+                            ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[130px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
+                            ui.button('Run Reports').props('color=secondary outline').classes('min-w-[130px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
+                            ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
-                    ui.label('Outputs & Automation').classes('panel-title')
-                    with ui.card().classes('glass-panel w-full p-3'):
-                        with ui.column().classes('w-full gap-1'):
-                            for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
-                                item = runtime_map.get(component_id)
-                                if not item:
-                                    continue
-                                with ui.row().classes('w-full items-center justify-between gap-2 wrap telemetry-row'):
-                                    ui.label(str(item['label'])).classes('font-semibold min-w-[180px]')
-                                    ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
-                                    ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta min-w-[120px]')
-                                    with ui.row().classes('gap-1 items-center justify-end wrap'):
-                                        enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[90px]')
-                                        if str(item.get('desired_state')) == 'enabled':
-                                            enable_btn.disable()
-                                        enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
-                                        disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[90px]')
-                                        if str(item.get('desired_state')) == 'disabled':
-                                            disable_btn.disable()
-                                        disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
-                                        inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
-                                        inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                    with ui.row().classes('w-full gap-4 items-start wrap'):
+                        with ui.card().classes('glass-panel flex-1 min-w-[520px] p-3'):
+                            ui.label('Core Systems').classes('panel-title')
+                            with ui.column().classes('w-full gap-1 mt-2'):
+                                for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
+                                    compact_row(component_id)
+
+                        with ui.card().classes('glass-panel flex-1 min-w-[420px] p-3'):
+                            ui.label('Outputs & Automation').classes('panel-title')
+                            with ui.column().classes('w-full gap-1 mt-2'):
+                                for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
+                                    item = runtime_map.get(component_id)
+                                    if not item:
+                                        continue
+                                    with ui.row().classes('w-full items-center justify-between gap-2 wrap telemetry-row'):
+                                        ui.label(str(item['label'])).classes('font-semibold min-w-[150px]')
+                                        ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
+                                        ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta min-w-[90px]')
+                                        with ui.row().classes('gap-1 items-center justify-end wrap'):
+                                            enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[82px]')
+                                            if str(item.get('desired_state')) == 'enabled':
+                                                enable_btn.disable()
+                                            enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
+                                            disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[82px]')
+                                            if str(item.get('desired_state')) == 'disabled':
+                                                disable_btn.disable()
+                                            disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
+                                            inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[82px]')
+                                            inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                     with ui.expansion('Advanced Components').classes('w-full'):
                         with ui.column().classes('w-full gap-2 mt-2'):

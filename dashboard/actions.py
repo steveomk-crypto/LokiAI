@@ -76,7 +76,7 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
         set_mode(component_id, enabled)
         return True, f"{comp.name} {'enabled' if enabled else 'disabled'}"
 
-    if action == 'start' and runtime.get(component_id, {}).get('controls_blocked'):
+    if action == 'start' and component_id != 'main_loop' and runtime.get(component_id, {}).get('controls_blocked'):
         return False, f"Blocked by dependencies: {runtime[component_id].get('blocked_reason')}"
 
     if component_id == 'main_loop':
