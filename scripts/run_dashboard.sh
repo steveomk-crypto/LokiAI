@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd /data/.openclaw/workspace
-export PYTHONPATH="/data/.openclaw/workspace:${PYTHONPATH:-}"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+export PYTHONPATH="$ROOT:${PYTHONPATH:-}"
 PORT_VALUE="${DASHBOARD_PORT:-8500}"
 HOST_VALUE="${DASHBOARD_HOST:-0.0.0.0}"
 
