@@ -153,6 +153,15 @@ def _control_action(group: str, action: str) -> None:
             ok, msg = _stop_pid(str(runtime['paper_trader_v2']['pid_file']))
         else:
             ok, msg = _open_path(root / 'system_logs' / 'paper_trader_v2.log')
+    elif group == 'flatten':
+        if action == 'start':
+            ok, msg = _run_script('flatten_paper_trader.sh')
+            if ok:
+                msg = f'{msg} • flatten job kicked off'
+        elif action == 'stop':
+            ok, msg = _stop_pid(str(runtime['flatten']['pid_file']))
+        else:
+            ok, msg = _open_path(root / 'system_logs' / 'paper_trader_flatten.log')
     elif group == 'operator':
         if action == 'start':
             ok, msg = _run_script('run_dashboard.sh')
@@ -174,6 +183,15 @@ def _control_action(group: str, action: str) -> None:
             ok, msg = _stop_pid(str(runtime['loop']['pid_file']))
         else:
             ok, msg = _open_path(root / 'system_logs' / 'market_loop_cron.log')
+    elif group == 'log_outputs':
+        if action == 'start':
+            ok, msg = _run_script('log_trading_outputs.sh')
+            if ok:
+                msg = f'{msg} • journaling/logging kicked off'
+        elif action == 'stop':
+            ok, msg = _stop_pid(str(runtime['log_outputs']['pid_file']))
+        else:
+            ok, msg = _open_path(root / 'system_logs' / 'log_trading_outputs.log')
     elif group == 'reports':
         ok, msg = _open_path(root / 'performance_reports')
     else:
@@ -329,7 +347,7 @@ def operator_view():
                                     ui.label(str(item['label'])).classes('panel-title')
                                     ui.label(f'Status • {state_text.upper()}').classes(f'panel-subtitle {_status_class(level)}')
                                     meta_bits = []
-                                    if item.get('transient') and item['group'] == 'scanner':
+                                    if item.get('transient') and item['group'] in {'scanner', 'flatten', 'log_outputs'}:
                                         meta_bits.append('One-shot task')
                                     if pid_value:
                                         meta_bits.append(f'PID {pid_value}')
@@ -340,7 +358,7 @@ def operator_view():
                                     ui.label(' • '.join(meta_bits)).classes('signal-meta')
                                 with ui.row().classes('gap-2 items-center wrap'):
                                     if item['group'] != 'reports':
-                                        start_label = 'Run Scan' if item.get('transient') and item['group'] == 'scanner' else 'Start'
+                                        start_label = 'Run Scan' if item.get('transient') and item['group'] == 'scanner' else 'Flatten Now' if item.get('transient') and item['group'] == 'flatten' else 'Log Now' if item.get('transient') and item['group'] == 'log_outputs' else 'Start'
                                         start_btn = ui.button(start_label).props('color=positive unelevated')
                                         if item.get('running') and not item.get('transient'):
                                             start_btn.disable()
