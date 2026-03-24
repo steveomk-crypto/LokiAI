@@ -5,7 +5,7 @@ from importlib.machinery import SourceFileLoader
 from pathlib import Path
 import sys
 
-WORKSPACE = Path('/data/.openclaw/workspace')
+WORKSPACE = Path(__file__).resolve().parent.parent
 sys.path.append(str(WORKSPACE))
 SOL_PAPER_TRADER_PATH = WORKSPACE / 'skills' / 'sol-paper-trader' / 'sol_paper_trader.py'
 OPEN_POSITIONS_PATH = WORKSPACE / 'sol_paper_trades' / 'open_positions.json'
