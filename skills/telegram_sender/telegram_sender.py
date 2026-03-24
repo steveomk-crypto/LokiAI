@@ -560,6 +560,66 @@ def _build_snapshot_line(current: Dict, previous: Dict, loop_health: str) -> str
 
 
 
+def _build_cycle_summary(timestamp_text: str, insight_line: str, mode_line: str, guard_line: str, summary_line: str, signal_lines: List[str], run_open_positions: List[Dict], position_delta_text: str, tier_stats: Dict, tier_guard: Dict) -> str:
+    lines = [
+        f"MARKET CYCLE — {timestamp_text}",
+        "",
+        "Status",
+        f"{insight_line} | {mode_line} | {guard_line}",
+        "",
+        "Market",
+        summary_line,
+        "",
+        "Top signals",
+        *(signal_lines[:3] or ["No fresh scanner signals."]),
+        "",
+        "Positions",
+        _format_active_positions(run_open_positions),
+        "",
+        "Changes",
+        position_delta_text or "No material change.",
+    ]
+    risk_text = _format_tier_breakdown(tier_stats, tier_guard)
+    if risk_text:
+        lines.extend(["", "Risk", risk_text])
+    return "\n".join(lines).strip()
+
+
+def _build_position_event(timestamp_text: str, entries: List[str], exits: List[str], current_metrics: Dict, trade_exit_text: str) -> str:
+    if entries:
+        token = entries[0]
+        return "\n".join([
+            f"POSITION OPEN — {timestamp_text}",
+            "",
+            f"{token} opened.",
+            "",
+            "Impact",
+            f"Open {current_metrics.get('open_positions', 0)} | Realized {_format_usd(current_metrics.get('realized_pnl_usd', 0.0), show_sign=True)} | Unrealized {_format_usd(current_metrics.get('unrealized_pnl_usd', 0.0), show_sign=True)}",
+        ]).strip()
+    token = exits[0] if exits else '?'
+    return "\n".join([
+        f"POSITION CLOSED — {timestamp_text}",
+        "",
+        f"{token} changed state.",
+        trade_exit_text,
+        "",
+        "Impact",
+        f"Open {current_metrics.get('open_positions', 0)} | Realized {_format_usd(current_metrics.get('realized_pnl_usd', 0.0), show_sign=True)} | Unrealized {_format_usd(current_metrics.get('unrealized_pnl_usd', 0.0), show_sign=True)}",
+    ]).strip()
+
+
+def _build_risk_alert(timestamp_text: str, guard_line: str, current_metrics: Dict, loop_health: str) -> str:
+    return "\n".join([
+        f"RISK ALERT — {timestamp_text}",
+        "",
+        guard_line,
+        loop_health,
+        "",
+        "Current state",
+        f"Open {current_metrics.get('open_positions', 0)} | Realized {_format_usd(current_metrics.get('realized_pnl_usd', 0.0), show_sign=True)} | Unrealized {_format_usd(current_metrics.get('unrealized_pnl_usd', 0.0), show_sign=True)}",
+    ]).strip()
+
+
 def _build_cycle_message(cycle_number: int, prev_state: Dict) -> Dict:
     open_positions = _load_json_list(OPEN_POSITIONS_PATH)
     trades = _load_json_list(TRADES_LOG_PATH)
@@ -668,48 +728,27 @@ def _build_cycle_message(cycle_number: int, prev_state: Dict) -> Dict:
     new_alerts = alerts[prev_alert_count:]
     alerts_text = _format_alerts(list(reversed(new_alerts))) if new_alerts else "No new alerts."
 
-    short_signal_lines = signal_lines[:3]
-    lines = [
-        f"SYSTEM INSIGHT — {timestamp_text}",
-        insight_line,
-        mode_line,
-        guard_line,
-    ]
-    if baseline_str:
-        lines.append(f"Baseline: {baseline_str}")
-    lines.extend([
-        "",
-        "📊 Market",
-        summary_line,
-        "",
-        "🔥 Signals",
-        *short_signal_lines,
-        "",
-        "📈 Positions",
-        _format_active_positions(run_open_positions),
-    ])
-    if carryover_open_positions:
-        lines.extend([
-            "",
-            "Carryover",
-            _format_active_positions(carryover_open_positions),
-        ])
-    lines.extend([
-        "",
-        "Changes",
-        position_delta_text or "No material change.",
-        "",
-        "⚠️ Risk",
-        _format_tier_breakdown(tier_stats, tier_guard),
-        "",
-        "Alerts",
-        alerts_text,
-        "",
-        "Recent exits",
-        trade_exit_text,
-    ])
+    summary_signature = {
+        'open_tokens': current_tokens,
+        'top_movers': [m['token'] for m in top_movers[:3]],
+        'guard_line': guard_line,
+        'summary_line': summary_line,
+        'position_delta_text': position_delta_text,
+        'trade_exit_text': trade_exit_text,
+    }
 
-    message = "\n".join(lines).strip()
+    message_type = 'cycle_summary'
+    if entries or exits or new_trades:
+        message_type = 'position_event'
+        message = _build_position_event(timestamp_text, entries, exits, current_metrics, trade_exit_text)
+    elif str(prev_state.get('guard_line') or '') != guard_line or 'Issue:' in summary_line:
+        message_type = 'risk_alert'
+        message = _build_risk_alert(timestamp_text, guard_line, current_metrics, loop_health)
+    else:
+        if prev_state.get('summary_signature') == summary_signature:
+            message = ''
+        else:
+            message = _build_cycle_summary(timestamp_text, insight_line, mode_line, guard_line, summary_line, signal_lines, run_open_positions, position_delta_text, tier_stats, tier_guard)
 
     new_state = {
         'cycle_count': cycle_number,
@@ -717,11 +756,15 @@ def _build_cycle_message(cycle_number: int, prev_state: Dict) -> Dict:
         'trade_count': len(run_trades),
         'open_tokens': current_tokens,
         'top_movers': [m['token'] for m in top_movers],
-        'alert_count': len(alerts)
+        'alert_count': len(alerts),
+        'guard_line': guard_line,
+        'last_message_type': message_type,
+        'summary_signature': summary_signature,
     }
 
     return {
         'message': message,
+        'message_type': message_type,
         'state_update': new_state
     }
 
@@ -759,6 +802,14 @@ def telegram_sender() -> Dict:
     prev_state = _load_state()
     cycle_counter = prev_state.get('cycle_count', 0) + 1
     payload = _build_cycle_message(cycle_counter, prev_state)
+    if not payload['message']:
+        return {
+            'cycle_count': cycle_counter,
+            'message_preview': 'Suppressed duplicate cycle summary',
+            'telegram_response': None,
+            'message_type': payload.get('message_type') or 'cycle_summary',
+        }
+
     response = send_telegram_message(payload['message'])
 
     success_ts = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
@@ -772,7 +823,8 @@ def telegram_sender() -> Dict:
     return {
         'cycle_count': cycle_counter,
         'message_preview': payload['message'].split('\n')[0],
-        'telegram_response': response
+        'telegram_response': response,
+        'message_type': payload.get('message_type') or 'cycle_summary',
     }
 
 
