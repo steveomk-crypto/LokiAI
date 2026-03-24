@@ -221,31 +221,21 @@ def stream_view():
                     ui.label('No live funds active.').classes('text-sm panel-row compact-copy')
                     ui.label('System focus: stability, control, signal quality.').classes('text-sm panel-row compact-copy')
                     ui.separator().classes('my-1 opacity-20')
-                    category_titles = {
-                        'data_plane': 'Data Plane',
-                        'trading_plane': 'Trading Plane',
-                        'orchestration': 'Orchestration',
-                        'control_plane': 'Control Plane',
-                        'output_plane': 'Output Plane',
-                    }
-                    for category, defs in components_by_category().items():
-                        ui.label(category_titles.get(category, category.replace('_', ' ').title())).classes('telemetry-key compact-key mt-1')
-                        for comp in defs[:3]:
-                            item = runtime.get(comp.id)
-                            if not item:
-                                continue
-                            status_text = str(item.get('display_state') or item.get('state', 'unknown')).upper()
-                            if comp.id == 'main_loop':
-                                status_text = f'{loop_status} • {loop_log_time}'
-                            ui.label(f"{comp.name}: {status_text}").classes('telemetry-value compact-value')
-                    ui.label('Last cycle').classes('telemetry-key compact-key mt-1')
-                    ui.label(loop_cycle_status).classes('telemetry-value compact-value')
-                    ui.label('Last flatten').classes('telemetry-key compact-key mt-1')
-                    ui.label(last_manual_flatten).classes('telemetry-value compact-value')
-                    ui.label('Active V2 slots').classes('telemetry-key compact-key mt-1')
-                    ui.label(str(len(open_positions_v2))).classes('telemetry-value compact-value')
-                    ui.label('Closed V2 trades').classes('telemetry-key compact-key mt-1')
-                    ui.label(str(v2_audit.get('closed_trade_count', 0))).classes('telemetry-value compact-value')
+                    ui.label('Core Systems').classes('telemetry-key compact-key mt-1')
+                    ui.label(f'Feed: {str(runtime.get("coinbase_feed", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                    ui.label(f'Scanner: {str(runtime.get("market_scanner", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                    ui.label(f'Trader: {str(runtime.get("paper_trader_v2", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                    ui.label('Cycle State').classes('telemetry-key compact-key mt-1')
+                    ui.label(f'Main loop: {loop_status}').classes('telemetry-value compact-value')
+                    ui.label(f'Last cycle: {loop_cycle_status}').classes('telemetry-value compact-value')
+                    ui.label(f'Loop log: {loop_log_time}').classes('telemetry-value compact-value')
+                    ui.label('Trading State').classes('telemetry-key compact-key mt-1')
+                    ui.label(f'Active V2 slots: {len(open_positions_v2)}').classes('telemetry-value compact-value')
+                    ui.label(f'Closed V2 trades: {v2_audit.get("closed_trade_count", 0)}').classes('telemetry-value compact-value')
+                    ui.label(f'Last flatten: {last_manual_flatten}').classes('telemetry-value compact-value')
+                    ui.label('Distribution').classes('telemetry-key compact-key mt-1')
+                    ui.label(f'Broadcaster: {str(runtime.get("market_broadcaster", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                    ui.label(f'Reports: {str(runtime.get("performance_analyzer", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
 
                 with panel('Research Surface', 'Current intelligence layer', 'compact-right-panel'):
                     ui.label('Atlas Pulse').classes('font-semibold compact-headline')
@@ -276,11 +266,11 @@ def run():
         '''
         <style>
             .stream-root { overflow: hidden; }
-            .stream-stage { height: 100vh; max-height: 100vh; box-sizing: border-box; overflow: hidden; }
-            .stage-top { flex: 0 0 78px; }
-            .stage-main { flex: 1 1 auto; min-height: 0; }
-            .stream-left, .stream-right { width: 20%; min-width: 20%; max-width: 20%; }
-            .stream-center { width: 60%; min-width: 60%; max-width: 60%; }
+            .stream-stage { min-height: 100vh; box-sizing: border-box; overflow: auto; }
+            .stage-top { flex: 0 0 auto; }
+            .stage-main { flex: 1 1 auto; min-height: 0; align-items: stretch; }
+            .stream-left, .stream-right { width: 22%; min-width: 22%; max-width: 22%; }
+            .stream-center { width: 56%; min-width: 56%; max-width: 56%; }
             .cockpit-hero {
                 position: relative;
                 overflow: hidden;
@@ -298,7 +288,7 @@ def run():
             .candle-shell {
                 width: 100%;
                 height: 100%;
-                min-height: 520px;
+                min-height: 420px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
