@@ -88,6 +88,7 @@ def stream_view():
     feed_status = 'RUNNING' if runtime['websocket']['running'] else 'STOPPED'
     trader_status = 'RUNNING' if runtime['paper_trader_v2']['running'] else 'STOPPED'
     loop_status = 'RUNNING' if runtime['loop']['running'] else 'STOPPED'
+    loop_cycle_status = 'RECENT' if state.get('main_loop_status', {}).get('last_cycle_started_at') else 'NONE'
     scanner_log_time = _fmt_meta_ts((runtime.get('scanner') or {}).get('log_meta', {}).get('updated_at'))
     loop_log_time = _fmt_meta_ts((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))
     flatten_status = 'RUNNING' if runtime['flatten']['running'] else 'IDLE'
@@ -222,8 +223,10 @@ def stream_view():
                     ui.label(scanner_status).classes('telemetry-value compact-value')
                     ui.label('Coinbase feed').classes('telemetry-key compact-key mt-1')
                     ui.label(feed_status).classes('telemetry-value compact-value')
-                    ui.label('Main loop').classes('telemetry-key compact-key mt-1')
+                    ui.label('Loop daemon').classes('telemetry-key compact-key mt-1')
                     ui.label(f'{loop_status} • {loop_log_time}').classes('telemetry-value compact-value')
+                    ui.label('Last cycle').classes('telemetry-key compact-key mt-1')
+                    ui.label(loop_cycle_status).classes('telemetry-value compact-value')
                     ui.label('Flatten job').classes('telemetry-key compact-key mt-1')
                     ui.label(f'{flatten_status} • {flatten_log_time}').classes('telemetry-value compact-value')
                     ui.label('Last flatten').classes('telemetry-key compact-key mt-1')
