@@ -263,7 +263,8 @@ def operator_view():
                                     stop_btn.disable()
                                 stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
                             elif item.get('kind') == 'job':
-                                if item.get('start_script') and item.get('dependency_health') != 'blocked':
+                                can_run_job = bool(item.get('start_script')) and (item.get('dependency_health') != 'blocked' or item['group'] in {'paper_trader_v2', 'position_manager', 'telegram_sender', 'x_autoposter', 'performance_analyzer'})
+                                if can_run_job:
                                     run_btn = ui.button(item.get('start_label') or 'Run').props('size=sm color=positive unelevated').classes('min-w-[78px]')
                                     run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                 if item.get('pid_file'):
