@@ -369,6 +369,9 @@ def read_runtime_controls() -> dict[str, dict[str, Any]]:
         entry['kind'] = comp.kind
         entry['dependencies'] = comp.dependencies
         entry['notes'] = comp.notes
+        entry['start_script'] = comp.start_script
+        entry['inspect_target'] = str(comp.inspect_target) if comp.inspect_target else None
+        entry['start_label'] = comp.start_label
         runtime[comp_id] = entry
 
     ws_state = load_coinbase_ws_state()
@@ -380,6 +383,28 @@ def read_runtime_controls() -> dict[str, dict[str, Any]]:
         runtime['market_scanner']['state'] = 'recently completed'
     if 'main_loop' in runtime and _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
         runtime['main_loop']['state'] = 'active recently'
+
+    for comp_id, entry in runtime.items():
+        deps = entry.get('dependencies') or []
+        if not deps:
+            entry['dependency_health'] = 'clear'
+            entry['dependency_blockers'] = []
+            continue
+        blockers = []
+        for dep in deps:
+            dep_entry = runtime.get(dep)
+            dep_state = str((dep_entry or {}).get('state') or '').lower()
+            dep_running = bool((dep_entry or {}).get('running'))
+            if not dep_entry:
+                blockers.append(dep)
+            elif dep_running:
+                continue
+            elif any(term in dep_state for term in ('running', 'recently completed', 'active recently', 'data healthy', 'available')):
+                continue
+            else:
+                blockers.append(dep)
+        entry['dependency_health'] = 'blocked' if blockers else 'clear'
+        entry['dependency_blockers'] = blockers
 
     return runtime
 

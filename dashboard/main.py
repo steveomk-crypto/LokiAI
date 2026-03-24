@@ -350,7 +350,8 @@ def operator_view():
                                             ui.label(f"{item.get('kind', 'component').upper()} • Status • {state_text.upper()}").classes(f'panel-subtitle {_status_class(level)}')
                                             meta_bits = []
                                             if item.get('dependencies'):
-                                                meta_bits.append('deps: ' + ', '.join(item['dependencies']))
+                                                dep_text = 'deps ok' if item.get('dependency_health') == 'clear' else 'deps blocked: ' + ', '.join(item.get('dependency_blockers') or [])
+                                                meta_bits.append(dep_text)
                                             if pid_value:
                                                 meta_bits.append(f'PID {pid_value}')
                                             if log_meta:

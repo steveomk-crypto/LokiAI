@@ -78,6 +78,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['paper_trader_v2'],
         notes='Lifecycle/risk follow-up on open positions.',
+        inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
     ),
     'main_loop': ComponentDef(
         id='main_loop',
@@ -118,6 +119,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['market_scanner'],
         notes='Builds posting/report output from scanner state.',
+        inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
     ),
     'telegram_sender': ComponentDef(
         id='telegram_sender',
@@ -127,6 +129,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['market_broadcaster'],
         notes='Pushes messaging updates downstream.',
+        inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
     ),
     'x_autoposter': ComponentDef(
         id='x_autoposter',
@@ -136,6 +139,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['market_broadcaster'],
         notes='Optional posting layer.',
+        inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
     ),
     'performance_analyzer': ComponentDef(
         id='performance_analyzer',
@@ -146,6 +150,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         outputs=[WORKSPACE / 'performance_reports'],
         dependencies=['paper_trader_v2'],
         notes='Generates report artifacts.',
+        inspect_target=WORKSPACE / 'performance_reports',
     ),
     'sol_shadow_logger': ComponentDef(
         id='sol_shadow_logger',
@@ -155,6 +160,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=[],
         notes='Sidecar logging path; should not define core stack health.',
+        inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
     ),
 }
 
