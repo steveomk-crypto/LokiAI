@@ -131,9 +131,9 @@ def operator_view():
                 with ui.row().classes('gap-3 items-center wrap'):
                     _pill('MODE • REBUILD / PAPER ONLY', 'info')
                     _pill(f"SCANNER DATA • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
-                    _pill(f"SCANNER JOB • {'RUNNING' if runtime['scanner']['running'] else 'IDLE'}", 'healthy' if runtime['scanner']['running'] else 'info')
+                    _pill(f"SCANNER JOB • {'RUNNING' if runtime['market_scanner']['running'] else 'IDLE'}", 'healthy' if runtime['market_scanner']['running'] else 'info')
                     loop_recent = bool(loop_info.get('last_cycle_started_at'))
-                    loop_mode = 'RUNNING' if runtime['loop']['running'] else 'ACTIVE' if loop_recent else 'IDLE'
+                    loop_mode = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_recent else 'IDLE'
                     loop_mode_level = 'healthy' if loop_mode in {'RUNNING', 'ACTIVE'} else 'warning'
                     _pill(f"MAIN LOOP • {loop_mode}", loop_mode_level)
                     _pill(f"LOOP LOG • {_format_meta_time((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))}", 'info')
@@ -144,8 +144,8 @@ def operator_view():
             with _panel('System Health', 'Immediate machine state'):
                 _telemetry_row('Scanner last snapshot', _fmt_ts(scanner_dt), scanner_class)
                 _telemetry_row('Scanner data freshness', scanner_text, scanner_class)
-                _telemetry_row('Scanner job', 'running' if runtime['scanner']['running'] else 'idle', 'status-healthy' if runtime['scanner']['running'] else 'status-info')
-                _telemetry_row('Loop daemon resident', 'running' if runtime['loop']['running'] else 'stopped', 'status-healthy' if runtime['loop']['running'] else 'status-danger')
+                _telemetry_row('Scanner job', 'running' if runtime['market_scanner']['running'] else 'idle', 'status-healthy' if runtime['market_scanner']['running'] else 'status-info')
+                _telemetry_row('Loop daemon resident', 'running' if runtime['main_loop']['running'] else 'stopped', 'status-healthy' if runtime['main_loop']['running'] else 'status-danger')
                 _telemetry_row('Last cycle start', loop_info.get('last_cycle_started_at') or '–', 'status-healthy' if loop_info.get('last_cycle_started_at') else 'status-warning')
                 _telemetry_row('Last cycle end', loop_info.get('last_cycle_completed_at') or '–', 'status-healthy' if loop_info.get('last_cycle_completed_at') else 'status-warning')
                 _telemetry_row('Last task started', loop_info.get('last_task') or '–')

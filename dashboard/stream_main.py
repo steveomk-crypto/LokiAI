@@ -85,18 +85,18 @@ def stream_view():
     v2_audit = state.get('paper_trader_v2_audit', {})
     social_pulse = state.get('social_intel_pulse', {})
     runtime = read_runtime_controls()
-    scanner_status = 'RUNNING' if runtime['scanner']['running'] else 'IDLE'
-    feed_status = 'RUNNING' if runtime['websocket']['running'] else 'STOPPED'
+    scanner_status = 'RUNNING' if runtime['market_scanner']['running'] else 'IDLE'
+    feed_status = 'RUNNING' if runtime['coinbase_feed']['running'] else 'STOPPED'
     trader_status = 'RUNNING' if runtime['paper_trader_v2']['running'] else 'STOPPED'
     loop_cycle_status = 'RECENT' if state.get('main_loop_status', {}).get('last_cycle_started_at') else 'NONE'
-    loop_status = 'RUNNING' if runtime['loop']['running'] else 'ACTIVE' if loop_cycle_status == 'RECENT' else 'IDLE'
-    scanner_log_time = _fmt_meta_ts((runtime.get('scanner') or {}).get('log_meta', {}).get('updated_at'))
-    loop_log_time = _fmt_meta_ts((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))
+    loop_status = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_cycle_status == 'RECENT' else 'IDLE'
+    scanner_log_time = _fmt_meta_ts((runtime.get('market_scanner') or {}).get('log_meta', {}).get('updated_at'))
+    loop_log_time = _fmt_meta_ts((runtime.get('main_loop') or {}).get('log_meta', {}).get('updated_at'))
     flatten_status = 'RUNNING' if runtime['flatten']['running'] else 'IDLE'
     flatten_log_time = _fmt_meta_ts((runtime.get('flatten') or {}).get('log_meta', {}).get('updated_at'))
     last_manual_flatten = _fmt_meta_ts((v2_audit or {}).get('last_manual_flatten_at'))
-    log_outputs_status = 'RUNNING' if runtime['log_outputs']['running'] else 'IDLE'
-    log_outputs_time = _fmt_meta_ts((runtime.get('log_outputs') or {}).get('log_meta', {}).get('updated_at'))
+    log_outputs_status = 'RUNNING' if runtime.get('market_broadcaster', {}).get('running') else 'IDLE'
+    log_outputs_time = _fmt_meta_ts((runtime.get('market_broadcaster') or {}).get('log_meta', {}).get('updated_at'))
 
     with ui.column().classes('stream-stage w-full h-screen gap-2 p-3'):
         with ui.card().classes('top-bar w-full stream-hero stage-top'):
