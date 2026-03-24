@@ -358,6 +358,10 @@ def operator_view():
                                                 meta_bits.append(f'Log {log_updated}')
                                             if item.get('notes'):
                                                 meta_bits.append(str(item['notes']))
+                                            if item.get('last_success_at'):
+                                                meta_bits.append('last success: ' + _format_meta_time(item.get('last_success_at')))
+                                            if item.get('last_error'):
+                                                meta_bits.append('last error: ' + str(item.get('last_error')))
                                             if not meta_bits:
                                                 meta_bits.append('No runtime metadata')
                                             ui.label(' • '.join(meta_bits)).classes('signal-meta')
@@ -367,6 +371,8 @@ def operator_view():
                                                 start_label = 'Run Scan'
                                             start_btn = ui.button(start_label).props('color=positive unelevated')
                                             if item.get('running') and item.get('kind') == 'service':
+                                                start_btn.disable()
+                                            if item.get('controls_blocked'):
                                                 start_btn.disable()
                                             start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                             stop_btn = ui.button('Stop').props('color=negative outline')
