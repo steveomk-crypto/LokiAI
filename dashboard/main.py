@@ -229,7 +229,7 @@ def operator_view():
                 _telemetry_row('Scanner last snapshot', _fmt_ts(scanner_dt), scanner_class)
                 _telemetry_row('Scanner data freshness', scanner_text, scanner_class)
                 _telemetry_row('Scanner service', 'running' if runtime['scanner']['running'] else 'stopped', 'status-healthy' if runtime['scanner']['running'] else 'status-info')
-                _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)))
+                _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)), 'status-warning' if int(metrics.get('total_signals', 0) or 0) == 0 else 'status-healthy')
                 _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
                 _telemetry_row('Last websocket message', _fmt_ts(ws_dt), ws_class)
                 _telemetry_row('Tracked Coinbase products', str(ws_state.get('tracked_products', 0)))
