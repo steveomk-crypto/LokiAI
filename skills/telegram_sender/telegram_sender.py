@@ -668,43 +668,44 @@ def _build_cycle_message(cycle_number: int, prev_state: Dict) -> Dict:
     new_alerts = alerts[prev_alert_count:]
     alerts_text = _format_alerts(list(reversed(new_alerts))) if new_alerts else "No new alerts."
 
+    short_signal_lines = signal_lines[:3]
     lines = [
-        "SYSTEM INSIGHT:",
+        f"SYSTEM INSIGHT — {timestamp_text}",
         insight_line,
         mode_line,
         guard_line,
     ]
     if baseline_str:
-        lines.append(f"Run baseline: {baseline_str}")
+        lines.append(f"Baseline: {baseline_str}")
     lines.extend([
         "",
-        f"📊 Market state — {timestamp_text}",
+        "📊 Market",
         summary_line,
         "",
-        "🔥 Signals:",
-        *signal_lines,
+        "🔥 Signals",
+        *short_signal_lines,
         "",
-        "📈 Positions (this run):",
+        "📈 Positions",
         _format_active_positions(run_open_positions),
     ])
     if carryover_open_positions:
         lines.extend([
             "",
-            "Carryover positions:",
+            "Carryover",
             _format_active_positions(carryover_open_positions),
         ])
     lines.extend([
         "",
-        "Changes:",
-        position_delta_text or "No run-position changes.",
+        "Changes",
+        position_delta_text or "No material change.",
         "",
-        "⚠️ Risk:",
+        "⚠️ Risk",
         _format_tier_breakdown(tier_stats, tier_guard),
         "",
-        "Alerts:",
+        "Alerts",
         alerts_text,
         "",
-        "Recent exits:",
+        "Recent exits",
         trade_exit_text,
     ])
 
