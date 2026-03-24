@@ -159,6 +159,8 @@ def operator_view():
                 _telemetry_row('Mode', market_state.get('mode', '–'))
 
             with _panel('Action Feed', 'Latest operator and system results'):
+                ui.label(LAST_ACTION_RESULT['message']).classes('telemetry-value font-semibold')
+                ui.separator().classes('my-2 opacity-20')
                 if not state['status_flags'] and not loop_info.get('last_error'):
                     ui.label('No active warnings').classes('status-healthy font-semibold')
                 for flag in state['status_flags'][:4]:
@@ -166,9 +168,6 @@ def operator_view():
                     ui.label(f"• {flag['message']}").classes(f'text-sm telemetry-row {level_class}')
                 if loop_info.get('last_error'):
                     ui.label(f"• Loop error: {loop_info.get('last_error')}").classes('text-sm telemetry-row status-warning')
-                ui.separator().classes('my-2 opacity-20')
-                ui.label('Last action result').classes('telemetry-key')
-                ui.label(LAST_ACTION_RESULT['message']).classes('telemetry-value')
 
             with _panel('Top Scanner Opportunities', 'Primary ranked output', 'anchor-panel'):
                 if not top_opps:
@@ -214,15 +213,13 @@ def operator_view():
                             ui.label(f"{_fmt_num(drift, 3)}%").classes(f'font-semibold {drift_cls}')
                             ui.label(f"fresh {_fmt_num(mover.get('freshness_seconds'), 1)}s").classes('signal-meta')
 
-            with _panel('Coinbase Universe Health', 'Tracked live universe status'):
-                health = state['universe_health']
-                _telemetry_row('Tracked products', str(health['tracked_products']))
-                _telemetry_row('Active products', str(health['active_products']))
-                _telemetry_row('Stale products', str(health['stale_products']), 'status-warning' if health['stale_products'] else 'status-healthy')
-                _telemetry_row('Reconnect count', str(health['reconnect_count']))
-                ui.separator().classes('my-2 opacity-20')
-                for row in health['freshest_symbols']:
-                    _telemetry_row(row['product_id'], f"{_fmt_num(row.get('freshness_seconds'), 1)}s")
+            with _panel('Outputs Snapshot', 'What the machine is saying externally'):
+                telegram_state = runtime.get('telegram_sender', {})
+                x_state = runtime.get('x_autoposter', {})
+                _telemetry_row('Telegram', str(telegram_state.get('state') or '–').upper())
+                _telemetry_row('Telegram result', str(telegram_state.get('last_result') or COMPONENT_ACTION_RESULTS.get('telegram_sender') or '–'))
+                _telemetry_row('X mode', str(x_state.get('state') or 'draft_only').upper())
+                _telemetry_row('X result', str(x_state.get('last_result') or COMPONENT_ACTION_RESULTS.get('x_autoposter') or '–'))
 
             with _panel('Websocket Activity History', 'Recent Coinbase snapshots'):
                 if not state['ws_snapshots']:
