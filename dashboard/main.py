@@ -130,32 +130,26 @@ def operator_view():
                     ui.label('Scanner + Coinbase live ingest command surface').classes('hero-subtitle')
                 with ui.row().classes('gap-3 items-center wrap'):
                     _pill('MODE • REBUILD / PAPER ONLY', 'info')
-                    _pill(f"SCANNER DATA • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
-                    _pill(f"SCANNER JOB • {'RUNNING' if runtime['market_scanner']['running'] else 'IDLE'}", 'healthy' if runtime['market_scanner']['running'] else 'info')
+                    _pill(f"AUTOMATION • {'ON' if runtime['main_loop']['running'] else 'OFF'}", 'healthy' if runtime['main_loop']['running'] else 'warning')
+                    _pill(f"SCANNER • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
                     loop_recent = bool(loop_info.get('last_cycle_started_at'))
                     loop_mode = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_recent else 'IDLE'
                     loop_mode_level = 'healthy' if loop_mode in {'RUNNING', 'ACTIVE'} else 'warning'
                     _pill(f"MAIN LOOP • {loop_mode}", loop_mode_level)
-                    _pill(f"LOOP LOG • {_format_meta_time((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))}", 'info')
                     _pill(f'WEBSOCKET • {"ONLINE" if ws_state.get("connected") else "OFFLINE"}', 'healthy' if ws_state.get('connected') else 'danger')
+                    _pill(f'OUTPUTS • TG {str(runtime.get("telegram_sender", {}).get("display_state") or runtime.get("telegram_sender", {}).get("state") or "idle").upper()} • X {str(runtime.get("x_autoposter", {}).get("state") or "draft_only").upper()}', 'info')
                     _pill(f'ALERTS • {alert_count}', 'warning' if alert_count else 'healthy')
 
         with ui.grid(columns=3).classes('w-full gap-4'):
-            with _panel('System Health', 'Immediate machine state'):
-                _telemetry_row('Scanner last snapshot', _fmt_ts(scanner_dt), scanner_class)
-                _telemetry_row('Scanner data freshness', scanner_text, scanner_class)
-                _telemetry_row('Scanner job', 'running' if runtime['market_scanner']['running'] else 'idle', 'status-healthy' if runtime['market_scanner']['running'] else 'status-info')
-                _telemetry_row('Loop daemon resident', 'running' if runtime['main_loop']['running'] else 'stopped', 'status-healthy' if runtime['main_loop']['running'] else 'status-danger')
+            with _panel('Live Machine State', 'What matters right now'):
+                _telemetry_row('Automation', 'running' if runtime['main_loop']['running'] else 'stopped', 'status-healthy' if runtime['main_loop']['running'] else 'status-danger')
+                _telemetry_row('Scanner freshness', scanner_text, scanner_class)
+                _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
                 _telemetry_row('Last cycle start', loop_info.get('last_cycle_started_at') or '–', 'status-healthy' if loop_info.get('last_cycle_started_at') else 'status-warning')
                 _telemetry_row('Last cycle end', loop_info.get('last_cycle_completed_at') or '–', 'status-healthy' if loop_info.get('last_cycle_completed_at') else 'status-warning')
-                _telemetry_row('Last task started', loop_info.get('last_task') or '–')
-                _telemetry_row('Last task completed', loop_info.get('last_task_completed') or '–')
+                _telemetry_row('Last task', loop_info.get('last_task_completed') or loop_info.get('last_task') or '–')
                 _telemetry_row('Open V2 slots', str(len(state.get('open_positions_v2', []))), 'status-warning' if len(state.get('open_positions_v2', [])) else 'status-healthy')
                 _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)), 'status-warning' if int(metrics.get('total_signals', 0) or 0) == 0 else 'status-healthy')
-                _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
-                _telemetry_row('Last websocket message', _fmt_ts(ws_dt), ws_class)
-                _telemetry_row('Tracked Coinbase products', str(ws_state.get('tracked_products', 0)))
-                _telemetry_row('Reconnect count', str(ws_state.get('reconnect_count', 0)))
 
             with _panel('Market State Summary', 'Latest scanner snapshot'):
                 _telemetry_row('Avg top score', _fmt_num(metrics.get('avg_top_score'), 4))
@@ -164,10 +158,10 @@ def operator_view():
                 _telemetry_row('Top opportunities loaded', str(len(top_opps)))
                 _telemetry_row('Mode', market_state.get('mode', '–'))
 
-            with _panel('Alerts / Warnings', 'Operational exceptions'):
-                if not state['status_flags']:
+            with _panel('Action Feed', 'Latest operator and system results'):
+                if not state['status_flags'] and not loop_info.get('last_error'):
                     ui.label('No active warnings').classes('status-healthy font-semibold')
-                for flag in state['status_flags']:
+                for flag in state['status_flags'][:4]:
                     level_class = 'status-danger' if flag['level'] == 'danger' else 'status-warning'
                     ui.label(f"• {flag['message']}").classes(f'text-sm telemetry-row {level_class}')
                 if loop_info.get('last_error'):
