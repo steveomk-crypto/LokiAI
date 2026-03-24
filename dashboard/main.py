@@ -133,6 +133,8 @@ def _control_action(group: str, action: str) -> None:
     if group == 'scanner':
         if action == 'start':
             ok, msg = _run_script('run_coinbase_scanner.sh')
+            if ok:
+                msg = f'{msg} • one-shot scan kicked off'
         elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['scanner']['pid_file']))
         else:
@@ -323,6 +325,8 @@ def operator_view():
                                     ui.label(str(item['label'])).classes('panel-title')
                                     ui.label(f'Status • {state_text.upper()}').classes(f'panel-subtitle {_status_class(level)}')
                                     meta_bits = []
+                                    if item.get('transient') and item['group'] == 'scanner':
+                                        meta_bits.append('One-shot task')
                                     if pid_value:
                                         meta_bits.append(f'PID {pid_value}')
                                     if log_meta:
@@ -332,12 +336,15 @@ def operator_view():
                                     ui.label(' • '.join(meta_bits)).classes('signal-meta')
                                 with ui.row().classes('gap-2 items-center wrap'):
                                     if item['group'] != 'reports':
-                                        start_btn = ui.button('Start').props('color=positive unelevated')
-                                        if item.get('running'):
+                                        start_label = 'Run Scan' if item.get('transient') and item['group'] == 'scanner' else 'Start'
+                                        start_btn = ui.button(start_label).props('color=positive unelevated')
+                                        if item.get('running') and not item.get('transient'):
                                             start_btn.disable()
                                         start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                         stop_btn = ui.button('Stop').props('color=negative outline')
                                         if not item.get('running'):
+                                            stop_btn.disable()
+                                        if item.get('transient') and item['group'] == 'scanner':
                                             stop_btn.disable()
                                         stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
                                     inspect_btn = ui.button('Inspect').props('color=secondary outline')

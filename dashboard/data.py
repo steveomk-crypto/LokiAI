@@ -279,7 +279,7 @@ def _pid_running(pid_path: Path) -> bool:
         return False
 
 
-def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'running', state_stopped: str = 'stopped', log_path: Path | None = None, available: bool | None = None) -> dict[str, Any]:
+def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'running', state_stopped: str = 'stopped', log_path: Path | None = None, available: bool | None = None, transient: bool = False) -> dict[str, Any]:
     running = _pid_running(pid_path) if pid_path else bool(available)
     pid = _pid_value(pid_path) if pid_path else None
     state = state_running if running else state_stopped
@@ -291,6 +291,7 @@ def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'runn
         'pid': pid,
         'log_file': str(log_path) if log_path else None,
         'log_meta': _file_meta(log_path) if log_path else None,
+        'transient': transient,
     }
     return entry
 
@@ -317,7 +318,7 @@ def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
     reports_ready = any((WORKDIR / 'performance_reports').glob('*.md')) if (WORKDIR / 'performance_reports').exists() else False
 
     return {
-        'scanner': _runtime_entry('Scanner Engine', scanner_pid, log_path=scanner_log),
+        'scanner': _runtime_entry('Scanner Engine', scanner_pid, log_path=scanner_log, state_running='running', state_stopped='idle', transient=True),
         'websocket': _runtime_entry('Coinbase Feed', websocket_pid, log_path=websocket_log),
         'paper_trader_v2': _runtime_entry('Paper Trader V2', paper_trader_pid, log_path=trader_log),
         'operator': _runtime_entry('Operator Dashboard', dashboard_pid, log_path=operator_log),
