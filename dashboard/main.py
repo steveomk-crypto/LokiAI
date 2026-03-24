@@ -236,10 +236,10 @@ def operator_view():
                         ui.label(snap.get('timestamp', '–')[-8:]).classes('telemetry-key')
                         ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
 
-            with _panel('Control Surface', 'Operate the system by workflow'):
-                runtime_map = {item['group']: item for item in state['controls_placeholder']}
+        with _panel('Operator Rail', 'Operate the system from a full-width control strip'):
+            runtime_map = {item['group']: item for item in state['controls_placeholder']}
 
-                def compact_row(component_id: str):
+            def compact_row(component_id: str):
                     item = runtime_map.get(component_id)
                     if not item:
                         return
@@ -267,57 +267,56 @@ def operator_view():
                             inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
                             inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
-                with ui.column().classes('w-full gap-3'):
-                    ui.label('System Controls').classes('panel-title')
-                    with ui.card().classes('glass-panel w-full p-3'):
-                        with ui.row().classes('w-full items-center gap-2 wrap'):
-                            start_auto = ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[150px]')
-                            if runtime_map.get('main_loop', {}).get('running'):
-                                start_auto.disable()
-                            start_auto.on('click', lambda: _control_action('main_loop', 'start'))
-                            ui.button('Run Cycle').props('color=positive outline').classes('min-w-[130px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
-                            stop_auto = ui.button('Stop Automation').props('color=negative outline').classes('min-w-[150px]')
-                            if not runtime_map.get('main_loop', {}).get('running'):
-                                stop_auto.disable()
-                            stop_auto.on('click', lambda: _control_action('main_loop', 'stop'))
-                            ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[130px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
-                            ui.button('Run Reports').props('color=secondary outline').classes('min-w-[130px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
-                            ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
+            with ui.column().classes('w-full gap-3'):
+                ui.label('System Controls').classes('panel-title')
+                with ui.row().classes('w-full items-center gap-2 wrap'):
+                    start_auto = ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[150px]')
+                    if runtime_map.get('main_loop', {}).get('running'):
+                        start_auto.disable()
+                    start_auto.on('click', lambda: _control_action('main_loop', 'start'))
+                    ui.button('Run Cycle').props('color=positive outline').classes('min-w-[130px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
+                    stop_auto = ui.button('Stop Automation').props('color=negative outline').classes('min-w-[150px]')
+                    if not runtime_map.get('main_loop', {}).get('running'):
+                        stop_auto.disable()
+                    stop_auto.on('click', lambda: _control_action('main_loop', 'stop'))
+                    ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[130px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
+                    ui.button('Run Reports').props('color=secondary outline').classes('min-w-[130px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
+                    ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
-                    with ui.row().classes('w-full gap-4 items-start no-wrap'):
-                        with ui.card().classes('glass-panel w-1/2 p-3'):
-                            ui.label('Core Systems').classes('panel-title')
-                            with ui.column().classes('w-full gap-1 mt-2'):
-                                for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
-                                    compact_row(component_id)
+                with ui.row().classes('w-full gap-4 items-start no-wrap'):
+                    with ui.column().classes('w-1/2 gap-2'):
+                        ui.label('Core Systems').classes('panel-title')
+                        for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
+                            compact_row(component_id)
 
-                        with ui.card().classes('glass-panel w-1/2 p-3'):
-                            ui.label('Outputs & Automation').classes('panel-title')
-                            with ui.column().classes('w-full gap-1 mt-2'):
-                                for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
-                                    item = runtime_map.get(component_id)
-                                    if not item:
-                                        continue
-                                    with ui.row().classes('w-full items-center justify-between gap-2 telemetry-row'):
-                                        ui.label(str(item['label'])).classes('font-semibold min-w-[140px]')
-                                        ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
-                                        ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta min-w-[80px]')
-                                        with ui.row().classes('gap-1 items-center justify-end'):
-                                            enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
-                                            if str(item.get('desired_state')) == 'enabled':
-                                                enable_btn.disable()
-                                            enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
-                                            disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[78px]')
-                                            if str(item.get('desired_state')) == 'disabled':
-                                                disable_btn.disable()
-                                            disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
-                                            inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
-                                            inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                    with ui.column().classes('w-1/2 gap-2'):
+                        ui.label('Outputs & Automation').classes('panel-title')
+                        for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
+                            item = runtime_map.get(component_id)
+                            if not item:
+                                continue
+                            with ui.row().classes('w-full items-center justify-between gap-2 telemetry-row'):
+                                ui.label(str(item['label'])).classes('font-semibold min-w-[140px]')
+                                ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
+                                ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta min-w-[80px]')
+                                with ui.row().classes('gap-1 items-center justify-end'):
+                                    enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                    if str(item.get('desired_state')) == 'enabled':
+                                        enable_btn.disable()
+                                    enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
+                                    disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[78px]')
+                                    if str(item.get('desired_state')) == 'disabled':
+                                        disable_btn.disable()
+                                    disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
+                                    run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                    run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                    inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
+                                    inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
-                    with ui.expansion('Advanced Components').classes('w-full'):
-                        with ui.column().classes('w-full gap-2 mt-2'):
-                            compact_row('stream_dashboard')
-                            compact_row('sol_shadow_logger')
+                with ui.expansion('Advanced Components').classes('w-full'):
+                    with ui.column().classes('w-full gap-2 mt-2'):
+                        compact_row('stream_dashboard')
+                        compact_row('sol_shadow_logger')
 
 
 @ui.refreshable

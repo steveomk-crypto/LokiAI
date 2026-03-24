@@ -80,9 +80,10 @@ COMPONENTS: dict[str, ComponentDef] = {
         category='trading_plane',
         kind='job',
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
-        dependencies=['paper_trader_v2'],
-        notes='Lifecycle/risk follow-up on open positions.',
+        dependencies=[],
+        notes='Lifecycle/risk follow-up on open positions; manually runnable from the operator UI.',
         inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
+        start_label='Run Manager',
     ),
     'main_loop': ComponentDef(
         id='main_loop',
