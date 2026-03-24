@@ -8,7 +8,7 @@ from pathlib import Path
 
 from nicegui import ui
 
-from .data import compute_dashboard_state, read_runtime_controls
+from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
 
 
 def _fmt_ts(value: str | None) -> str:
@@ -113,6 +113,13 @@ def _stop_pid(pid_file: str) -> tuple[bool, str]:
         return False, 'Process already exited'
     except Exception as exc:
         return False, str(exc)
+
+
+def _format_meta_time(value: str | None) -> str:
+    dt = _safe_iso_to_dt(value)
+    if not dt:
+        return '–'
+    return dt.astimezone().strftime('%H:%M:%S')
 
 
 def _control_action(group: str, action: str) -> None:
@@ -298,18 +305,33 @@ def operator_view():
             with _panel('Control Surface', 'Start, stop, inspect, and open every core service'):
                 with ui.column().classes('w-full gap-3'):
                     for item in state['controls_placeholder']:
-                        state_text = item['state']
+                        state_text = str(item['state'])
                         level = 'healthy' if state_text in {'running', 'available'} else 'locked'
+                        log_meta = item.get('log_meta') or {}
+                        pid_value = item.get('pid')
+                        log_updated = _format_meta_time(log_meta.get('updated_at')) if log_meta else '–'
                         with ui.card().classes('glass-panel w-full p-3'):
-                            with ui.row().classes('w-full justify-between items-center'):
-                                with ui.column().classes('gap-0'):
-                                    ui.label(item['label']).classes('panel-title')
+                            with ui.row().classes('w-full justify-between items-start'):
+                                with ui.column().classes('gap-1'):
+                                    ui.label(str(item['label'])).classes('panel-title')
                                     ui.label(f'Status • {state_text.upper()}').classes(f'panel-subtitle {_status_class(level)}')
+                                    meta_bits = []
+                                    if pid_value:
+                                        meta_bits.append(f'PID {pid_value}')
+                                    if log_meta:
+                                        meta_bits.append(f'Log {log_updated}')
+                                    if not meta_bits:
+                                        meta_bits.append('No runtime metadata')
+                                    ui.label(' • '.join(meta_bits)).classes('signal-meta')
                                 with ui.row().classes('gap-2 items-center wrap'):
                                     if item['group'] != 'reports':
                                         start_btn = ui.button('Start').props('color=positive unelevated')
+                                        if item.get('running'):
+                                            start_btn.disable()
                                         start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                         stop_btn = ui.button('Stop').props('color=negative outline')
+                                        if not item.get('running'):
+                                            stop_btn.disable()
                                         stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
                                     inspect_btn = ui.button('Inspect').props('color=secondary outline')
                                     inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))

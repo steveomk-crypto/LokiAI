@@ -53,9 +53,10 @@ def _iso_now() -> datetime:
 
 def _file_meta(path: Path) -> dict[str, Any]:
     if not path.exists():
-        return {'exists': False, 'path': str(path), 'updated_at': None}
-    updated_at = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).isoformat()
-    return {'exists': True, 'path': str(path), 'updated_at': updated_at}
+        return {'exists': False, 'path': str(path), 'updated_at': None, 'size_bytes': None}
+    stat = path.stat()
+    updated_at = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat()
+    return {'exists': True, 'path': str(path), 'updated_at': updated_at, 'size_bytes': stat.st_size}
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -260,13 +261,38 @@ def build_status_flags(market_state: dict[str, Any], ws_state: dict[str, Any]) -
     return flags
 
 
-def _pid_running(pid_path: Path) -> bool:
+def _pid_value(pid_path: Path) -> int | None:
     try:
-        pid = int(pid_path.read_text().strip())
+        return int(pid_path.read_text().strip())
+    except Exception:
+        return None
+
+
+def _pid_running(pid_path: Path) -> bool:
+    pid = _pid_value(pid_path)
+    if pid is None:
+        return False
+    try:
         os.kill(pid, 0)
         return True
     except Exception:
         return False
+
+
+def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'running', state_stopped: str = 'stopped', log_path: Path | None = None, available: bool | None = None) -> dict[str, Any]:
+    running = _pid_running(pid_path) if pid_path else bool(available)
+    pid = _pid_value(pid_path) if pid_path else None
+    state = state_running if running else state_stopped
+    entry = {
+        'label': label,
+        'running': running,
+        'state': state,
+        'pid_file': str(pid_path) if pid_path else None,
+        'pid': pid,
+        'log_file': str(log_path) if log_path else None,
+        'log_meta': _file_meta(log_path) if log_path else None,
+    }
+    return entry
 
 
 def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
@@ -283,31 +309,34 @@ def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
     paper_trader_pid = PID_DIR / 'paper_trader_v2.pid'
     loop_pid = PID_DIR / 'market_cycle_daemon.pid'
     scanner_log = PID_DIR / 'run_coinbase_scanner.log'
+    websocket_log = PID_DIR / 'coinbase_ws.log'
+    trader_log = PID_DIR / 'paper_trader_v2.log'
+    operator_log = PID_DIR / 'dashboard_ui.log'
+    stream_log = PID_DIR / 'stream_dashboard_ui.log'
+    loop_log = PID_DIR / 'market_loop_cron.log'
     reports_ready = any((WORKDIR / 'performance_reports').glob('*.md')) if (WORKDIR / 'performance_reports').exists() else False
-    paper_trader_running = _pid_running(paper_trader_pid)
-    loop_running = _pid_running(loop_pid)
 
     return {
-        'scanner': {'label': 'Scanner Engine', 'running': scanner_running, 'state': 'running' if scanner_running else 'stopped', 'pid_file': str(scanner_pid), 'log_file': str(scanner_log)},
-        'websocket': {'label': 'Coinbase Feed', 'running': websocket_running, 'state': 'running' if websocket_running else 'stopped', 'pid_file': str(websocket_pid)},
-        'paper_trader_v2': {'label': 'Paper Trader V2', 'running': paper_trader_running, 'state': 'running' if paper_trader_running else 'stopped', 'pid_file': str(paper_trader_pid)},
-        'operator': {'label': 'Operator Dashboard', 'running': dashboard_running, 'state': 'running' if dashboard_running else 'stopped', 'pid_file': str(dashboard_pid)},
-        'stream': {'label': 'Stream Dashboard', 'running': stream_running, 'state': 'running' if stream_running else 'stopped', 'pid_file': str(stream_pid)},
-        'loop': {'label': 'Main Loop Daemon', 'running': loop_running, 'state': 'running' if loop_running else 'stopped', 'pid_file': str(loop_pid)},
-        'reports': {'label': 'Reports Folder', 'running': reports_ready, 'state': 'available' if reports_ready else 'empty', 'pid_file': None},
+        'scanner': _runtime_entry('Scanner Engine', scanner_pid, log_path=scanner_log),
+        'websocket': _runtime_entry('Coinbase Feed', websocket_pid, log_path=websocket_log),
+        'paper_trader_v2': _runtime_entry('Paper Trader V2', paper_trader_pid, log_path=trader_log),
+        'operator': _runtime_entry('Operator Dashboard', dashboard_pid, log_path=operator_log),
+        'stream': _runtime_entry('Stream Dashboard', stream_pid, log_path=stream_log),
+        'loop': _runtime_entry('Main Loop Daemon', loop_pid, log_path=loop_log),
+        'reports': _runtime_entry('Reports Folder', None, state_running='available', state_stopped='empty', available=reports_ready),
     }
 
 
-def build_controls_placeholder(market_state: dict[str, Any], ws_state: dict[str, Any], open_positions_v2: list[dict[str, Any]], audit_v2: dict[str, Any]) -> list[dict[str, str]]:
+def build_controls_placeholder(market_state: dict[str, Any], ws_state: dict[str, Any], open_positions_v2: list[dict[str, Any]], audit_v2: dict[str, Any]) -> list[dict[str, Any]]:
     runtime = read_runtime_controls()
     return [
-        {'group': 'scanner', 'label': 'Scanner', 'state': str(runtime['scanner']['state'])},
-        {'group': 'websocket', 'label': 'Coinbase Websocket', 'state': str(runtime['websocket']['state'])},
-        {'group': 'paper_trader_v2', 'label': 'Paper Trader V2', 'state': str(runtime['paper_trader_v2']['state'])},
-        {'group': 'operator', 'label': 'Operator Dashboard', 'state': str(runtime['operator']['state'])},
-        {'group': 'stream', 'label': 'Stream Dashboard', 'state': str(runtime['stream']['state'])},
-        {'group': 'loop', 'label': 'Main Loop', 'state': str(runtime['loop']['state'])},
-        {'group': 'reports', 'label': 'Reports / Outputs', 'state': str(runtime['reports']['state'])},
+        {'group': 'scanner', **runtime['scanner']},
+        {'group': 'websocket', **runtime['websocket']},
+        {'group': 'paper_trader_v2', **runtime['paper_trader_v2']},
+        {'group': 'operator', **runtime['operator']},
+        {'group': 'stream', **runtime['stream']},
+        {'group': 'loop', **runtime['loop']},
+        {'group': 'reports', **runtime['reports']},
     ]
 
 
