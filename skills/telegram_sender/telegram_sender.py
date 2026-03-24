@@ -8,6 +8,7 @@ from typing import Dict, List, Optional
 from urllib import error, parse, request
 
 from api_usage import log_api_call
+from scripts.telegram_lanes import resolve_lane_target
 
 try:
     from zoneinfo import ZoneInfo
@@ -15,7 +16,7 @@ except ImportError:  # pragma: no cover
     ZoneInfo = None
 
 API_URL_TEMPLATE = "https://api.telegram.org/bot{token}/sendMessage"
-WORKSPACE = Path("/data/.openclaw/workspace")
+WORKSPACE = Path("/home/lokiai/.openclaw/workspace")
 OPEN_POSITIONS_PATH = WORKSPACE / "paper_trades" / "open_positions.json"
 TRADES_LOG_PATH = WORKSPACE / "paper_trades" / "trades_log.json"
 MARKET_LOGS_DIR = WORKSPACE / "market_logs"
@@ -724,13 +725,16 @@ def _build_cycle_message(cycle_number: int, prev_state: Dict) -> Dict:
     }
 
 
-def send_telegram_message(text: str) -> Dict:
+def send_telegram_message(text: str, lane: str = 'trading') -> Dict:
     token = _get_env_var('TELEGRAM_BOT_TOKEN')
-    chat_id = _get_env_var('TELEGRAM_CHAT_ID')
+    lane_chat_id, lane_thread_id = resolve_lane_target(lane)
+    chat_id = lane_chat_id or _get_env_var('TELEGRAM_CHAT_ID')
     payload = {
         'chat_id': chat_id,
         'text': text
     }
+    if lane_thread_id:
+        payload['message_thread_id'] = lane_thread_id
     data = parse.urlencode(payload).encode('utf-8')
     url = API_URL_TEMPLATE.format(token=token)
     req = request.Request(url, data=data)

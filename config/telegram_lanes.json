@@ -1,0 +1,45 @@
+{
+  "defaultMode": "operator_channel",
+  "lanes": {
+    "trading": {
+      "label": "Trading",
+      "purpose": "Automated market updates only",
+      "enabled": true,
+      "chatId": "-1003837497443",
+      "threadId": "1",
+      "messageTypes": ["scanner_summary", "risk_wrap", "fills", "trade_updates", "cycle_summary"]
+    },
+    "ops": {
+      "label": "Ops",
+      "purpose": "Runtime alerts, heartbeats, incidents, restarts",
+      "enabled": true,
+      "chatId": "-1003837497443",
+      "threadId": "5",
+      "messageTypes": ["runtime_alert", "heartbeat", "incident", "restart", "failure"]
+    },
+    "social": {
+      "label": "Social",
+      "purpose": "Draft copy for public posts before they go live",
+      "enabled": true,
+      "chatId": "-1003837497443",
+      "threadId": "7",
+      "messageTypes": ["x_draft", "public_copy", "promo_draft"]
+    },
+    "comms": {
+      "label": "Comms",
+      "purpose": "Human directives, questions, confirmations",
+      "enabled": true,
+      "chatId": "-1003837497443",
+      "threadId": "3",
+      "messageTypes": ["human_directive", "approval", "question", "confirmation"]
+    },
+    "web": {
+      "label": "Web",
+      "purpose": "Site deploy notes, status page updates, infra changes",
+      "enabled": false,
+      "chatId": "-1003837497443",
+      "threadId": "11",
+      "messageTypes": ["deploy_note", "status_update", "infra_change"]
+    }
+  }
+}

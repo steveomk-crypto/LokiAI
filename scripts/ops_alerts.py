@@ -5,6 +5,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib import parse, request
+
+from scripts.telegram_lanes import resolve_lane_target
 from zoneinfo import ZoneInfo
 
 WORKSPACE = Path('/home/lokiai/.openclaw/workspace')
@@ -112,11 +114,15 @@ def port_listening(port: int) -> bool:
 
 
 def send_telegram(token: str, text: str) -> tuple[bool, str]:
-    payload = parse.urlencode({
-        'chat_id': OPS_CHAT_ID,
-        'message_thread_id': OPS_THREAD_ID,
+    lane_chat_id, lane_thread_id = resolve_lane_target('ops')
+    payload_dict = {
+        'chat_id': lane_chat_id or OPS_CHAT_ID,
         'text': text,
-    }).encode()
+    }
+    thread_id = lane_thread_id or OPS_THREAD_ID
+    if thread_id:
+        payload_dict['message_thread_id'] = thread_id
+    payload = parse.urlencode(payload_dict).encode()
     req = request.Request(f'https://api.telegram.org/bot{token}/sendMessage', data=payload)
     try:
         with request.urlopen(req, timeout=20) as resp:
