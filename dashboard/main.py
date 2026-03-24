@@ -254,7 +254,10 @@ def operator_view():
                                 if not item:
                                     continue
                                 state_text = str(item['state'])
+                                desired_ok = bool(item.get('desired_state_ok'))
                                 level = 'healthy' if state_text in {'running', 'available', 'recently completed', 'active recently', 'running (data healthy)'} else 'locked'
+                                if not desired_ok:
+                                    level = 'warning'
                                 log_meta = item.get('log_meta') or {}
                                 pid_value = item.get('pid')
                                 log_updated = _format_meta_time(log_meta.get('updated_at')) if log_meta else '–'
@@ -265,7 +268,8 @@ def operator_view():
                                             desired = str(item.get('desired_state') or 'unknown').upper()
                                             desired_ok = bool(item.get('desired_state_ok'))
                                             desired_cls = 'status-healthy' if desired_ok else 'status-warning'
-                                            ui.label(f"{item.get('kind', 'component').upper()} • Status • {state_text.upper()} • Desired • {desired}").classes(f'panel-subtitle {_status_class(level)} {desired_cls}')
+                                            mismatch_text = '' if desired_ok else ' • MISMATCH'
+                                            ui.label(f"{item.get('kind', 'component').upper()} • Status • {state_text.upper()} • Desired • {desired}{mismatch_text}").classes(f'panel-subtitle {_status_class(level)} {desired_cls}')
                                             meta_bits = []
                                             if item.get('dependencies'):
                                                 dep_text = 'deps ok' if item.get('dependency_health') == 'clear' else 'deps blocked: ' + ', '.join(item.get('dependency_blockers') or [])
@@ -276,6 +280,8 @@ def operator_view():
                                                 meta_bits.append(f'Log {log_updated}')
                                             if item.get('notes'):
                                                 meta_bits.append(str(item['notes']))
+                                            if not desired_ok:
+                                                meta_bits.append('desired-state mismatch')
                                             if item.get('last_success_at'):
                                                 meta_bits.append('last success: ' + _format_meta_time(item.get('last_success_at')))
                                             if item.get('last_error'):
