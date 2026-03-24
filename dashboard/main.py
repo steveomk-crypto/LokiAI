@@ -9,7 +9,7 @@ from pathlib import Path
 from nicegui import ui
 
 from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
-from .runtime_registry import components_by_category
+from .runtime_registry import COMPONENTS, components_by_category
 
 
 def _fmt_ts(value: str | None) -> str:
@@ -133,73 +133,39 @@ def _format_meta_time(value: str | None) -> str:
 def _control_action(group: str, action: str) -> None:
     runtime = read_runtime_controls()
     root = _run_root()
+    comp = COMPONENTS.get(group)
 
-    if group == 'scanner':
-        if action == 'start':
-            ok, msg = _run_script('run_coinbase_scanner.sh')
-            if ok:
-                msg = f'{msg} • one-shot scan kicked off'
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['scanner']['pid_file']))
-        else:
-            ok, msg = _open_path(root / 'system_logs' / 'run_coinbase_scanner.log')
-    elif group == 'websocket':
-        if action == 'start':
-            ok, msg = _run_script('run_coinbase_ws.sh')
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['websocket']['pid_file']))
-        else:
-            ok, msg = _open_path(root / 'system_logs' / 'coinbase_ws.log')
-    elif group == 'paper_trader_v2':
-        if action == 'start':
-            ok, msg = _run_script('run_paper_trader_v2.sh')
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['paper_trader_v2']['pid_file']))
-        else:
-            ok, msg = _open_path(root / 'system_logs' / 'paper_trader_v2.log')
-    elif group == 'flatten':
-        if action == 'start':
-            ok, msg = _run_script('flatten_paper_trader.sh')
-            if ok:
-                msg = f'{msg} • flatten job kicked off'
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['flatten']['pid_file']))
-        else:
-            ok, msg = _open_path(root / 'system_logs' / 'paper_trader_flatten.log')
-    elif group == 'operator':
-        if action == 'start':
-            ok, msg = _run_script('run_dashboard.sh')
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['operator']['pid_file']))
-        else:
-            ok, msg = True, 'Operator dashboard is this page'
-    elif group == 'stream':
-        if action == 'start':
-            ok, msg = _run_script('run_stream_dashboard.sh')
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['stream']['pid_file']))
-        else:
-            ok, msg = True, 'Open http://127.0.0.1:8501'
-    elif group == 'loop':
+    if not comp:
+        ok, msg = False, f'{group} control not wired yet'
+    elif group == 'main_loop':
         if action == 'start':
             ok, msg = _run_background_command('./scripts/market_cycle_daemon.sh', str(root / 'system_logs' / 'market_cycle_daemon.pid'), str(root / 'system_logs' / 'market_loop_cron.log'))
         elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['loop']['pid_file']))
+            ok, msg = _stop_pid(str(runtime[group]['pid_file']))
         else:
-            ok, msg = _open_path(root / 'system_logs' / 'market_loop_cron.log')
-    elif group == 'log_outputs':
-        if action == 'start':
-            ok, msg = _run_script('log_trading_outputs.sh')
-            if ok:
-                msg = f'{msg} • journaling/logging kicked off'
+            ok, msg = _open_path(comp.inspect_target or root / 'system_logs' / 'market_loop_cron.log')
+    elif group == 'operator_dashboard':
+        if action == 'start' and comp.start_script:
+            ok, msg = _run_script(comp.start_script)
         elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime['log_outputs']['pid_file']))
+            ok, msg = _stop_pid(str(runtime[group]['pid_file']))
         else:
-            ok, msg = _open_path(root / 'system_logs' / 'log_trading_outputs.log')
-    elif group == 'reports':
-        ok, msg = _open_path(root / 'performance_reports')
+            ok, msg = True, 'Operator dashboard is this page'
+    elif group == 'stream_dashboard':
+        if action == 'start' and comp.start_script:
+            ok, msg = _run_script(comp.start_script)
+        elif action == 'stop':
+            ok, msg = _stop_pid(str(runtime[group]['pid_file']))
+        else:
+            ok, msg = True, 'Open http://127.0.0.1:8501'
+    elif action == 'start' and comp.start_script:
+        ok, msg = _run_script(comp.start_script)
+    elif action == 'stop' and runtime.get(group, {}).get('pid_file'):
+        ok, msg = _stop_pid(str(runtime[group]['pid_file']))
+    elif action == 'inspect':
+        ok, msg = _open_path(comp.inspect_target or comp.log_path or root)
     else:
-        ok, msg = False, f'{group} control not wired yet'
+        ok, msg = False, f'{group} action {action} not wired yet'
 
     LAST_ACTION_RESULT['message'] = f'{group} {action}: {msg}'
     ui.notify(msg, type='positive' if ok else 'negative')

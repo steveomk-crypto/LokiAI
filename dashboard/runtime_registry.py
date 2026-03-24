@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Any
 
 WORKSPACE = Path('/home/lokiai/.openclaw/workspace')
 CACHE_DIR = WORKSPACE / 'cache'
@@ -21,6 +20,9 @@ class ComponentDef:
     outputs: list[Path] = field(default_factory=list)
     dependencies: list[str] = field(default_factory=list)
     notes: str = ''
+    start_script: str | None = None
+    inspect_target: Path | None = None
+    start_label: str | None = None
 
 
 COMPONENTS: dict[str, ComponentDef] = {
@@ -33,6 +35,8 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'coinbase_ws.log',
         outputs=[CACHE_DIR / 'coinbase_ws_state.json', CACHE_DIR / 'coinbase_tickers.json'],
         notes='Primary websocket/data-plane service.',
+        start_script='run_coinbase_ws.sh',
+        inspect_target=SYSTEM_LOG_DIR / 'coinbase_ws.log',
     ),
     'market_scanner': ComponentDef(
         id='market_scanner',
@@ -44,6 +48,9 @@ COMPONENTS: dict[str, ComponentDef] = {
         outputs=[CACHE_DIR / 'market_state.json'],
         dependencies=['coinbase_feed'],
         notes='One-shot ranking/scanner job producing market_state.',
+        start_script='run_coinbase_scanner.sh',
+        inspect_target=SYSTEM_LOG_DIR / 'run_coinbase_scanner.log',
+        start_label='Run Scan',
     ),
     'paper_trader_v2': ComponentDef(
         id='paper_trader_v2',
@@ -59,6 +66,9 @@ COMPONENTS: dict[str, ComponentDef] = {
         ],
         dependencies=['coinbase_feed', 'market_scanner'],
         notes='Consumes scanner/feed state and maintains V2 trade book.',
+        start_script='run_paper_trader_v2.sh',
+        inspect_target=SYSTEM_LOG_DIR / 'paper_trader_v2.log',
+        start_label='Run Now',
     ),
     'position_manager': ComponentDef(
         id='position_manager',
@@ -78,6 +88,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['coinbase_feed', 'market_scanner', 'paper_trader_v2'],
         notes='Scheduler/repeating market cycle orchestrator.',
+        inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
     ),
     'operator_dashboard': ComponentDef(
         id='operator_dashboard',
@@ -87,6 +98,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         pid_file=SYSTEM_LOG_DIR / 'dashboard.pid',
         log_path=SYSTEM_LOG_DIR / 'dashboard.log',
         notes='Primary control UI.',
+        start_script='run_dashboard.sh',
     ),
     'stream_dashboard': ComponentDef(
         id='stream_dashboard',
@@ -96,6 +108,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         pid_file=SYSTEM_LOG_DIR / 'stream_dashboard.pid',
         log_path=SYSTEM_LOG_DIR / 'stream_dashboard.log',
         notes='Condensed telemetry UI.',
+        start_script='run_stream_dashboard.sh',
     ),
     'market_broadcaster': ComponentDef(
         id='market_broadcaster',
