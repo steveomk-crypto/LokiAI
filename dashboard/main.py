@@ -262,7 +262,10 @@ def operator_view():
                                     with ui.row().classes('w-full justify-between items-start'):
                                         with ui.column().classes('gap-1'):
                                             ui.label(str(item['label'])).classes('panel-title')
-                                            ui.label(f"{item.get('kind', 'component').upper()} • Status • {state_text.upper()}").classes(f'panel-subtitle {_status_class(level)}')
+                                            desired = str(item.get('desired_state') or 'unknown').upper()
+                                            desired_ok = bool(item.get('desired_state_ok'))
+                                            desired_cls = 'status-healthy' if desired_ok else 'status-warning'
+                                            ui.label(f"{item.get('kind', 'component').upper()} • Status • {state_text.upper()} • Desired • {desired}").classes(f'panel-subtitle {_status_class(level)} {desired_cls}')
                                             meta_bits = []
                                             if item.get('dependencies'):
                                                 dep_text = 'deps ok' if item.get('dependency_health') == 'clear' else 'deps blocked: ' + ', '.join(item.get('dependency_blockers') or [])

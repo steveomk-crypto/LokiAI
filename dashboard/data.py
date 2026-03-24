@@ -393,6 +393,13 @@ def _apply_dependency_health(runtime: dict[str, dict[str, Any]]) -> None:
 
         entry['controls_blocked'] = entry['dependency_health'] == 'blocked' and entry.get('kind') in {'service', 'job'}
         entry['blocked_reason'] = ', '.join(entry.get('dependency_blockers') or []) if entry['controls_blocked'] else None
+        desired_state = str(entry.get('desired_state') or 'unknown')
+        if desired_state == 'on':
+            entry['desired_state_ok'] = bool(entry.get('running')) or any(term in str(entry.get('state') or '').lower() for term in ('running', 'active recently', 'data healthy'))
+        elif desired_state == 'auto':
+            entry['desired_state_ok'] = entry.get('dependency_health') == 'clear'
+        else:
+            entry['desired_state_ok'] = True
         if entry.get('dependency_health') == 'blocked' and not entry.get('last_error'):
             entry['last_error'] = f"Blocked by dependencies: {entry['blocked_reason']}"
 
@@ -421,6 +428,8 @@ def read_runtime_controls() -> dict[str, dict[str, Any]]:
         entry['start_script'] = comp.start_script
         entry['inspect_target'] = str(comp.inspect_target) if comp.inspect_target else None
         entry['start_label'] = comp.start_label
+        entry['desired_state'] = comp.desired_default or ('on' if comp.kind == 'service' else 'auto' if comp.kind == 'job' else 'unknown')
+        entry['desired_state_ok'] = True
         entry['last_success_at'] = (entry.get('log_meta') or {}).get('updated_at')
         entry['last_error'] = None
         runtime[comp_id] = entry

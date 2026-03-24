@@ -23,6 +23,7 @@ class ComponentDef:
     start_script: str | None = None
     inspect_target: Path | None = None
     start_label: str | None = None
+    desired_default: str | None = None
 
 
 COMPONENTS: dict[str, ComponentDef] = {
@@ -37,6 +38,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         notes='Primary websocket/data-plane service.',
         start_script='run_coinbase_ws.sh',
         inspect_target=SYSTEM_LOG_DIR / 'coinbase_ws.log',
+        desired_default='on',
     ),
     'market_scanner': ComponentDef(
         id='market_scanner',
@@ -51,6 +53,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         start_script='run_coinbase_scanner.sh',
         inspect_target=SYSTEM_LOG_DIR / 'run_coinbase_scanner.log',
         start_label='Run Scan',
+        desired_default='auto',
     ),
     'paper_trader_v2': ComponentDef(
         id='paper_trader_v2',
@@ -69,6 +72,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         start_script='run_paper_trader_v2.sh',
         inspect_target=SYSTEM_LOG_DIR / 'paper_trader_v2.log',
         start_label='Run Now',
+        desired_default='auto',
     ),
     'position_manager': ComponentDef(
         id='position_manager',
@@ -90,6 +94,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         dependencies=['coinbase_feed', 'market_scanner', 'paper_trader_v2'],
         notes='Scheduler/repeating market cycle orchestrator.',
         inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
+        desired_default='on',
     ),
     'operator_dashboard': ComponentDef(
         id='operator_dashboard',
@@ -100,6 +105,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'dashboard.log',
         notes='Primary control UI.',
         start_script='run_dashboard.sh',
+        desired_default='on',
     ),
     'stream_dashboard': ComponentDef(
         id='stream_dashboard',
@@ -110,6 +116,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         log_path=SYSTEM_LOG_DIR / 'stream_dashboard.log',
         notes='Condensed telemetry UI.',
         start_script='run_stream_dashboard.sh',
+        desired_default='on',
     ),
     'market_broadcaster': ComponentDef(
         id='market_broadcaster',
@@ -120,6 +127,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         dependencies=['market_scanner'],
         notes='Builds posting/report output from scanner state.',
         inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
+        desired_default='auto',
     ),
     'telegram_sender': ComponentDef(
         id='telegram_sender',
@@ -151,6 +159,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         dependencies=['paper_trader_v2'],
         notes='Generates report artifacts.',
         inspect_target=WORKSPACE / 'performance_reports',
+        desired_default='auto',
     ),
     'sol_shadow_logger': ComponentDef(
         id='sol_shadow_logger',
