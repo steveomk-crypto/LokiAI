@@ -229,6 +229,39 @@ def build_coinbase_universe_health(products: list[dict[str, Any]], tickers: dict
     }
 
 
+def build_main_loop_status(log_path: Path) -> dict[str, Any]:
+    info: dict[str, Any] = {
+        'daemon_started_at': None,
+        'last_cycle_started_at': None,
+        'last_cycle_completed_at': None,
+        'last_task': None,
+        'last_task_completed': None,
+        'last_error': None,
+    }
+    if not log_path.exists():
+        return info
+    try:
+        lines = log_path.read_text(encoding='utf-8', errors='ignore').splitlines()[-400:]
+    except Exception:
+        return info
+
+    for line in lines:
+        text = line.strip()
+        if 'market cycle daemon started' in text:
+            info['daemon_started_at'] = text[:25]
+        if 'invoking run_market_cycle.sh' in text:
+            info['last_cycle_started_at'] = text[:25]
+        if 'Market cycle complete' in text:
+            info['last_cycle_completed_at'] = text[:25]
+        if 'Running ' in text:
+            info['last_task'] = text.split('Running ', 1)[1].strip()
+        if 'Completed ' in text:
+            info['last_task_completed'] = text.split('Completed ', 1)[1].strip()
+        if 'Traceback' in text or 'Permission denied' in text or 'FileNotFoundError' in text:
+            info['last_error'] = text
+    return info
+
+
 def build_status_flags(market_state: dict[str, Any], ws_state: dict[str, Any]) -> list[dict[str, str]]:
     flags = []
     market_dt = _safe_iso_to_dt(market_state.get('computed_at'))
@@ -381,6 +414,7 @@ def compute_dashboard_state() -> dict[str, Any]:
         'persistence_summary': build_persistence_summary(scanner_entries),
         'live_movers': build_coinbase_live_movers(tickers),
         'universe_health': build_coinbase_universe_health(products, tickers, ws_state),
+        'main_loop_status': build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log'),
         'status_flags': build_status_flags(market_state, ws_state),
         'controls_placeholder': build_controls_placeholder(market_state, ws_state, open_positions_v2, paper_trader_v2_audit),
         'meta': {

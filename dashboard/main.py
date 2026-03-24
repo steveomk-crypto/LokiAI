@@ -213,6 +213,7 @@ def operator_view():
     live_movers = state['live_movers']
     top_opps = market_state.get('top_opportunities', [])
     metrics = market_state.get('metrics', {})
+    loop_info = state.get('main_loop_status', {})
 
     scanner_dt = market_state.get('computed_at')
     ws_dt = ws_state.get('last_message_at')
@@ -260,6 +261,10 @@ def operator_view():
                 _telemetry_row('Scanner data freshness', scanner_text, scanner_class)
                 _telemetry_row('Scanner job', 'running' if runtime['scanner']['running'] else 'idle', 'status-healthy' if runtime['scanner']['running'] else 'status-info')
                 _telemetry_row('Main loop', 'running' if runtime['loop']['running'] else 'stopped', 'status-healthy' if runtime['loop']['running'] else 'status-danger')
+                _telemetry_row('Last cycle start', loop_info.get('last_cycle_started_at') or '–')
+                _telemetry_row('Last cycle end', loop_info.get('last_cycle_completed_at') or '–')
+                _telemetry_row('Last task started', loop_info.get('last_task') or '–')
+                _telemetry_row('Last task completed', loop_info.get('last_task_completed') or '–')
                 _telemetry_row('Open V2 slots', str(len(state.get('open_positions_v2', []))), 'status-warning' if len(state.get('open_positions_v2', [])) else 'status-healthy')
                 _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)), 'status-warning' if int(metrics.get('total_signals', 0) or 0) == 0 else 'status-healthy')
                 _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
@@ -280,6 +285,8 @@ def operator_view():
                 for flag in state['status_flags']:
                     level_class = 'status-danger' if flag['level'] == 'danger' else 'status-warning'
                     ui.label(f"• {flag['message']}").classes(f'text-sm telemetry-row {level_class}')
+                if loop_info.get('last_error'):
+                    ui.label(f"• Loop error: {loop_info.get('last_error')}").classes('text-sm telemetry-row status-warning')
                 ui.separator().classes('my-2 opacity-20')
                 ui.label('Last action result').classes('telemetry-key')
                 ui.label(LAST_ACTION_RESULT['message']).classes('telemetry-value')
