@@ -241,16 +241,22 @@ def build_main_loop_status(log_path: Path) -> dict[str, Any]:
     if not log_path.exists():
         return info
     try:
-        lines = log_path.read_text(encoding='utf-8', errors='ignore').splitlines()[-400:]
+        lines = log_path.read_text(encoding='utf-8', errors='ignore').splitlines()[-800:]
     except Exception:
         return info
 
-    for line in lines:
+    cycle_start_idx = 0
+    for idx, line in enumerate(lines):
         text = line.strip()
         if 'market cycle daemon started' in text:
             info['daemon_started_at'] = text[:25]
         if 'invoking run_market_cycle.sh' in text:
             info['last_cycle_started_at'] = text[:25]
+            cycle_start_idx = idx
+
+    cycle_lines = lines[cycle_start_idx:] if lines else []
+    for line in cycle_lines:
+        text = line.strip()
         if 'Market cycle complete' in text:
             info['last_cycle_completed_at'] = text[:25]
         if 'Running ' in text:
