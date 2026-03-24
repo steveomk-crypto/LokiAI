@@ -6,7 +6,7 @@
       "purpose": "Automated market updates only",
       "enabled": true,
       "chatId": "-1003837497443",
-      "threadId": "1",
+      "threadId": "634",
       "messageTypes": ["scanner_summary", "risk_wrap", "fills", "trade_updates", "cycle_summary"]
     },
     "ops": {
@@ -30,7 +30,7 @@
       "purpose": "Human directives, questions, confirmations",
       "enabled": true,
       "chatId": "-1003837497443",
-      "threadId": "3",
+      "threadId": "9",
       "messageTypes": ["human_directive", "approval", "question", "confirmation"]
     },
     "web": {
