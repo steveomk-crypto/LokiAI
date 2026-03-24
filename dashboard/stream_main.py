@@ -87,8 +87,8 @@ def stream_view():
     scanner_status = 'RUNNING' if runtime['scanner']['running'] else 'IDLE'
     feed_status = 'RUNNING' if runtime['websocket']['running'] else 'STOPPED'
     trader_status = 'RUNNING' if runtime['paper_trader_v2']['running'] else 'STOPPED'
-    loop_status = 'RUNNING' if runtime['loop']['running'] else 'STOPPED'
     loop_cycle_status = 'RECENT' if state.get('main_loop_status', {}).get('last_cycle_started_at') else 'NONE'
+    loop_status = 'RUNNING' if runtime['loop']['running'] else 'ACTIVE' if loop_cycle_status == 'RECENT' else 'IDLE'
     scanner_log_time = _fmt_meta_ts((runtime.get('scanner') or {}).get('log_meta', {}).get('updated_at'))
     loop_log_time = _fmt_meta_ts((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))
     flatten_status = 'RUNNING' if runtime['flatten']['running'] else 'IDLE'
