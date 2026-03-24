@@ -236,61 +236,66 @@ def operator_view():
                         ui.label(snap.get('timestamp', '–')[-8:]).classes('telemetry-key')
                         ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
 
-            with _panel('Control Surface', 'Operate the stack by plane'):
-                category_titles = {
-                    'data_plane': 'Data Plane',
-                    'trading_plane': 'Trading Plane',
-                    'orchestration': 'Orchestration',
-                    'control_plane': 'Control Plane',
-                    'output_plane': 'Output Plane',
-                }
+            with _panel('Control Surface', 'Operate the system by workflow'):
                 runtime_map = {item['group']: item for item in state['controls_placeholder']}
+
+                def compact_row(component_id: str):
+                    item = runtime_map.get(component_id)
+                    if not item:
+                        return
+                    state_text = str(item.get('display_state') or item['state']).upper()
+                    deps_text = 'READY' if item.get('dependency_health') == 'clear' else 'WAITING ON ' + ', '.join(item.get('dependency_blockers') or [])
+                    last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
+                    last_component_action = COMPONENT_ACTION_RESULTS.get(item['group']) or 'No recent action'
+                    with ui.card().classes('glass-panel w-full p-3'):
+                        with ui.row().classes('w-full items-center justify-between gap-3 wrap'):
+                            with ui.column().classes('gap-1 min-w-[220px]'):
+                                ui.label(str(item['label'])).classes('font-semibold text-base')
+                                ui.label(f'{state_text} • {deps_text}').classes('signal-meta')
+                            with ui.column().classes('gap-0 min-w-[120px]'):
+                                ui.label('Last success').classes('telemetry-key')
+                                ui.label(last_success).classes('telemetry-value')
+                            with ui.column().classes('gap-0 min-w-[220px]'):
+                                ui.label('Last action').classes('telemetry-key')
+                                ui.label(last_component_action).classes('telemetry-value')
+                            with ui.row().classes('gap-2 items-center justify-end wrap'):
+                                start_label = item.get('start_label') or ('Run' if item.get('kind') == 'job' else 'Start')
+                                start_btn = ui.button(start_label).props('color=positive unelevated').classes('min-w-[104px]')
+                                if item.get('running') and item.get('kind') == 'service':
+                                    start_btn.disable()
+                                if item.get('controls_blocked'):
+                                    start_btn.disable()
+                                start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                stop_btn = ui.button('Stop').props('color=negative outline').classes('min-w-[104px]')
+                                if item.get('kind') != 'service' or not item.get('running'):
+                                    stop_btn.disable()
+                                stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
+                                inspect_btn = ui.button('Inspect').props('color=secondary outline').classes('min-w-[104px]')
+                                inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+
                 with ui.column().classes('w-full gap-4'):
-                    for category, defs in components_by_category().items():
-                        ui.label(category_titles.get(category, category.replace('_', ' ').title())).classes('panel-title')
-                        with ui.column().classes('w-full gap-2'):
-                            for comp in defs:
-                                item = runtime_map.get(comp.id)
-                                if not item:
-                                    continue
-                                if comp.id == 'operator_dashboard':
-                                    continue
-                                state_text = str(item.get('display_state') or item['state']).upper()
-                                desired = str(item.get('desired_state') or 'unknown').upper()
-                                desired_ok = bool(item.get('desired_state_ok'))
-                                deps_text = 'OK' if item.get('dependency_health') == 'clear' else ', '.join(item.get('dependency_blockers') or [])
-                                last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
-                                last_component_action = COMPONENT_ACTION_RESULTS.get(item['group']) or '–'
-                                with ui.card().classes('glass-panel w-full p-3'):
-                                    with ui.column().classes('w-full gap-2'):
-                                        with ui.row().classes('w-full items-center justify-between gap-2 wrap'):
-                                            ui.label(str(item['label'])).classes('font-semibold text-base min-w-[220px]')
-                                            with ui.row().classes('gap-2 items-center wrap'):
-                                                ui.label(f'State {state_text}').classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
-                                                ui.label(f'Desired {desired}').classes(f'status-pill {_status_class("healthy" if desired_ok else "info")}')
-                                                if not desired_ok:
-                                                    ui.label('Mismatch').classes('status-pill status-warning')
-                                        with ui.row().classes('w-full items-center justify-between gap-3 wrap'):
-                                            ui.label(f'Deps {deps_text}').classes('signal-meta min-w-[160px]')
-                                            ui.label(f'Last success {last_success}').classes('signal-meta min-w-[120px]')
-                                            if last_component_action != '–':
-                                                ui.label(f'Last action {last_component_action}').classes('signal-meta min-w-[220px]')
-                                            else:
-                                                ui.label('No recent action').classes('signal-meta min-w-[140px]')
-                                        with ui.row().classes('w-full gap-2 items-center justify-end wrap'):
-                                            start_label = item.get('start_label') or ('Run' if item.get('kind') == 'job' else 'Start')
-                                            start_btn = ui.button(start_label).props('color=positive unelevated').classes('min-w-[96px]')
-                                            if item.get('running') and item.get('kind') == 'service':
-                                                start_btn.disable()
-                                            if item.get('controls_blocked'):
-                                                start_btn.disable()
-                                            start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                            stop_btn = ui.button('Stop').props('color=negative outline').classes('min-w-[96px]')
-                                            if item.get('kind') != 'service' or not item.get('running'):
-                                                stop_btn.disable()
-                                            stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
-                                            inspect_btn = ui.button('Inspect').props('color=secondary outline').classes('min-w-[96px]')
-                                            inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                    ui.label('System Controls').classes('panel-title')
+                    with ui.row().classes('w-full gap-2 wrap'):
+                        ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'start'))
+                        ui.button('Stop Automation').props('color=negative outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'stop'))
+                        ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('paper_trader_v2', 'inspect'))
+                        ui.button('Restart Dashboards').props('color=secondary outline').classes('min-w-[180px]')
+                        ui.button('Inspect Loop Log').props('color=secondary outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'inspect'))
+
+                    ui.label('Core Systems').classes('panel-title')
+                    with ui.column().classes('w-full gap-2'):
+                        for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
+                            compact_row(component_id)
+
+                    ui.label('Outputs & Automation').classes('panel-title')
+                    with ui.column().classes('w-full gap-2'):
+                        for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
+                            compact_row(component_id)
+
+                    with ui.expansion('Advanced Components').classes('w-full'):
+                        with ui.column().classes('w-full gap-2 mt-2'):
+                            compact_row('stream_dashboard')
+                            compact_row('sol_shadow_logger')
 
 
 @ui.refreshable
