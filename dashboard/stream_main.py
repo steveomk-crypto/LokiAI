@@ -92,6 +92,7 @@ def stream_view():
     loop_log_time = _fmt_meta_ts((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))
     flatten_status = 'RUNNING' if runtime['flatten']['running'] else 'IDLE'
     flatten_log_time = _fmt_meta_ts((runtime.get('flatten') or {}).get('log_meta', {}).get('updated_at'))
+    last_manual_flatten = _fmt_meta_ts((v2_audit or {}).get('last_manual_flatten_at'))
     log_outputs_status = 'RUNNING' if runtime['log_outputs']['running'] else 'IDLE'
     log_outputs_time = _fmt_meta_ts((runtime.get('log_outputs') or {}).get('log_meta', {}).get('updated_at'))
 
@@ -225,6 +226,8 @@ def stream_view():
                     ui.label(f'{loop_status} • {loop_log_time}').classes('telemetry-value compact-value')
                     ui.label('Flatten job').classes('telemetry-key compact-key mt-1')
                     ui.label(f'{flatten_status} • {flatten_log_time}').classes('telemetry-value compact-value')
+                    ui.label('Last flatten').classes('telemetry-key compact-key mt-1')
+                    ui.label(last_manual_flatten).classes('telemetry-value compact-value')
                     ui.label('Output logging').classes('telemetry-key compact-key mt-1')
                     ui.label(f'{log_outputs_status} • {log_outputs_time}').classes('telemetry-value compact-value')
                     ui.label('Active V2 slots').classes('telemetry-key compact-key mt-1')

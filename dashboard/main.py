@@ -244,7 +244,8 @@ def operator_view():
                 with ui.row().classes('gap-3 items-center wrap'):
                     _pill('MODE • REBUILD / PAPER ONLY', 'info')
                     _pill(f"SCANNER DATA • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
-                    _pill(f"SCANNER SERVICE • {'RUNNING' if runtime['scanner']['running'] else 'STOPPED'}", 'healthy' if runtime['scanner']['running'] else 'info')
+                    _pill(f"SCANNER JOB • {'RUNNING' if runtime['scanner']['running'] else 'IDLE'}", 'healthy' if runtime['scanner']['running'] else 'info')
+                    _pill(f"MAIN LOOP • {'RUNNING' if runtime['loop']['running'] else 'STOPPED'}", 'healthy' if runtime['loop']['running'] else 'danger')
                     _pill(f'WEBSOCKET • {"ONLINE" if ws_state.get("connected") else "OFFLINE"}', 'healthy' if ws_state.get('connected') else 'danger')
                     _pill(f'ALERTS • {alert_count}', 'warning' if alert_count else 'healthy')
 
@@ -252,7 +253,9 @@ def operator_view():
             with _panel('System Health', 'Immediate machine state'):
                 _telemetry_row('Scanner last snapshot', _fmt_ts(scanner_dt), scanner_class)
                 _telemetry_row('Scanner data freshness', scanner_text, scanner_class)
-                _telemetry_row('Scanner service', 'running' if runtime['scanner']['running'] else 'stopped', 'status-healthy' if runtime['scanner']['running'] else 'status-info')
+                _telemetry_row('Scanner job', 'running' if runtime['scanner']['running'] else 'idle', 'status-healthy' if runtime['scanner']['running'] else 'status-info')
+                _telemetry_row('Main loop', 'running' if runtime['loop']['running'] else 'stopped', 'status-healthy' if runtime['loop']['running'] else 'status-danger')
+                _telemetry_row('Open V2 slots', str(len(state.get('open_positions_v2', []))), 'status-warning' if len(state.get('open_positions_v2', [])) else 'status-healthy')
                 _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)), 'status-warning' if int(metrics.get('total_signals', 0) or 0) == 0 else 'status-healthy')
                 _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
                 _telemetry_row('Last websocket message', _fmt_ts(ws_dt), ws_class)
