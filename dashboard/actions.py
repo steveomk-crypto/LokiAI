@@ -10,6 +10,7 @@ from .runtime_registry import COMPONENTS
 from .data import read_runtime_controls
 from .modes import get_modes, set_mode
 from scripts.x_actions import generate_draft, inspect_x, post_latest_queue, queue_latest_draft
+from scripts.telegram_lanes import load_telegram_lanes
 
 
 def run_root() -> Path:
@@ -114,6 +115,14 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
     if component_id == 'x_autoposter' and action == 'inspect':
         result = inspect_x()
         return True, f"X state: mode={result['state'].get('mode')} drafts={len(result.get('recentDrafts') or [])} queue={len(result.get('recentQueue') or [])}"
+
+    if component_id == 'telegram_sender' and action == 'test_lanes':
+        lanes = load_telegram_lanes().get('lanes') or {}
+        enabled = [name for name, cfg in lanes.items() if isinstance(cfg, dict) and cfg.get('enabled')]
+        return True, f"Telegram lanes ready: {', '.join(enabled) if enabled else 'none'}"
+
+    if component_id == 'telegram_sender' and action == 'run_social':
+        return run_script('run_telegram_social_draft.sh')
 
     if component_id == 'performance_analyzer' and action == 'run_outputs':
         return run_script('run_performance_analyzer.sh')

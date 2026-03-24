@@ -324,6 +324,10 @@ def operator_view():
                                         ui.button('Draft').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'draft'))
                                         ui.button('Queue').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'queue'))
                                         ui.button('Post').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'post_now'))
+                                    elif item['group'] == 'telegram_sender':
+                                        ui.button('Test').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'test_lanes'))
+                                        ui.button('Social').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'run_social'))
+                                        ui.button('Run').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                     else:
                                         run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
                                         run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
