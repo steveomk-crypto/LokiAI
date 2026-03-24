@@ -15,6 +15,9 @@ if [ -f "${PID_FILE}" ]; then
   if kill -0 "${existing_pid}" 2>/dev/null; then
     echo "$(date -Iseconds) - market cycle daemon already running as PID ${existing_pid}" >&2
     exit 1
+  else
+    echo "$(date -Iseconds) - removing stale daemon PID file for ${existing_pid}" >&2
+    rm -f "${PID_FILE}"
   fi
 fi
 
