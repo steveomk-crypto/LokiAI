@@ -251,6 +251,7 @@ def operator_view():
                         ui.label(state_text).classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
                         ui.label(deps_text).classes('signal-meta')
                         ui.label(last_success).classes('signal-meta')
+                        ui.label(str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')).classes('signal-meta')
                         with ui.row().classes('operator-actions'):
                             if item.get('kind') == 'service':
                                 start_btn = ui.button('Start').props('size=sm color=positive unelevated').classes('min-w-[78px]')
