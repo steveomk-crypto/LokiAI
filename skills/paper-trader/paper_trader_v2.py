@@ -14,6 +14,9 @@ V2_OPEN_POSITIONS_PATH = TRADES_DIR / 'open_positions_v2.json'
 V2_TRADES_LOG_PATH = TRADES_DIR / 'trades_log_v2.json'
 V2_STATE_PATH = TRADES_DIR / 'paper_trader_v2_state.json'
 V2_DECISIONS_PATH = TRADES_DIR / 'paper_trader_v2_decisions.jsonl'
+V2_CANDIDATE_EVALS_PATH = TRADES_DIR / 'v2_candidate_evaluations.jsonl'
+V2_POSITION_SNAPSHOTS_PATH = TRADES_DIR / 'v2_position_snapshots.jsonl'
+V2_EXIT_EVENTS_PATH = TRADES_DIR / 'v2_exit_events.jsonl'
 V2_AUDIT_SUMMARY_PATH = TRADES_DIR / 'paper_trader_v2_audit_summary.json'
 
 MAX_SLOTS = 3
@@ -176,16 +179,18 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
         product_id = _symbol_to_product_id(symbol)
         ticker = tickers.get(product_id)
         if not ticker or ticker.get('price') is None:
+            _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
+                'timestamp': _now_iso(),
+                'token': symbol,
+                'product_id': product_id,
+                'decision': 'reject',
+                'reason': 'missing_ticker_or_price',
+            })
             continue
-        if _cooldown_blocked(symbol, state):
-            continue
-        tier = _candidate_tier(item, ticker)
-        if not tier:
-            continue
-        candidates.append({
-            'symbol': symbol,
+        candidate_payload = {
+            'timestamp': _now_iso(),
+            'token': symbol,
             'product_id': product_id,
-            'tier': tier,
             'score': float(item.get('score') or 0.0),
             'momentum': float(item.get('momentum') or 0.0),
             'persistence': int(item.get('persistence') or 0),
@@ -193,7 +198,41 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'price': float(ticker.get('price')),
             'drift_300s': float(ticker.get('drift_300s') or 0.0),
             'freshness_seconds': float(ticker.get('freshness_seconds') or 0.0),
+        }
+        if _cooldown_blocked(symbol, state):
+            _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
+                **candidate_payload,
+                'decision': 'reject',
+                'reason': 'cooldown',
+            })
+            continue
+        tier = _candidate_tier(item, ticker)
+        if not tier:
+            _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
+                **candidate_payload,
+                'decision': 'reject',
+                'reason': 'tier_filter_failed',
+            })
+            continue
+        accepted_payload = {
+            **candidate_payload,
+            'decision': 'accept',
+            'tier_candidate': tier,
             'entry_reason': 'scanner_rank_plus_websocket_confirmation',
+        }
+        _append_jsonl(V2_CANDIDATE_EVALS_PATH, accepted_payload)
+        candidates.append({
+            'symbol': symbol,
+            'product_id': product_id,
+            'tier': tier,
+            'score': accepted_payload['score'],
+            'momentum': accepted_payload['momentum'],
+            'persistence': accepted_payload['persistence'],
+            'trend': accepted_payload['trend'],
+            'price': accepted_payload['price'],
+            'drift_300s': accepted_payload['drift_300s'],
+            'freshness_seconds': accepted_payload['freshness_seconds'],
+            'entry_reason': accepted_payload['entry_reason'],
         })
     candidates.sort(key=lambda x: (x['tier'] == 'A', x['score'], abs(x['drift_300s'])), reverse=True)
     return candidates
@@ -362,16 +401,34 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
                 'exit_category': exit_category,
             })
             closed.append(closed_position)
-            _append_jsonl(V2_DECISIONS_PATH, {
+            exit_event = {
                 'timestamp': _now_iso(),
                 'action': 'close_position',
                 'token': position.get('token'),
+                'product_id': position.get('product_id'),
                 'tier': tier,
+                'entry_time': position.get('entry_time'),
+                'time_in_trade_minutes': time_in_trade_minutes,
+                'entry_price': entry_price,
+                'current_price': current_price,
                 'pnl_percent': round(pnl_percent, 4),
+                'highest_pnl_percent': round(highest_pnl, 4),
+                'drift_300s': drift_300s,
+                'freshness_seconds': float(ticker.get('freshness_seconds') or 0.0),
+                'move_character': move_character,
+                'trim_step': trim_step,
+                'trail_active': trail_active,
+                'trail_distance_pct': active_trail,
+                'remaining_size_pct': round(remaining_size_pct, 2),
                 'exit_reason': exit_reason,
                 'exit_category': exit_category,
-                'move_character': move_character,
-            })
+                'stop_loss_pct': stop_loss_pct,
+                'timeout_limit_minutes': timeout_limit,
+                'no_move_minutes': NO_MOVE_MINUTES,
+                'no_move_threshold_pct': NO_MOVE_THRESHOLD_PCT,
+            }
+            _append_jsonl(V2_DECISIONS_PATH, exit_event)
+            _append_jsonl(V2_EXIT_EVENTS_PATH, exit_event)
         else:
             updated.append(position)
     return updated, closed
@@ -430,6 +487,37 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
     return open_positions + new_positions, new_positions
 
 
+def _log_position_snapshots(open_positions: list[dict]) -> None:
+    timestamp = _now_iso()
+    for position in open_positions:
+        _append_jsonl(V2_POSITION_SNAPSHOTS_PATH, {
+            'timestamp': timestamp,
+            'token': position.get('token'),
+            'product_id': position.get('product_id'),
+            'tier': position.get('tier'),
+            'trade_state': position.get('trade_state'),
+            'move_character': position.get('move_character'),
+            'entry_time': position.get('entry_time'),
+            'last_update': position.get('last_update'),
+            'entry_price': position.get('entry_price'),
+            'current_price': position.get('current_price'),
+            'pnl_percent': position.get('pnl_percent'),
+            'highest_pnl_percent': position.get('highest_pnl_percent'),
+            'time_in_trade_minutes': position.get('time_in_trade_minutes'),
+            'scanner_score': position.get('scanner_score'),
+            'momentum': position.get('momentum'),
+            'persistence': position.get('persistence'),
+            'trend': position.get('trend'),
+            'websocket_drift_300s': position.get('websocket_drift_300s'),
+            'websocket_freshness_seconds': position.get('websocket_freshness_seconds'),
+            'trim_step': position.get('trim_step'),
+            'trail_active': position.get('trail_active'),
+            'trail_distance_pct': position.get('trail_distance_pct'),
+            'remaining_size_pct': position.get('remaining_size_pct'),
+            'de_risked_fake_pump': position.get('de_risked_fake_pump'),
+        })
+
+
 def _build_audit_summary(open_positions: list[dict], trades_log: list[dict], summary: dict) -> dict:
     closed_count = len(trades_log)
     wins = [t for t in trades_log if float(t.get('pnl_percent') or 0.0) > 0]
@@ -476,6 +564,7 @@ def paper_trader_v2() -> dict:
         'top_candidates': shortlist[:5],
     }
 
+    _log_position_snapshots(updated_positions)
     audit_summary = _build_audit_summary(updated_positions, trades_log, summary)
 
     _write_json(V2_OPEN_POSITIONS_PATH, updated_positions)
