@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import os
+import signal
+import subprocess
+from pathlib import Path
 
 from nicegui import ui
 
-from .data import compute_dashboard_state
+from .data import compute_dashboard_state, read_runtime_controls
 
 
 def _fmt_ts(value: str | None) -> str:
@@ -60,6 +63,68 @@ def _telemetry_row(left: str, right: str, right_class: str = '') -> None:
 
 def _pill(text: str, level: str = 'info') -> None:
     ui.label(text).classes(f'status-pill {_status_class(level)}')
+
+
+def _run_root() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
+def _run_script(script_name: str) -> tuple[bool, str]:
+    root = _run_root()
+    script = root / 'scripts' / script_name
+    if not script.exists():
+        return False, f'Missing script: {script_name}'
+    result = subprocess.run(['bash', str(script)], cwd=root, capture_output=True, text=True)
+    if result.returncode != 0:
+        message = (result.stderr or result.stdout or f'Failed to run {script_name}').strip()
+        return False, message
+    return True, (result.stdout or f'Started {script_name}').strip()
+
+
+def _stop_pid(pid_file: str) -> tuple[bool, str]:
+    path = Path(pid_file)
+    if not path.exists():
+        return False, 'PID file not found'
+    try:
+        pid = int(path.read_text().strip())
+        os.kill(pid, signal.SIGTERM)
+        return True, f'Stopped PID {pid}'
+    except ProcessLookupError:
+        return False, 'Process already exited'
+    except Exception as exc:
+        return False, str(exc)
+
+
+def _control_action(group: str) -> None:
+    runtime = read_runtime_controls()
+    if group == 'scanner':
+        if runtime['scanner']['running']:
+            ok, msg = _stop_pid(str(runtime['scanner']['pid_file']))
+        else:
+            ok, msg = _run_script('run_coinbase_scanner.sh')
+    elif group == 'websocket':
+        if runtime['websocket']['running']:
+            ok, msg = _stop_pid(str(runtime['websocket']['pid_file']))
+        else:
+            ok, msg = _run_script('run_coinbase_ws.sh')
+    elif group == 'operator':
+        if runtime['operator']['running']:
+            ok, msg = _stop_pid(str(runtime['operator']['pid_file']))
+        else:
+            ok, msg = _run_script('run_dashboard.sh')
+    elif group == 'stream':
+        if runtime['stream']['running']:
+            ok, msg = _stop_pid(str(runtime['stream']['pid_file']))
+        else:
+            ok, msg = _run_script('run_stream_dashboard.sh')
+    else:
+        ok, msg = False, f'{group} control not wired yet'
+
+    if ok:
+        ui.notify(msg, type='positive')
+    else:
+        ui.notify(msg, type='negative')
+    operator_view.refresh()
 
 
 @ui.refreshable
@@ -187,11 +252,18 @@ def operator_view():
                         ui.label(snap.get('timestamp', '–')[-8:]).classes('telemetry-key')
                         ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
 
-            with _panel('Command / Controls Bay', 'Placeholder control surface'):
+            with _panel('Command / Controls Bay', 'Live control surface'):
                 with ui.grid(columns=2).classes('w-full gap-2'):
                     for item in state['controls_placeholder']:
-                        level = item['state'] if item['state'] in {'locked', 'pending', 'ready later'} else 'locked'
-                        ui.button(f"{item['label']} • {item['state']}").props('outline color=secondary').classes(f'w-full control-button {_status_class(level)}')
+                        state_text = item['state']
+                        level = 'healthy' if state_text in {'running', 'online'} else 'warning' if state_text in {'pending', 'watch'} else 'locked'
+                        btn = ui.button(f"{item['label']} • {state_text}")
+                        btn.props('outline color=secondary')
+                        btn.classes(f'w-full control-button {_status_class(level)}')
+                        if item['group'] in {'scanner', 'websocket', 'operator', 'stream'}:
+                            btn.on('click', lambda e=None, group=item['group']: _control_action(group))
+                        else:
+                            btn.disable()
 
 
 @ui.refreshable

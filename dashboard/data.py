@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
+import signal
 
 import requests
 
@@ -12,6 +13,7 @@ CACHE_DIR = WORKDIR / 'cache'
 MARKET_LOG_DIR = WORKDIR / 'market_logs'
 COINBASE_WS_LOG_DIR = MARKET_LOG_DIR / 'coinbase_ws'
 SYSTEM_LOG_DIR = WORKDIR / 'system_logs'
+PID_DIR = SYSTEM_LOG_DIR
 
 MARKET_STATE_PATH = CACHE_DIR / 'market_state.json'
 COINBASE_WS_STATE_PATH = CACHE_DIR / 'coinbase_ws_state.json'
@@ -258,16 +260,43 @@ def build_status_flags(market_state: dict[str, Any], ws_state: dict[str, Any]) -
     return flags
 
 
+def _pid_running(pid_path: Path) -> bool:
+    try:
+        pid = int(pid_path.read_text().strip())
+        os.kill(pid, 0)
+        return True
+    except Exception:
+        return False
+
+
+def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
+    scanner_pid = PID_DIR / 'coinbase_scanner.pid'
+    websocket_pid = PID_DIR / 'coinbase_ws.pid'
+    dashboard_pid = PID_DIR / 'dashboard_ui.pid'
+    stream_pid = PID_DIR / 'stream_dashboard_ui.pid'
+
+    scanner_running = _pid_running(scanner_pid)
+    websocket_running = _pid_running(websocket_pid)
+    dashboard_running = _pid_running(dashboard_pid)
+    stream_running = _pid_running(stream_pid)
+
+    return {
+        'scanner': {'label': 'Scanner', 'running': scanner_running, 'state': 'running' if scanner_running else 'stopped', 'pid_file': str(scanner_pid)},
+        'websocket': {'label': 'Coinbase Websocket', 'running': websocket_running, 'state': 'online' if websocket_running else 'offline', 'pid_file': str(websocket_pid)},
+        'operator': {'label': 'Operator Dashboard', 'running': dashboard_running, 'state': 'online' if dashboard_running else 'offline', 'pid_file': str(dashboard_pid)},
+        'stream': {'label': 'Stream Dashboard', 'running': stream_running, 'state': 'online' if stream_running else 'offline', 'pid_file': str(stream_pid)},
+    }
+
+
 def build_controls_placeholder(market_state: dict[str, Any], ws_state: dict[str, Any], open_positions_v2: list[dict[str, Any]], audit_v2: dict[str, Any]) -> list[dict[str, str]]:
-    scanner_state = 'running' if market_state.get('computed_at') else 'stopped'
-    websocket_state = 'online' if ws_state.get('connected') else 'offline'
+    runtime = read_runtime_controls()
     trader_state = audit_v2.get('mode', 'watch') if audit_v2 else ('engaged' if open_positions_v2 else 'watch')
     return [
-        {'group': 'scanner', 'label': 'Scanner', 'state': scanner_state},
-        {'group': 'websocket', 'label': 'Coinbase Websocket', 'state': websocket_state},
+        {'group': 'scanner', 'label': 'Scanner', 'state': str(runtime['scanner']['state'])},
+        {'group': 'websocket', 'label': 'Coinbase Websocket', 'state': str(runtime['websocket']['state'])},
         {'group': 'trader', 'label': 'Paper Trader V2', 'state': trader_state},
-        {'group': 'operator', 'label': 'Operator Dashboard', 'state': 'online'},
-        {'group': 'stream', 'label': 'Stream Dashboard', 'state': 'online'},
+        {'group': 'operator', 'label': 'Operator Dashboard', 'state': str(runtime['operator']['state'])},
+        {'group': 'stream', 'label': 'Stream Dashboard', 'state': str(runtime['stream']['state'])},
         {'group': 'loop', 'label': 'Main Loop', 'state': 'pending'},
         {'group': 'reports', 'label': 'Reports / Outputs', 'state': 'locked'},
     ]
