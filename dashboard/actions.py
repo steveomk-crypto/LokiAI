@@ -99,10 +99,7 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
         return run_script('run_market_cycle.sh')
 
     if component_id == 'performance_analyzer' and action == 'run_outputs':
-        return run_script('log_trading_outputs.sh')
-
-    if component_id == 'performance_analyzer' and action == 'start':
-        return run_script('log_trading_outputs.sh')
+        return run_script('run_performance_analyzer.sh')
 
     if component_id == 'operator_dashboard':
         if action == 'start' and comp.start_script:
