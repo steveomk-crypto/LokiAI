@@ -17,12 +17,12 @@ V2_DECISIONS_PATH = TRADES_DIR / 'paper_trader_v2_decisions.jsonl'
 V2_AUDIT_SUMMARY_PATH = TRADES_DIR / 'paper_trader_v2_audit_summary.json'
 
 MAX_SLOTS = 3
-TIER_A_MIN_SCORE = 0.58
-TIER_B_MIN_SCORE = 0.45
+TIER_A_MIN_SCORE = 0.52
+TIER_B_MIN_SCORE = 0.40
 FRESHNESS_LIMIT_SECONDS = 180
-TIER_A_MIN_DRIFT_300S = 0.12
-TIER_B_MIN_DRIFT_300S = 0.10
-TIER_A_MIN_PERSISTENCE = 5
+TIER_A_MIN_DRIFT_300S = 0.10
+TIER_B_MIN_DRIFT_300S = 0.09
+TIER_A_MIN_PERSISTENCE = 4
 TIER_B_MIN_PERSISTENCE = 4
 COOLDOWN_MINUTES = 45
 TIER_A_STOP_LOSS_PCT = -4.0
@@ -117,7 +117,7 @@ def _candidate_tier(candidate: dict, ticker: dict) -> str:
 
     persistence = int(candidate.get('persistence') or 0)
 
-    if persistence == 4 and score < 0.62:
+    if persistence == 4 and score < 0.56:
         return ''
 
     if score >= TIER_A_MIN_SCORE and drift >= TIER_A_MIN_DRIFT_300S and persistence >= TIER_A_MIN_PERSISTENCE:
