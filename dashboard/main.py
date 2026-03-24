@@ -151,11 +151,11 @@ def operator_view():
                 _telemetry_row('Open V2 slots', str(len(state.get('open_positions_v2', []))), 'status-warning' if len(state.get('open_positions_v2', [])) else 'status-healthy')
                 _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)), 'status-warning' if int(metrics.get('total_signals', 0) or 0) == 0 else 'status-healthy')
 
-            with _panel('Market State Summary', 'Latest scanner snapshot'):
-                _telemetry_row('Avg top score', _fmt_num(metrics.get('avg_top_score'), 4))
+            with _panel('Market Summary', 'Latest scanner snapshot in one read'):
                 _telemetry_row('High-quality signals', str(metrics.get('high_quality_signals', 0)))
+                _telemetry_row('Avg top score', _fmt_num(metrics.get('avg_top_score'), 4))
                 _telemetry_row('Breadth positive', _fmt_num(metrics.get('breadth_positive'), 2))
-                _telemetry_row('Top opportunities loaded', str(len(top_opps)))
+                _telemetry_row('Top opportunities', str(len(top_opps)))
                 _telemetry_row('Mode', market_state.get('mode', '–'))
 
             with _panel('Action Feed', 'Latest operator and system results'):
@@ -190,13 +190,15 @@ def operator_view():
                         ui.label(item['token']).classes('font-semibold')
                         ui.label(f"r{item['repeat_count']} • {_fmt_num(item['latest_score'], 3)} • {item['latest_trend']}").classes('telemetry-value')
 
-            with _panel('Scanner Run History', 'Cadence and quality'):
-                if not state['scanner_history']:
-                    ui.label('No run history yet').classes('text-gray-400')
-                for row in state['scanner_history'][-8:]:
-                    with ui.row().classes('w-full justify-between items-center telemetry-row'):
-                        ui.label(row['timestamp'][-8:] if row['timestamp'] else '–').classes('telemetry-key')
-                        ui.label(f"sig {row['signal_count']} • HQ {row['high_quality_count']} • {_fmt_num(row['top_score'], 3)}").classes('telemetry-value')
+            with _panel('This Cycle', 'What changed most recently'):
+                latest_history = state['scanner_history'][-1] if state['scanner_history'] else None
+                if not latest_history:
+                    ui.label('No cycle history yet').classes('text-gray-400')
+                else:
+                    _telemetry_row('Signals', str(latest_history.get('signal_count', 0)))
+                    _telemetry_row('High quality', str(latest_history.get('high_quality_count', 0)))
+                    _telemetry_row('Top score', _fmt_num(latest_history.get('top_score'), 3))
+                    _telemetry_row('Cycle stamp', latest_history.get('timestamp', '–')[-8:])
 
             with _panel('Coinbase Live Movers', 'Short-horizon live pulse'):
                 if not live_movers:
