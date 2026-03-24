@@ -92,8 +92,9 @@ def stream_view():
     loop_status = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_cycle_status == 'RECENT' else 'IDLE'
     scanner_log_time = _fmt_meta_ts((runtime.get('market_scanner') or {}).get('log_meta', {}).get('updated_at'))
     loop_log_time = _fmt_meta_ts((runtime.get('main_loop') or {}).get('log_meta', {}).get('updated_at'))
-    flatten_status = 'RUNNING' if runtime['flatten']['running'] else 'IDLE'
-    flatten_log_time = _fmt_meta_ts((runtime.get('flatten') or {}).get('log_meta', {}).get('updated_at'))
+    flatten_runtime = runtime.get('paper_trader_v2', {})
+    flatten_status = 'IDLE'
+    flatten_log_time = _fmt_meta_ts((flatten_runtime or {}).get('log_meta', {}).get('updated_at'))
     last_manual_flatten = _fmt_meta_ts((v2_audit or {}).get('last_manual_flatten_at'))
     log_outputs_status = 'RUNNING' if runtime.get('market_broadcaster', {}).get('running') else 'IDLE'
     log_outputs_time = _fmt_meta_ts((runtime.get('market_broadcaster') or {}).get('log_meta', {}).get('updated_at'))
@@ -156,7 +157,7 @@ def stream_view():
                         focus_token = primary_slot.get('token', 'UNKNOWN')
                         mission_reason = 'live paper-trader slot in focus'
                         last_close = primary_slot.get('current_price') or primary_slot.get('entry_price')
-                    elif runtime['flatten']['running']:
+                    elif False:
                         mission_state = 'FLATTENING POSITIONS'
                         focus_token = 'PORTFOLIO'
                         mission_reason = 'manual flatten job is running'
