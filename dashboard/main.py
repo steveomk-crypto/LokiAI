@@ -68,6 +68,7 @@ def _pill(text: str, level: str = 'info') -> None:
 
 
 LAST_ACTION_RESULT = {'message': 'No recent actions'}
+COMPONENT_ACTION_RESULTS: dict[str, str] = {}
 
 
 def _format_meta_time(value: str | None) -> str:
@@ -79,7 +80,9 @@ def _format_meta_time(value: str | None) -> str:
 
 def _control_action(group: str, action: str) -> None:
     ok, msg = perform_component_action(group, action)
-    LAST_ACTION_RESULT['message'] = f'{group} {action}: {msg}'
+    result_text = f'{group} {action}: {msg}'
+    LAST_ACTION_RESULT['message'] = result_text
+    COMPONENT_ACTION_RESULTS[group] = result_text
     ui.notify(msg, type='positive' if ok else 'negative')
     operator_view.refresh()
 
@@ -274,6 +277,9 @@ def operator_view():
                                                 meta_bits.append('last success: ' + _format_meta_time(item.get('last_success_at')))
                                             if item.get('last_error'):
                                                 meta_bits.append('last error: ' + str(item.get('last_error')))
+                                            last_component_action = COMPONENT_ACTION_RESULTS.get(item['group'])
+                                            if last_component_action:
+                                                meta_bits.append('last action: ' + last_component_action)
                                             if not meta_bits:
                                                 meta_bits.append('No runtime metadata')
                                             ui.label(' • '.join(meta_bits)).classes('signal-meta')
