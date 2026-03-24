@@ -261,27 +261,35 @@ def operator_view():
                                 deps_text = 'OK' if item.get('dependency_health') == 'clear' else ', '.join(item.get('dependency_blockers') or [])
                                 last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
                                 last_component_action = COMPONENT_ACTION_RESULTS.get(item['group']) or '–'
-                                with ui.card().classes('glass-panel w-full p-2'):
-                                    with ui.row().classes('w-full items-center justify-between gap-2 wrap'):
-                                        ui.label(str(item['label'])).classes('font-semibold min-w-[180px]')
-                                        ui.label(f'State {state_text}').classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
-                                        ui.label(f'Desired {desired}' + ('' if desired_ok else ' • MISMATCH')).classes(f'status-pill {_status_class("healthy" if desired_ok else "warning")}')
-                                        ui.label(f'Deps {deps_text}').classes('signal-meta min-w-[140px]')
-                                        ui.label(f'Last {last_success}').classes('signal-meta min-w-[90px]')
-                                        ui.label(f'Action {last_component_action}').classes('signal-meta min-w-[180px]')
-                                        with ui.row().classes('gap-1 items-center'):
+                                with ui.card().classes('glass-panel w-full p-3'):
+                                    with ui.column().classes('w-full gap-2'):
+                                        with ui.row().classes('w-full items-center justify-between gap-2 wrap'):
+                                            ui.label(str(item['label'])).classes('font-semibold text-base min-w-[220px]')
+                                            with ui.row().classes('gap-2 items-center wrap'):
+                                                ui.label(f'State {state_text}').classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
+                                                ui.label(f'Desired {desired}').classes(f'status-pill {_status_class("healthy" if desired_ok else "info")}')
+                                                if not desired_ok:
+                                                    ui.label('Mismatch').classes('status-pill status-warning')
+                                        with ui.row().classes('w-full items-center justify-between gap-3 wrap'):
+                                            ui.label(f'Deps {deps_text}').classes('signal-meta min-w-[160px]')
+                                            ui.label(f'Last success {last_success}').classes('signal-meta min-w-[120px]')
+                                            if last_component_action != '–':
+                                                ui.label(f'Last action {last_component_action}').classes('signal-meta min-w-[220px]')
+                                            else:
+                                                ui.label('No recent action').classes('signal-meta min-w-[140px]')
+                                        with ui.row().classes('w-full gap-2 items-center justify-end wrap'):
                                             start_label = item.get('start_label') or ('Run' if item.get('kind') == 'job' else 'Start')
-                                            start_btn = ui.button(start_label).props('size=sm color=positive unelevated')
+                                            start_btn = ui.button(start_label).props('color=positive unelevated').classes('min-w-[96px]')
                                             if item.get('running') and item.get('kind') == 'service':
                                                 start_btn.disable()
                                             if item.get('controls_blocked'):
                                                 start_btn.disable()
                                             start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                            stop_btn = ui.button('Stop').props('size=sm color=negative outline')
+                                            stop_btn = ui.button('Stop').props('color=negative outline').classes('min-w-[96px]')
                                             if item.get('kind') != 'service' or not item.get('running'):
                                                 stop_btn.disable()
                                             stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
-                                            inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline')
+                                            inspect_btn = ui.button('Inspect').props('color=secondary outline').classes('min-w-[96px]')
                                             inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
 
