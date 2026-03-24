@@ -253,9 +253,9 @@ def operator_view():
                                 item = runtime_map.get(comp.id)
                                 if not item:
                                     continue
-                                state_text = str(item['state'])
+                                state_text = str(item.get('display_state') or item['state']).upper()
                                 desired_ok = bool(item.get('desired_state_ok'))
-                                level = 'healthy' if state_text in {'running', 'available', 'recently completed', 'active recently', 'running (data healthy)'} else 'locked'
+                                level = 'healthy' if state_text in {'RUNNING', 'ACTIVE'} else 'warning' if state_text in {'BLOCKED', 'DEGRADED'} else 'locked'
                                 if not desired_ok:
                                     level = 'warning'
                                 log_meta = item.get('log_meta') or {}
@@ -370,15 +370,10 @@ def stream_view():
                     ui.label('Live funds are staged but inactive until system stability is proven.').classes('text-sm panel-row')
                     ui.label('No real-money execution is active.').classes('text-sm panel-row')
 
-                with _panel('Latest Intelligence', 'Current product + research surface'):
-                    ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold')
-                    ui.label('Daily Coinbase momentum brief while Atlas Loop runs in quality-only mode.').classes('text-sm panel-row')
-                    ui.label('Substack + Gumroad are being rebuilt as distribution layers.').classes('text-sm panel-row')
-
-                with _panel('Links / Support', 'Public conversion surface'):
+                with _panel('Distribution Surface', 'Current outbound surfaces'):
                     ui.label('Substack: lokiai.substack.com').classes('text-sm panel-row')
                     ui.label('Gumroad: lokiclips.gumroad.com').classes('text-sm panel-row')
-                    ui.label('Tips / community: coming online').classes('text-sm panel-row')
+                    ui.label('X posting: optional / controlled').classes('text-sm panel-row')
 
         with ui.card().classes('glass-panel w-full footer-ticker'):
             ui.label('SCANNER LIVE • PAPER ONLY • QUALITY GATE ACTIVE • SUBSTACK + GUMROAD REBUILD IN PROGRESS').classes('ticker-text')

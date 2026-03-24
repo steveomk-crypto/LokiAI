@@ -140,10 +140,10 @@ def stream_view():
                                 ui.label(f"{fmt_num(opp.get('momentum'), 1)}%").classes('signal-momentum')
                                 ui.label(f"persistence {opp.get('persistence', 0)}").classes('signal-meta')
 
-                with panel('Links / Support', 'Follow the build and access outputs', 'left-panel-compact'):
-                    ui.label('Read the brief → lokiai.substack.com').classes('text-sm panel-row')
-                    ui.label('Get the pack → lokiclips.gumroad.com').classes('text-sm panel-row')
-                    ui.label('Support/community → coming online').classes('text-sm panel-row')
+                with panel('Distribution', 'Current outward-facing surfaces', 'left-panel-compact'):
+                    ui.label('Brief → lokiai.substack.com').classes('text-sm panel-row')
+                    ui.label('Pack → lokiclips.gumroad.com').classes('text-sm panel-row')
+                    ui.label('Posting → controlled').classes('text-sm panel-row')
 
             with ui.column().classes('stream-center gap-3'):
                 with ui.card().classes('glass-panel cockpit-hero w-full h-full'):
@@ -216,10 +216,10 @@ def stream_view():
 
 
             with ui.column().classes('stream-right gap-2 compact-right-rail'):
-                with panel('Operating / Mission Status', 'Current system stance', 'right-panel-tall compact-status-panel'):
-                    ui.label('Paper-only mode.').classes('text-sm font-semibold status-info')
-                    ui.label('Funds are staged, not deployed.').classes('text-sm panel-row compact-copy')
-                    ui.label('System remains in rebuild / stabilization mode.').classes('text-sm panel-row compact-copy')
+                with panel('System Posture', 'Current operating stance', 'right-panel-tall compact-status-panel'):
+                    ui.label('PAPER ONLY').classes('text-sm font-semibold status-info')
+                    ui.label('No live funds active.').classes('text-sm panel-row compact-copy')
+                    ui.label('System focus: stability, control, signal quality.').classes('text-sm panel-row compact-copy')
                     ui.separator().classes('my-1 opacity-20')
                     category_titles = {
                         'data_plane': 'Data Plane',
@@ -234,7 +234,7 @@ def stream_view():
                             item = runtime.get(comp.id)
                             if not item:
                                 continue
-                            status_text = str(item.get('state', 'unknown')).upper()
+                            status_text = str(item.get('display_state') or item.get('state', 'unknown')).upper()
                             if comp.id == 'main_loop':
                                 status_text = f'{loop_status} • {loop_log_time}'
                             ui.label(f"{comp.name}: {status_text}").classes('telemetry-value compact-value')
@@ -247,10 +247,10 @@ def stream_view():
                     ui.label('Closed V2 trades').classes('telemetry-key compact-key mt-1')
                     ui.label(str(v2_audit.get('closed_trade_count', 0))).classes('telemetry-value compact-value')
 
-                with panel('Latest Intelligence', 'Current research / product output', 'compact-right-panel'):
-                    ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold compact-headline')
+                with panel('Research Surface', 'Current intelligence layer', 'compact-right-panel'):
+                    ui.label('Atlas Pulse').classes('font-semibold compact-headline')
                     ui.label('Daily Coinbase momentum brief.').classes('text-sm panel-row compact-copy')
-                    ui.label('Distribution layer rebuilding in parallel.').classes('text-sm panel-row compact-copy')
+                    ui.label('Distribution remains controlled.').classes('text-sm panel-row compact-copy')
 
                 with panel('Social / Intel Pulse', 'Curated catalyst layer', 'compact-right-panel'):
                     items = social_pulse.get('items', [])[:2]

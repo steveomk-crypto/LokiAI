@@ -348,6 +348,21 @@ def _is_recent(updated_at: str | None, threshold_seconds: int) -> bool:
     return (datetime.now(timezone.utc) - dt).total_seconds() <= threshold_seconds
 
 
+def _canonical_display_state(entry: dict[str, Any]) -> str:
+    state = str(entry.get('state') or '').lower()
+    if entry.get('dependency_health') == 'blocked':
+        return 'BLOCKED'
+    if entry.get('last_error') and 'blocked by dependencies' not in str(entry.get('last_error')).lower():
+        return 'FAILED'
+    if any(term in state for term in ('running', 'data healthy')):
+        return 'RUNNING'
+    if any(term in state for term in ('active recently', 'recently completed', 'available')):
+        return 'ACTIVE'
+    if 'degraded' in state or 'stale' in state:
+        return 'DEGRADED'
+    return 'IDLE'
+
+
 def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dict[str, Any]:
     ws_state = load_coinbase_ws_state()
     market_state = load_market_state()
@@ -402,6 +417,7 @@ def _apply_dependency_health(runtime: dict[str, dict[str, Any]]) -> None:
             entry['desired_state_ok'] = True
         if entry.get('dependency_health') == 'blocked' and not entry.get('last_error'):
             entry['last_error'] = f"Blocked by dependencies: {entry['blocked_reason']}"
+        entry['display_state'] = _canonical_display_state(entry)
 
 
 def read_runtime_controls() -> dict[str, dict[str, Any]]:
