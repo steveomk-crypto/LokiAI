@@ -246,12 +246,12 @@ def operator_view():
                     state_text = str(item.get('display_state') or item['state']).upper()
                     deps_text = 'Ready' if item.get('dependency_health') == 'clear' else 'Waiting on ' + ', '.join(item.get('dependency_blockers') or [])
                     last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
-                    with ui.row().classes('w-full items-center justify-between gap-2 telemetry-row'):
-                        ui.label(str(item['label'])).classes('font-semibold min-w-[150px]')
+                    with ui.row().classes('w-full telemetry-row'):
+                        ui.label(str(item['label'])).classes('font-semibold')
                         ui.label(state_text).classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
-                        ui.label(deps_text).classes('signal-meta min-w-[150px]')
-                        ui.label(f'Last {last_success}').classes('signal-meta min-w-[72px]')
-                        with ui.row().classes('gap-1 items-center justify-end'):
+                        ui.label(deps_text).classes('signal-meta')
+                        ui.label(last_success).classes('signal-meta')
+                        with ui.row().classes('operator-actions'):
                             if item.get('kind') == 'service':
                                 start_btn = ui.button('Start').props('size=sm color=positive unelevated').classes('min-w-[78px]')
                                 if item.get('running'):
@@ -290,22 +290,23 @@ def operator_view():
                     ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
                 with ui.row().classes('w-full gap-4 items-start no-wrap'):
-                    with ui.column().classes('w-1/2 gap-2'):
+                    with ui.column().classes('w-1/2 gap-2 operator-table'):
                         ui.label('Core Systems').classes('panel-title')
                         for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
                             compact_row(component_id)
 
-                    with ui.column().classes('w-1/2 gap-2'):
+                    with ui.column().classes('w-1/2 gap-2 operator-table'):
                         ui.label('Outputs & Automation').classes('panel-title')
                         for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
                             item = runtime_map.get(component_id)
                             if not item:
                                 continue
-                            with ui.row().classes('w-full items-center justify-between gap-2 telemetry-row'):
-                                ui.label(str(item['label'])).classes('font-semibold min-w-[140px]')
+                            with ui.row().classes('w-full telemetry-row'):
+                                ui.label(str(item['label'])).classes('font-semibold')
                                 ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
-                                ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta min-w-[80px]')
-                                with ui.row().classes('gap-1 items-center justify-end'):
+                                ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta')
+                                ui.label(_format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–').classes('signal-meta')
+                                with ui.row().classes('operator-actions'):
                                     enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
                                     if str(item.get('desired_state')) == 'enabled':
                                         enable_btn.disable()
@@ -467,8 +468,23 @@ def apply_theme() -> None:
             .status-info { color: #8dd8ff !important; }
             .status-muted { color: #b9c6e8 !important; opacity: 0.7; }
             .telemetry-row {
-                padding: 0.2rem 0;
+                padding: 0.24rem 0;
                 border-bottom: 1px solid rgba(255,255,255,0.04);
+            }
+            .operator-table {
+                width: 100%;
+            }
+            .operator-table .telemetry-row {
+                display: grid;
+                grid-template-columns: minmax(140px, 1.3fr) minmax(88px, 0.7fr) minmax(150px, 1.2fr) minmax(72px, 0.6fr) auto;
+                align-items: center;
+                column-gap: 0.6rem;
+            }
+            .operator-actions {
+                display: flex;
+                gap: 0.35rem;
+                justify-content: flex-end;
+                align-items: center;
             }
             .telemetry-key {
                 color: rgba(220, 232, 255, 0.7);
