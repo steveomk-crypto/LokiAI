@@ -277,9 +277,10 @@ def operator_view():
                     ui.label('System Controls').classes('panel-title')
                     with ui.row().classes('w-full gap-2 wrap'):
                         ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'start'))
+                        ui.button('Run Cycle Now').props('color=positive outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
                         ui.button('Stop Automation').props('color=negative outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'stop'))
-                        ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('paper_trader_v2', 'inspect'))
-                        ui.button('Restart Dashboards').props('color=secondary outline').classes('min-w-[180px]')
+                        ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[160px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
+                        ui.button('Run Reports').props('color=secondary outline').classes('min-w-[160px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
                         ui.button('Inspect Loop Log').props('color=secondary outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
                     ui.label('Core Systems').classes('panel-title')

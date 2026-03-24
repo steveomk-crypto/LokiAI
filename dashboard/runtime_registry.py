@@ -136,8 +136,9 @@ COMPONENTS: dict[str, ComponentDef] = {
         kind='job',
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['market_broadcaster'],
-        notes='Pushes messaging updates downstream.',
+        notes='Runs inside the market cycle as a downstream messaging task.',
         inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
+        desired_default='auto',
     ),
     'x_autoposter': ComponentDef(
         id='x_autoposter',
@@ -146,8 +147,9 @@ COMPONENTS: dict[str, ComponentDef] = {
         kind='job',
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=['market_broadcaster'],
-        notes='Optional posting layer.',
+        notes='Runs inside the market cycle when posting is enabled.',
         inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
+        desired_default='auto',
     ),
     'performance_analyzer': ComponentDef(
         id='performance_analyzer',
@@ -163,13 +165,14 @@ COMPONENTS: dict[str, ComponentDef] = {
     ),
     'sol_shadow_logger': ComponentDef(
         id='sol_shadow_logger',
-        name='Sol Shadow Logger',
+        name='Solana Shadow Fill Logger',
         category='output_plane',
         kind='job',
         log_path=SYSTEM_LOG_DIR / 'market_loop_cron.log',
         dependencies=[],
-        notes='Sidecar logging path; should not define core stack health.',
+        notes='Sidecar logger for Solana shadow fills; not a core control-plane component.',
         inspect_target=SYSTEM_LOG_DIR / 'market_loop_cron.log',
+        desired_default='auto',
     ),
 }
 

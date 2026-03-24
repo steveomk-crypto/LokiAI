@@ -79,9 +79,17 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 str(root / 'system_logs' / 'market_cycle_daemon.pid'),
                 str(root / 'system_logs' / 'market_loop_cron.log'),
             )
+        if action == 'run_cycle':
+            return run_script('run_market_cycle.sh')
         if action == 'stop' and runtime.get(component_id, {}).get('pid_file'):
             return stop_pid(str(runtime[component_id]['pid_file']))
         return open_path(comp.inspect_target or root / 'system_logs' / 'market_loop_cron.log')
+
+    if component_id == 'paper_trader_v2' and action == 'flatten':
+        return run_script('flatten_paper_trader.sh')
+
+    if component_id == 'performance_analyzer' and action == 'run_outputs':
+        return run_script('log_trading_outputs.sh')
 
     if component_id == 'operator_dashboard':
         if action == 'start' and comp.start_script:
