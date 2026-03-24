@@ -348,6 +348,55 @@ def _is_recent(updated_at: str | None, threshold_seconds: int) -> bool:
     return (datetime.now(timezone.utc) - dt).total_seconds() <= threshold_seconds
 
 
+def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    ws_state = load_coinbase_ws_state()
+    market_state = load_market_state()
+    loop_info = build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log') if 'main_loop' in runtime else {}
+
+    if 'coinbase_feed' in runtime and ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
+        runtime['coinbase_feed']['running'] = True
+        runtime['coinbase_feed']['state'] = 'running (data healthy)'
+        runtime['coinbase_feed']['last_success_at'] = ws_state.get('last_message_at')
+    if 'market_scanner' in runtime and market_state.get('computed_at') and _is_recent(market_state.get('computed_at'), 300):
+        runtime['market_scanner']['state'] = 'recently completed'
+        runtime['market_scanner']['last_success_at'] = market_state.get('computed_at')
+    if 'main_loop' in runtime and _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
+        runtime['main_loop']['state'] = 'active recently'
+    if 'main_loop' in runtime and loop_info.get('last_error'):
+        runtime['main_loop']['last_error'] = loop_info.get('last_error')
+
+    return loop_info
+
+
+def _apply_dependency_health(runtime: dict[str, dict[str, Any]]) -> None:
+    for comp_id, entry in runtime.items():
+        deps = entry.get('dependencies') or []
+        if not deps:
+            entry['dependency_health'] = 'clear'
+            entry['dependency_blockers'] = []
+        else:
+            blockers = []
+            for dep in deps:
+                dep_entry = runtime.get(dep)
+                dep_state = str((dep_entry or {}).get('state') or '').lower()
+                dep_running = bool((dep_entry or {}).get('running'))
+                if not dep_entry:
+                    blockers.append(dep)
+                elif dep_running:
+                    continue
+                elif any(term in dep_state for term in ('running', 'recently completed', 'active recently', 'data healthy', 'available')):
+                    continue
+                else:
+                    blockers.append(dep)
+            entry['dependency_health'] = 'blocked' if blockers else 'clear'
+            entry['dependency_blockers'] = blockers
+
+        entry['controls_blocked'] = entry['dependency_health'] == 'blocked' and entry.get('kind') in {'service', 'job'}
+        entry['blocked_reason'] = ', '.join(entry.get('dependency_blockers') or []) if entry['controls_blocked'] else None
+        if entry.get('dependency_health') == 'blocked' and not entry.get('last_error'):
+            entry['last_error'] = f"Blocked by dependencies: {entry['blocked_reason']}"
+
+
 def read_runtime_controls() -> dict[str, dict[str, Any]]:
     runtime: dict[str, dict[str, Any]] = {}
     for comp_id, comp in COMPONENTS.items():
@@ -376,50 +425,8 @@ def read_runtime_controls() -> dict[str, dict[str, Any]]:
         entry['last_error'] = None
         runtime[comp_id] = entry
 
-    ws_state = load_coinbase_ws_state()
-    market_state = load_market_state()
-    if 'coinbase_feed' in runtime and ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
-        runtime['coinbase_feed']['running'] = True
-        runtime['coinbase_feed']['state'] = 'running (data healthy)'
-        runtime['coinbase_feed']['last_success_at'] = ws_state.get('last_message_at')
-    if 'market_scanner' in runtime and market_state.get('computed_at') and _is_recent(market_state.get('computed_at'), 300):
-        runtime['market_scanner']['state'] = 'recently completed'
-        runtime['market_scanner']['last_success_at'] = market_state.get('computed_at')
-    if 'main_loop' in runtime and _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
-        runtime['main_loop']['state'] = 'active recently'
-
-    loop_info = build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log') if 'main_loop' in runtime else {}
-
-    for comp_id, entry in runtime.items():
-        deps = entry.get('dependencies') or []
-        if not deps:
-            entry['dependency_health'] = 'clear'
-            entry['dependency_blockers'] = []
-        else:
-            blockers = []
-            for dep in deps:
-                dep_entry = runtime.get(dep)
-                dep_state = str((dep_entry or {}).get('state') or '').lower()
-                dep_running = bool((dep_entry or {}).get('running'))
-                if not dep_entry:
-                    blockers.append(dep)
-                elif dep_running:
-                    continue
-                elif any(term in dep_state for term in ('running', 'recently completed', 'active recently', 'data healthy', 'available')):
-                    continue
-                else:
-                    blockers.append(dep)
-            entry['dependency_health'] = 'blocked' if blockers else 'clear'
-            entry['dependency_blockers'] = blockers
-
-        entry['controls_blocked'] = entry['dependency_health'] == 'blocked' and entry.get('kind') in {'service', 'job'}
-        entry['blocked_reason'] = ', '.join(entry.get('dependency_blockers') or []) if entry['controls_blocked'] else None
-
-        if comp_id == 'main_loop' and loop_info.get('last_error'):
-            entry['last_error'] = loop_info.get('last_error')
-        elif entry.get('dependency_health') == 'blocked':
-            entry['last_error'] = f"Blocked by dependencies: {entry['blocked_reason']}"
-
+    _apply_component_health_overrides(runtime)
+    _apply_dependency_health(runtime)
     return runtime
 
 
