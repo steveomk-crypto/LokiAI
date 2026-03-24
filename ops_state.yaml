@@ -21,7 +21,7 @@
     }
   },
   "queue": {
-    "packet_dir": "/data/.openclaw/workspace/queues/market_radar",
+    "packet_dir": "/home/lokiai/.openclaw/workspace/queues/market_radar",
     "retention_minutes": 120
   },
   "notes": "State file owned by you. Edit with caution."

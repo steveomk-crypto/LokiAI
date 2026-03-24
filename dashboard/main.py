@@ -78,7 +78,11 @@ def _run_script(script_name: str) -> tuple[bool, str]:
     if result.returncode != 0:
         message = (result.stderr or result.stdout or f'Failed to run {script_name}').strip()
         return False, message
-    return True, (result.stdout or f'Started {script_name}').strip()
+    output = (result.stdout or '').strip()
+    if output:
+        first_line = output.splitlines()[0].strip()
+        return True, first_line
+    return True, f'Started {script_name}'
 
 
 def _open_path(path: Path) -> tuple[bool, str]:
@@ -110,7 +114,7 @@ def _stop_pid(pid_file: str) -> tuple[bool, str]:
         os.kill(pid, signal.SIGTERM)
         return True, f'Stopped PID {pid}'
     except ProcessLookupError:
-        return False, 'Process already exited'
+        return True, 'Process already exited'
     except Exception as exc:
         return False, str(exc)
 

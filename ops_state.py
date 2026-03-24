@@ -6,7 +6,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict
 
-OPS_STATE_PATH = Path("/data/.openclaw/workspace/ops_state.yaml")
+WORKSPACE = Path(__file__).resolve().parent
+OPS_STATE_PATH = WORKSPACE / "ops_state.yaml"
 
 DEFAULT_STATE: Dict[str, Any] = {
     "channels": {
@@ -27,7 +28,7 @@ DEFAULT_STATE: Dict[str, Any] = {
     },
     "draft_only": True,
     "queue": {
-        "packet_dir": "/data/.openclaw/workspace/queues/market_radar",
+        "packet_dir": str(WORKSPACE / "queues" / "market_radar"),
         "retention_minutes": 120
     },
     "notes": "Set channel.enabled true + mode=auto only after manual approval."
