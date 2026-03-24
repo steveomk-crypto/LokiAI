@@ -1,0 +1,10 @@
+{
+  "mode": "draft_only",
+  "allowedAutoClasses": [
+    "market_radar",
+    "build_in_public"
+  ],
+  "lastDraftAt": null,
+  "lastPostAt": null,
+  "lastResult": null
+}
