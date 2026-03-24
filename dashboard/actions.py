@@ -98,15 +98,6 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
     if component_id == 'position_manager' and action == 'start':
         return run_script('run_market_cycle.sh')
 
-    if component_id == 'market_broadcaster' and action == 'start':
-        return run_script('run_market_cycle.sh')
-
-    if component_id == 'telegram_sender' and action == 'start':
-        return run_script('run_market_cycle.sh')
-
-    if component_id == 'x_autoposter' and action == 'start':
-        return run_script('run_market_cycle.sh')
-
     if component_id == 'performance_analyzer' and action == 'run_outputs':
         return run_script('log_trading_outputs.sh')
 
