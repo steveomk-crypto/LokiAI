@@ -5,7 +5,7 @@ import os
 from nicegui import ui
 
 from .common import fmt_num, panel, pill
-from .data import compute_dashboard_state
+from .data import compute_dashboard_state, read_runtime_controls
 from .theme import apply_theme
 
 
@@ -76,6 +76,11 @@ def stream_view():
     open_positions_v2 = state.get('open_positions_v2', [])
     v2_audit = state.get('paper_trader_v2_audit', {})
     social_pulse = state.get('social_intel_pulse', {})
+    runtime = read_runtime_controls()
+    scanner_status = 'RUNNING' if runtime['scanner']['running'] else 'IDLE'
+    feed_status = 'RUNNING' if runtime['websocket']['running'] else 'STOPPED'
+    trader_status = 'RUNNING' if runtime['paper_trader_v2']['running'] else 'STOPPED'
+    loop_status = 'RUNNING' if runtime['loop']['running'] else 'STOPPED'
 
     with ui.column().classes('stream-stage w-full h-screen gap-2 p-3'):
         with ui.card().classes('top-bar w-full stream-hero stage-top'):
@@ -85,8 +90,9 @@ def stream_view():
                     ui.label('Autonomous market intelligence cockpit • paper-only rebuild phase').classes('hero-subtitle')
                 with ui.row().classes('gap-3 items-center wrap'):
                     pill('STREAM • LIVE', 'healthy')
-                    pill(f"SCANNER • {market_state.get('metrics', {}).get('total_signals', 0)} CAPTURED", 'info')
-                    pill(f"WEBSOCKET • {'ONLINE' if ws_state.get('connected') else 'OFFLINE'}", 'healthy' if ws_state.get('connected') else 'danger')
+                    pill(f"SCANNER DATA • {market_state.get('metrics', {}).get('total_signals', 0)} SIGNALS", 'info')
+                    pill(f"SCANNER JOB • {scanner_status}", 'healthy' if scanner_status == 'RUNNING' else 'info')
+                    pill(f"COINBASE FEED • {feed_status}", 'healthy' if feed_status == 'RUNNING' else 'danger')
 
         with ui.row().classes('w-full no-wrap gap-2 stage-main'):
             with ui.column().classes('stream-left gap-3'):
@@ -133,6 +139,11 @@ def stream_view():
                         focus_token = primary_slot.get('token', 'UNKNOWN')
                         mission_reason = 'live paper-trader slot in focus'
                         last_close = primary_slot.get('current_price') or primary_slot.get('entry_price')
+                    elif runtime['flatten']['running']:
+                        mission_state = 'FLATTENING POSITIONS'
+                        focus_token = 'PORTFOLIO'
+                        mission_reason = 'manual flatten job is running'
+                        last_close = btc_candles[-1]['close'] if btc_candles else None
                     else:
                         mission_state = 'WATCH MODE'
                         focus_token = focus_asset.get('token', 'BTC-USD') if focus_asset else 'BTC-USD'
@@ -163,6 +174,7 @@ def stream_view():
                                 ui.label(f"scanner lead {focus_asset.get('token', '?')} • momentum {fmt_num(focus_asset.get('momentum'), 1)}% • persistence {focus_asset.get('persistence', 0)}").classes('mission-card-meta')
                                 ui.label('no live slot yet • waiting for positive confirmation + tier pass').classes('mission-card-meta')
                             else:
+                                ui.label(f'scanner {scanner_status.lower()} • trader {trader_status.lower()} • loop {loop_status.lower()}').classes('mission-card-meta')
                                 ui.label('paper-only observation mode').classes('mission-card-meta')
 
                         with ui.card().classes('mission-overlay-card flex-1'):
@@ -190,14 +202,18 @@ def stream_view():
                     ui.label('Funds are staged, not deployed.').classes('text-sm panel-row compact-copy')
                     ui.label('System remains in rebuild / stabilization mode.').classes('text-sm panel-row compact-copy')
                     ui.separator().classes('my-1 opacity-20')
-                    ui.label('Signals logged today').classes('telemetry-key compact-key')
-                    ui.label(str(metrics.get('total_signals', 0))).classes('telemetry-value compact-value')
+                    ui.label('Scanner job').classes('telemetry-key compact-key')
+                    ui.label(scanner_status).classes('telemetry-value compact-value')
+                    ui.label('Coinbase feed').classes('telemetry-key compact-key mt-1')
+                    ui.label(feed_status).classes('telemetry-value compact-value')
+                    ui.label('Main loop').classes('telemetry-key compact-key mt-1')
+                    ui.label(loop_status).classes('telemetry-value compact-value')
                     ui.label('Active V2 slots').classes('telemetry-key compact-key mt-1')
                     ui.label(str(len(open_positions_v2))).classes('telemetry-value compact-value')
                     ui.label('Closed V2 trades').classes('telemetry-key compact-key mt-1')
                     ui.label(str(v2_audit.get('closed_trade_count', 0))).classes('telemetry-value compact-value')
-                    ui.label('Trader stance').classes('telemetry-key compact-key mt-1')
-                    ui.label('Watch mode is intentional discipline.' if not open_positions_v2 else 'Trader actively managing live paper slots.').classes('telemetry-value compact-value')
+                    ui.label('Trader engine').classes('telemetry-key compact-key mt-1')
+                    ui.label(trader_status).classes('telemetry-value compact-value')
 
                 with panel('Latest Intelligence', 'Current research / product output', 'compact-right-panel'):
                     ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold compact-headline')
