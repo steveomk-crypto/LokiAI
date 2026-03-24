@@ -7,6 +7,9 @@ from zoneinfo import ZoneInfo
 import signal
 
 import requests
+import os
+
+from dashboard.runtime_registry import COMPONENTS
 
 WORKDIR = Path('/home/lokiai/.openclaw/workspace')
 CACHE_DIR = WORKDIR / 'cache'
@@ -345,76 +348,47 @@ def _is_recent(updated_at: str | None, threshold_seconds: int) -> bool:
     return (datetime.now(timezone.utc) - dt).total_seconds() <= threshold_seconds
 
 
-def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
-    scanner_pid = PID_DIR / 'coinbase_scanner.pid'
-    websocket_pid = PID_DIR / 'coinbase_ws.pid'
-    dashboard_pid = PID_DIR / 'dashboard_ui.pid'
-    stream_pid = PID_DIR / 'stream_dashboard_ui.pid'
-
-    scanner_running = _pid_running(scanner_pid)
-    websocket_running = _pid_running(websocket_pid)
-    dashboard_running = _pid_running(dashboard_pid)
-    stream_running = _pid_running(stream_pid)
-
-    paper_trader_pid = PID_DIR / 'paper_trader_v2.pid'
-    loop_pid = PID_DIR / 'market_cycle_daemon.pid'
-    scanner_log = PID_DIR / 'run_coinbase_scanner.log'
-    websocket_log = PID_DIR / 'coinbase_ws.log'
-    trader_log = PID_DIR / 'paper_trader_v2.log'
-    operator_log = PID_DIR / 'dashboard_ui.log'
-    stream_log = PID_DIR / 'stream_dashboard_ui.log'
-    loop_log = PID_DIR / 'market_loop_cron.log'
-    flatten_pid = PID_DIR / 'paper_trader_flatten.pid'
-    flatten_log = PID_DIR / 'paper_trader_flatten.log'
-    log_outputs_pid = PID_DIR / 'log_trading_outputs.pid'
-    log_outputs_log = PID_DIR / 'log_trading_outputs.log'
-    reports_ready = any((WORKDIR / 'performance_reports').glob('*')) if (WORKDIR / 'performance_reports').exists() else False
-
-    scanner_entry = _runtime_entry('Scanner Engine', scanner_pid, log_path=scanner_log, state_running='running', state_stopped='idle', transient=True)
-    websocket_entry = _runtime_entry('Coinbase Feed', websocket_pid, log_path=websocket_log)
-    paper_trader_entry = _runtime_entry('Paper Trader V2', paper_trader_pid, log_path=trader_log)
-    flatten_entry = _runtime_entry('Flatten Paper Trades', flatten_pid, log_path=flatten_log, state_running='running', state_stopped='idle', transient=True)
-    operator_entry = _runtime_entry('Operator Dashboard', dashboard_pid, log_path=operator_log)
-    stream_entry = _runtime_entry('Stream Dashboard', stream_pid, log_path=stream_log)
-    loop_entry = _runtime_entry('Main Loop Daemon', loop_pid, log_path=loop_log)
-    log_outputs_entry = _runtime_entry('Log Trading Outputs', log_outputs_pid, log_path=log_outputs_log, state_running='running', state_stopped='idle', transient=True)
-    reports_entry = _runtime_entry('Reports Folder', None, state_running='available', state_stopped='empty', available=reports_ready)
+def read_runtime_controls() -> dict[str, dict[str, Any]]:
+    runtime: dict[str, dict[str, Any]] = {}
+    for comp_id, comp in COMPONENTS.items():
+        available = None
+        if comp_id == 'performance_analyzer':
+            out = comp.outputs[0] if comp.outputs else None
+            available = any(out.glob('*')) if out and out.exists() and out.is_dir() else bool(out and out.exists())
+        entry = _runtime_entry(
+            comp.name,
+            comp.pid_file,
+            log_path=comp.log_path,
+            state_running='running',
+            state_stopped='idle' if comp.kind == 'job' else 'stopped',
+            available=available,
+            transient=(comp.kind == 'job'),
+        )
+        entry['component_id'] = comp.id
+        entry['category'] = comp.category
+        entry['kind'] = comp.kind
+        entry['dependencies'] = comp.dependencies
+        entry['notes'] = comp.notes
+        runtime[comp_id] = entry
 
     ws_state = load_coinbase_ws_state()
     market_state = load_market_state()
-    if ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
-        websocket_entry['running'] = True
-        websocket_entry['state'] = 'running (data healthy)'
-    if market_state.get('computed_at') and _is_recent(market_state.get('computed_at'), 300):
-        scanner_entry['state'] = 'recently completed'
-    if _is_recent((loop_entry.get('log_meta') or {}).get('updated_at'), 120):
-        loop_entry['state'] = 'active recently'
+    if 'coinbase_feed' in runtime and ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
+        runtime['coinbase_feed']['running'] = True
+        runtime['coinbase_feed']['state'] = 'running (data healthy)'
+    if 'market_scanner' in runtime and market_state.get('computed_at') and _is_recent(market_state.get('computed_at'), 300):
+        runtime['market_scanner']['state'] = 'recently completed'
+    if 'main_loop' in runtime and _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
+        runtime['main_loop']['state'] = 'active recently'
 
-    return {
-        'scanner': scanner_entry,
-        'websocket': websocket_entry,
-        'paper_trader_v2': paper_trader_entry,
-        'flatten': flatten_entry,
-        'operator': operator_entry,
-        'stream': stream_entry,
-        'loop': loop_entry,
-        'log_outputs': log_outputs_entry,
-        'reports': reports_entry,
-    }
+    return runtime
 
 
 def build_controls_placeholder(market_state: dict[str, Any], ws_state: dict[str, Any], open_positions_v2: list[dict[str, Any]], audit_v2: dict[str, Any]) -> list[dict[str, Any]]:
     runtime = read_runtime_controls()
     return [
-        {'group': 'scanner', **runtime['scanner']},
-        {'group': 'websocket', **runtime['websocket']},
-        {'group': 'paper_trader_v2', **runtime['paper_trader_v2']},
-        {'group': 'flatten', **runtime['flatten']},
-        {'group': 'operator', **runtime['operator']},
-        {'group': 'stream', **runtime['stream']},
-        {'group': 'loop', **runtime['loop']},
-        {'group': 'log_outputs', **runtime['log_outputs']},
-        {'group': 'reports', **runtime['reports']},
+        {'group': comp_id, **entry}
+        for comp_id, entry in runtime.items()
     ]
 
 
