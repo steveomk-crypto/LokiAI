@@ -81,6 +81,15 @@ def _run_script(script_name: str) -> tuple[bool, str]:
     return True, (result.stdout or f'Started {script_name}').strip()
 
 
+def _open_path(path: Path) -> tuple[bool, str]:
+    path.mkdir(parents=True, exist_ok=True) if path.suffix == '' else path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        subprocess.Popen(['xdg-open', str(path)])
+        return True, f'Opened {path}'
+    except Exception:
+        return True, f'Path: {path}'
+
+
 def _run_background_command(command: str, pid_file: str, log_file: str) -> tuple[bool, str]:
     root = _run_root()
     Path(log_file).parent.mkdir(parents=True, exist_ok=True)
@@ -106,49 +115,58 @@ def _stop_pid(pid_file: str) -> tuple[bool, str]:
         return False, str(exc)
 
 
-def _control_action(group: str) -> None:
+def _control_action(group: str, action: str) -> None:
     runtime = read_runtime_controls()
+    root = _run_root()
+
     if group == 'scanner':
-        if runtime['scanner']['running']:
+        if action == 'start':
+            ok, msg = _run_script('run_coinbase_scanner.sh')
+        elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['scanner']['pid_file']))
         else:
-            ok, msg = _run_script('run_coinbase_scanner.sh')
+            ok, msg = _open_path(root / 'system_logs' / 'run_coinbase_scanner.log')
     elif group == 'websocket':
-        if runtime['websocket']['running']:
+        if action == 'start':
+            ok, msg = _run_script('run_coinbase_ws.sh')
+        elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['websocket']['pid_file']))
         else:
-            ok, msg = _run_script('run_coinbase_ws.sh')
+            ok, msg = _open_path(root / 'system_logs' / 'coinbase_ws.log')
     elif group == 'paper_trader_v2':
-        if runtime['paper_trader_v2']['running']:
+        if action == 'start':
+            ok, msg = _run_script('run_paper_trader_v2.sh')
+        elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['paper_trader_v2']['pid_file']))
         else:
-            ok, msg = _run_script('run_paper_trader_v2.sh')
+            ok, msg = _open_path(root / 'system_logs' / 'paper_trader_v2.log')
     elif group == 'operator':
-        if runtime['operator']['running']:
+        if action == 'start':
+            ok, msg = _run_script('run_dashboard.sh')
+        elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['operator']['pid_file']))
         else:
-            ok, msg = _run_script('run_dashboard.sh')
+            ok, msg = True, 'Operator dashboard is this page'
     elif group == 'stream':
-        if runtime['stream']['running']:
+        if action == 'start':
+            ok, msg = _run_script('run_stream_dashboard.sh')
+        elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['stream']['pid_file']))
         else:
-            ok, msg = _run_script('run_stream_dashboard.sh')
+            ok, msg = True, 'Open http://127.0.0.1:8501'
     elif group == 'loop':
-        if runtime['loop']['running']:
+        if action == 'start':
+            ok, msg = _run_background_command('./scripts/market_cycle_daemon.sh', str(root / 'system_logs' / 'market_cycle_daemon.pid'), str(root / 'system_logs' / 'market_loop_cron.log'))
+        elif action == 'stop':
             ok, msg = _stop_pid(str(runtime['loop']['pid_file']))
         else:
-            ok, msg = _run_background_command('./scripts/market_cycle_daemon.sh', str(_run_root() / 'system_logs' / 'market_cycle_daemon.pid'), str(_run_root() / 'system_logs' / 'market_loop_cron.log'))
+            ok, msg = _open_path(root / 'system_logs' / 'market_loop_cron.log')
     elif group == 'reports':
-        report_dir = _run_root() / 'performance_reports'
-        report_dir.mkdir(parents=True, exist_ok=True)
-        ok, msg = True, f'Open reports folder: {report_dir}'
+        ok, msg = _open_path(root / 'performance_reports')
     else:
         ok, msg = False, f'{group} control not wired yet'
 
-    if ok:
-        ui.notify(msg, type='positive')
-    else:
-        ui.notify(msg, type='negative')
+    ui.notify(msg, type='positive' if ok else 'negative')
     operator_view.refresh()
 
 
@@ -277,16 +295,24 @@ def operator_view():
                         ui.label(snap.get('timestamp', '–')[-8:]).classes('telemetry-key')
                         ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
 
-            with _panel('Command / Controls Bay', 'Live control surface'):
-                with ui.grid(columns=2).classes('w-full gap-2'):
+            with _panel('Control Surface', 'Start, stop, inspect, and open every core service'):
+                with ui.column().classes('w-full gap-3'):
                     for item in state['controls_placeholder']:
                         state_text = item['state']
-                        level = 'healthy' if state_text in {'running', 'online'} else 'warning' if state_text in {'pending', 'watch'} else 'locked'
-                        btn = ui.button(f"{item['label']} • {state_text}")
-                        btn.props('outline color=secondary')
-                        btn.classes(f'w-full control-button {_status_class(level)}')
-                        if item['group'] in {'scanner', 'websocket', 'paper_trader_v2', 'operator', 'stream', 'loop', 'reports'}:
-                            btn.on('click', lambda e=None, group=item['group']: _control_action(group))
+                        level = 'healthy' if state_text in {'running', 'online', 'ready'} else 'warning' if state_text in {'pending', 'watch'} else 'locked'
+                        with ui.card().classes('glass-panel w-full p-3'):
+                            with ui.row().classes('w-full justify-between items-center'):
+                                with ui.column().classes('gap-0'):
+                                    ui.label(item['label']).classes('panel-title')
+                                    ui.label(f'State • {state_text}').classes(f'panel-subtitle {_status_class(level)}')
+                                with ui.row().classes('gap-2 items-center wrap'):
+                                    if item['group'] != 'reports':
+                                        start_btn = ui.button('Start').props('color=positive unelevated')
+                                        start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                        stop_btn = ui.button('Stop').props('color=negative outline')
+                                        stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
+                                    inspect_btn = ui.button('Inspect').props('color=secondary outline')
+                                    inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
 
 @ui.refreshable
