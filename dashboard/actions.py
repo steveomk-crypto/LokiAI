@@ -8,6 +8,7 @@ from typing import Tuple
 
 from .runtime_registry import COMPONENTS
 from .data import read_runtime_controls
+from .modes import get_modes, set_mode
 
 
 def run_root() -> Path:
@@ -65,9 +66,15 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
     runtime = read_runtime_controls()
     root = run_root()
     comp = COMPONENTS.get(component_id)
+    mode_components = {'market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer', 'sol_shadow_logger'}
 
     if not comp:
         return False, f'{component_id} control not wired yet'
+
+    if component_id in mode_components and action in {'enable', 'disable'}:
+        enabled = action == 'enable'
+        set_mode(component_id, enabled)
+        return True, f"{comp.name} {'enabled' if enabled else 'disabled'}"
 
     if action == 'start' and runtime.get(component_id, {}).get('controls_blocked'):
         return False, f"Blocked by dependencies: {runtime[component_id].get('blocked_reason')}"

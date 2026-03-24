@@ -10,6 +10,7 @@ import requests
 import os
 
 from dashboard.runtime_registry import COMPONENTS
+from dashboard.modes import get_modes
 
 WORKDIR = Path('/home/lokiai/.openclaw/workspace')
 CACHE_DIR = WORKDIR / 'cache'
@@ -413,6 +414,10 @@ def _apply_dependency_health(runtime: dict[str, dict[str, Any]]) -> None:
             entry['desired_state_ok'] = bool(entry.get('running')) or any(term in str(entry.get('state') or '').lower() for term in ('running', 'active recently', 'data healthy'))
         elif desired_state == 'auto':
             entry['desired_state_ok'] = entry.get('dependency_health') == 'clear'
+        elif desired_state == 'enabled':
+            entry['desired_state_ok'] = entry.get('dependency_health') == 'clear'
+        elif desired_state == 'disabled':
+            entry['desired_state_ok'] = True
         else:
             entry['desired_state_ok'] = True
         if entry.get('dependency_health') == 'blocked' and not entry.get('last_error'):
@@ -422,6 +427,7 @@ def _apply_dependency_health(runtime: dict[str, dict[str, Any]]) -> None:
 
 def read_runtime_controls() -> dict[str, dict[str, Any]]:
     runtime: dict[str, dict[str, Any]] = {}
+    mode_overrides = get_modes()
     for comp_id, comp in COMPONENTS.items():
         available = None
         if comp_id == 'performance_analyzer':
@@ -444,7 +450,10 @@ def read_runtime_controls() -> dict[str, dict[str, Any]]:
         entry['start_script'] = comp.start_script
         entry['inspect_target'] = str(comp.inspect_target) if comp.inspect_target else None
         entry['start_label'] = comp.start_label
-        entry['desired_state'] = comp.desired_default or ('on' if comp.kind == 'service' else 'auto' if comp.kind == 'job' else 'unknown')
+        if comp_id in mode_overrides:
+            entry['desired_state'] = 'enabled' if mode_overrides[comp_id] else 'disabled'
+        else:
+            entry['desired_state'] = comp.desired_default or ('on' if comp.kind == 'service' else 'auto' if comp.kind == 'job' else 'unknown')
         entry['desired_state_ok'] = True
         entry['last_success_at'] = (entry.get('log_meta') or {}).get('updated_at')
         entry['last_error'] = None

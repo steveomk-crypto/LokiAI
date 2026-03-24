@@ -291,7 +291,25 @@ def operator_view():
                     ui.label('Outputs & Automation').classes('panel-title')
                     with ui.column().classes('w-full gap-2'):
                         for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
-                            compact_row(component_id)
+                            item = runtime_map.get(component_id)
+                            if not item:
+                                continue
+                            with ui.card().classes('glass-panel w-full p-3'):
+                                with ui.row().classes('w-full items-center justify-between gap-3 wrap'):
+                                    with ui.column().classes('gap-1 min-w-[220px]'):
+                                        ui.label(str(item['label'])).classes('font-semibold text-base')
+                                        ui.label(f"Mode {str(item.get('desired_state') or 'unknown').upper()} • {str(item.get('display_state') or item.get('state') or 'IDLE').upper()}").classes('signal-meta')
+                                    with ui.row().classes('gap-2 items-center justify-end wrap'):
+                                        enable_btn = ui.button('Enable').props('color=positive outline').classes('min-w-[104px]')
+                                        if str(item.get('desired_state')) == 'enabled':
+                                            enable_btn.disable()
+                                        enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
+                                        disable_btn = ui.button('Disable').props('color=negative outline').classes('min-w-[104px]')
+                                        if str(item.get('desired_state')) == 'disabled':
+                                            disable_btn.disable()
+                                        disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
+                                        inspect_btn = ui.button('Inspect').props('color=secondary outline').classes('min-w-[104px]')
+                                        inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                     with ui.expansion('Advanced Components').classes('w-full'):
                         with ui.column().classes('w-full gap-2 mt-2'):
