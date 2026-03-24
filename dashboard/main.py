@@ -261,9 +261,15 @@ def operator_view():
                                 if not item.get('running'):
                                     stop_btn.disable()
                                 stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
-                            elif item.get('kind') == 'job' and item.get('start_script') and item.get('dependency_health') != 'blocked':
-                                run_btn = ui.button(item.get('start_label') or 'Run').props('size=sm color=positive unelevated').classes('min-w-[78px]')
-                                run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                            elif item.get('kind') == 'job':
+                                if item.get('start_script') and item.get('dependency_health') != 'blocked':
+                                    run_btn = ui.button(item.get('start_label') or 'Run').props('size=sm color=positive unelevated').classes('min-w-[78px]')
+                                    run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                if item.get('pid_file'):
+                                    stop_btn = ui.button('Stop').props('size=sm color=negative outline').classes('min-w-[78px]')
+                                    if not item.get('running'):
+                                        stop_btn.disable()
+                                    stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
                             inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
                             inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
