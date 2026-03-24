@@ -304,9 +304,13 @@ def operator_view():
                             with ui.row().classes('w-full telemetry-row'):
                                 ui.label(str(item['label'])).classes('font-semibold')
                                 ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
-                                ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta')
+                                state_value = str(item.get('display_state') or item.get('state') or 'IDLE').upper()
+                                if item['group'] == 'x_autoposter':
+                                    state_value = f"{state_value} / {str(item.get('state') or 'draft_only').upper()}"
+                                ui.label(state_value).classes('signal-meta')
                                 ui.label(_format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–').classes('signal-meta')
-                                ui.label(str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')).classes('signal-meta')
+                                last_result = str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')
+                                ui.label(last_result).classes('signal-meta')
                                 with ui.row().classes('operator-actions'):
                                     enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
                                     if str(item.get('desired_state')) == 'enabled':
@@ -482,9 +486,9 @@ def apply_theme() -> None:
             }
             .operator-table .telemetry-row {
                 display: grid;
-                grid-template-columns: minmax(140px, 1.3fr) minmax(88px, 0.7fr) minmax(150px, 1.2fr) minmax(72px, 0.6fr) auto;
+                grid-template-columns: minmax(130px, 1.2fr) minmax(88px, 0.7fr) minmax(130px, 1fr) minmax(72px, 0.55fr) minmax(160px, 1.2fr) auto;
                 align-items: center;
-                column-gap: 0.6rem;
+                column-gap: 0.55rem;
             }
             .operator-actions {
                 display: flex;
