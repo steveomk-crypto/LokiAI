@@ -205,6 +205,7 @@ def operator_view():
     scanner_text, scanner_class = _stale_state_label(scanner_age, 3600)
     ws_text, ws_class = _stale_state_label(ws_age, 300)
     alert_count = len(state['status_flags'])
+    runtime = read_runtime_controls()
 
     with ui.column().classes('w-full gap-4'):
         with ui.card().classes('top-bar w-full'):
@@ -214,15 +215,17 @@ def operator_view():
                     ui.label('Scanner + Coinbase live ingest command surface').classes('hero-subtitle')
                 with ui.row().classes('gap-3 items-center wrap'):
                     _pill('MODE • REBUILD / PAPER ONLY', 'info')
-                    _pill(f'SCANNER • {scanner_text.upper()}', 'warning' if 'stale' in scanner_text else 'healthy')
+                    _pill(f"SCANNER DATA • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
+                    _pill(f"SCANNER SERVICE • {'RUNNING' if runtime['scanner']['running'] else 'STOPPED'}", 'healthy' if runtime['scanner']['running'] else 'info')
                     _pill(f'WEBSOCKET • {"ONLINE" if ws_state.get("connected") else "OFFLINE"}', 'healthy' if ws_state.get('connected') else 'danger')
                     _pill(f'ALERTS • {alert_count}', 'warning' if alert_count else 'healthy')
 
         with ui.grid(columns=3).classes('w-full gap-4'):
             with _panel('System Health', 'Immediate machine state'):
-                _telemetry_row('Scanner last run', _fmt_ts(scanner_dt), scanner_class)
-                _telemetry_row('Scanner freshness', scanner_text, scanner_class)
-                _telemetry_row('Signals this run', str(metrics.get('total_signals', 0)))
+                _telemetry_row('Scanner last snapshot', _fmt_ts(scanner_dt), scanner_class)
+                _telemetry_row('Scanner data freshness', scanner_text, scanner_class)
+                _telemetry_row('Scanner service', 'running' if runtime['scanner']['running'] else 'stopped', 'status-healthy' if runtime['scanner']['running'] else 'status-info')
+                _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)))
                 _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
                 _telemetry_row('Last websocket message', _fmt_ts(ws_dt), ws_class)
                 _telemetry_row('Tracked Coinbase products', str(ws_state.get('tracked_products', 0)))
