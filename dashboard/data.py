@@ -280,25 +280,34 @@ def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
     dashboard_running = _pid_running(dashboard_pid)
     stream_running = _pid_running(stream_pid)
 
+    paper_trader_pid = PID_DIR / 'paper_trader_v2.pid'
+    loop_pid = PID_DIR / 'market_cycle_daemon.pid'
+    scanner_log = PID_DIR / 'run_coinbase_scanner.log'
+    reports_ready = any((WORKDIR / 'performance_reports').glob('*.md')) if (WORKDIR / 'performance_reports').exists() else False
+    paper_trader_running = _pid_running(paper_trader_pid)
+    loop_running = _pid_running(loop_pid)
+
     return {
-        'scanner': {'label': 'Scanner', 'running': scanner_running, 'state': 'running' if scanner_running else 'stopped', 'pid_file': str(scanner_pid)},
+        'scanner': {'label': 'Scanner', 'running': scanner_running, 'state': 'running' if scanner_running else 'stopped', 'pid_file': str(scanner_pid), 'log_file': str(scanner_log)},
         'websocket': {'label': 'Coinbase Websocket', 'running': websocket_running, 'state': 'online' if websocket_running else 'offline', 'pid_file': str(websocket_pid)},
+        'paper_trader_v2': {'label': 'Paper Trader V2', 'running': paper_trader_running, 'state': 'engaged' if paper_trader_running else 'watch', 'pid_file': str(paper_trader_pid)},
         'operator': {'label': 'Operator Dashboard', 'running': dashboard_running, 'state': 'online' if dashboard_running else 'offline', 'pid_file': str(dashboard_pid)},
         'stream': {'label': 'Stream Dashboard', 'running': stream_running, 'state': 'online' if stream_running else 'offline', 'pid_file': str(stream_pid)},
+        'loop': {'label': 'Main Loop', 'running': loop_running, 'state': 'running' if loop_running else 'stopped', 'pid_file': str(loop_pid)},
+        'reports': {'label': 'Reports / Outputs', 'running': reports_ready, 'state': 'ready' if reports_ready else 'empty', 'pid_file': None},
     }
 
 
 def build_controls_placeholder(market_state: dict[str, Any], ws_state: dict[str, Any], open_positions_v2: list[dict[str, Any]], audit_v2: dict[str, Any]) -> list[dict[str, str]]:
     runtime = read_runtime_controls()
-    trader_state = audit_v2.get('mode', 'watch') if audit_v2 else ('engaged' if open_positions_v2 else 'watch')
     return [
         {'group': 'scanner', 'label': 'Scanner', 'state': str(runtime['scanner']['state'])},
         {'group': 'websocket', 'label': 'Coinbase Websocket', 'state': str(runtime['websocket']['state'])},
-        {'group': 'trader', 'label': 'Paper Trader V2', 'state': trader_state},
+        {'group': 'paper_trader_v2', 'label': 'Paper Trader V2', 'state': str(runtime['paper_trader_v2']['state'])},
         {'group': 'operator', 'label': 'Operator Dashboard', 'state': str(runtime['operator']['state'])},
         {'group': 'stream', 'label': 'Stream Dashboard', 'state': str(runtime['stream']['state'])},
-        {'group': 'loop', 'label': 'Main Loop', 'state': 'pending'},
-        {'group': 'reports', 'label': 'Reports / Outputs', 'state': 'locked'},
+        {'group': 'loop', 'label': 'Main Loop', 'state': str(runtime['loop']['state'])},
+        {'group': 'reports', 'label': 'Reports / Outputs', 'state': str(runtime['reports']['state'])},
     ]
 
 

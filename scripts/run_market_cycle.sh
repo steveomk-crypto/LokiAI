@@ -8,7 +8,8 @@ if ! flock -n 9; then
   exit 0
 fi
 
-WORKDIR="/data/.openclaw/workspace"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+WORKDIR="${ROOT}"
 cd "${WORKDIR}"
 
 echo "$(date -Iseconds) - Starting market cycle"

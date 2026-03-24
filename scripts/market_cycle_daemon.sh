@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-WORKDIR="/data/.openclaw/workspace"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+WORKDIR="${ROOT}"
 LOG_FILE="${WORKDIR}/system_logs/market_loop_cron.log"
 PID_FILE="${WORKDIR}/system_logs/market_cycle_daemon.pid"
 RUNNER="${WORKDIR}/scripts/run_market_cycle.sh"

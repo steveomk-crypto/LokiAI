@@ -81,6 +81,17 @@ def _run_script(script_name: str) -> tuple[bool, str]:
     return True, (result.stdout or f'Started {script_name}').strip()
 
 
+def _run_background_command(command: str, pid_file: str, log_file: str) -> tuple[bool, str]:
+    root = _run_root()
+    Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+    Path(pid_file).parent.mkdir(parents=True, exist_ok=True)
+    wrapped = f"nohup bash -lc {command!r} >> {log_file!r} 2>&1 & echo $! > {pid_file!r}"
+    result = subprocess.run(['bash', '-lc', wrapped], cwd=root, capture_output=True, text=True)
+    if result.returncode != 0:
+        return False, (result.stderr or result.stdout or 'Failed to start background command').strip()
+    return True, f'Started background job ({Path(pid_file).name})'
+
+
 def _stop_pid(pid_file: str) -> tuple[bool, str]:
     path = Path(pid_file)
     if not path.exists():
@@ -107,6 +118,11 @@ def _control_action(group: str) -> None:
             ok, msg = _stop_pid(str(runtime['websocket']['pid_file']))
         else:
             ok, msg = _run_script('run_coinbase_ws.sh')
+    elif group == 'paper_trader_v2':
+        if runtime['paper_trader_v2']['running']:
+            ok, msg = _stop_pid(str(runtime['paper_trader_v2']['pid_file']))
+        else:
+            ok, msg = _run_script('run_paper_trader_v2.sh')
     elif group == 'operator':
         if runtime['operator']['running']:
             ok, msg = _stop_pid(str(runtime['operator']['pid_file']))
@@ -117,6 +133,15 @@ def _control_action(group: str) -> None:
             ok, msg = _stop_pid(str(runtime['stream']['pid_file']))
         else:
             ok, msg = _run_script('run_stream_dashboard.sh')
+    elif group == 'loop':
+        if runtime['loop']['running']:
+            ok, msg = _stop_pid(str(runtime['loop']['pid_file']))
+        else:
+            ok, msg = _run_background_command('./scripts/market_cycle_daemon.sh', str(_run_root() / 'system_logs' / 'market_cycle_daemon.pid'), str(_run_root() / 'system_logs' / 'market_loop_cron.log'))
+    elif group == 'reports':
+        report_dir = _run_root() / 'performance_reports'
+        report_dir.mkdir(parents=True, exist_ok=True)
+        ok, msg = True, f'Open reports folder: {report_dir}'
     else:
         ok, msg = False, f'{group} control not wired yet'
 
@@ -260,10 +285,8 @@ def operator_view():
                         btn = ui.button(f"{item['label']} • {state_text}")
                         btn.props('outline color=secondary')
                         btn.classes(f'w-full control-button {_status_class(level)}')
-                        if item['group'] in {'scanner', 'websocket', 'operator', 'stream'}:
+                        if item['group'] in {'scanner', 'websocket', 'paper_trader_v2', 'operator', 'stream', 'loop', 'reports'}:
                             btn.on('click', lambda e=None, group=item['group']: _control_action(group))
-                        else:
-                            btn.disable()
 
 
 @ui.refreshable
