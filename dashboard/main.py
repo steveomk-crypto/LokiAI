@@ -119,6 +119,9 @@ def _stop_pid(pid_file: str) -> tuple[bool, str]:
         return False, str(exc)
 
 
+LAST_ACTION_RESULT = {'message': 'No recent actions'}
+
+
 def _format_meta_time(value: str | None) -> str:
     dt = _safe_iso_to_dt(value)
     if not dt:
@@ -197,6 +200,7 @@ def _control_action(group: str, action: str) -> None:
     else:
         ok, msg = False, f'{group} control not wired yet'
 
+    LAST_ACTION_RESULT['message'] = f'{group} {action}: {msg}'
     ui.notify(msg, type='positive' if ok else 'negative')
     operator_view.refresh()
 
@@ -246,6 +250,7 @@ def operator_view():
                     _pill(f"SCANNER DATA • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
                     _pill(f"SCANNER JOB • {'RUNNING' if runtime['scanner']['running'] else 'IDLE'}", 'healthy' if runtime['scanner']['running'] else 'info')
                     _pill(f"MAIN LOOP • {'RUNNING' if runtime['loop']['running'] else 'STOPPED'}", 'healthy' if runtime['loop']['running'] else 'danger')
+                    _pill(f"LOOP LOG • {_format_meta_time((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))}", 'info')
                     _pill(f'WEBSOCKET • {"ONLINE" if ws_state.get("connected") else "OFFLINE"}', 'healthy' if ws_state.get('connected') else 'danger')
                     _pill(f'ALERTS • {alert_count}', 'warning' if alert_count else 'healthy')
 
@@ -275,6 +280,9 @@ def operator_view():
                 for flag in state['status_flags']:
                     level_class = 'status-danger' if flag['level'] == 'danger' else 'status-warning'
                     ui.label(f"• {flag['message']}").classes(f'text-sm telemetry-row {level_class}')
+                ui.separator().classes('my-2 opacity-20')
+                ui.label('Last action result').classes('telemetry-key')
+                ui.label(LAST_ACTION_RESULT['message']).classes('telemetry-value')
 
             with _panel('Top Scanner Opportunities', 'Primary ranked output', 'anchor-panel'):
                 if not top_opps:

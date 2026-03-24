@@ -282,7 +282,10 @@ def _pid_running(pid_path: Path) -> bool:
 def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'running', state_stopped: str = 'stopped', log_path: Path | None = None, available: bool | None = None, transient: bool = False) -> dict[str, Any]:
     running = _pid_running(pid_path) if pid_path else bool(available)
     pid = _pid_value(pid_path) if pid_path else None
+    log_meta = _file_meta(log_path) if log_path else None
     state = state_running if running else state_stopped
+    if not running and log_meta and log_meta.get('updated_at'):
+        state = f'{state} (recent activity)'
     entry = {
         'label': label,
         'running': running,
@@ -290,7 +293,7 @@ def _runtime_entry(label: str, pid_path: Path | None, state_running: str = 'runn
         'pid_file': str(pid_path) if pid_path else None,
         'pid': pid,
         'log_file': str(log_path) if log_path else None,
-        'log_meta': _file_meta(log_path) if log_path else None,
+        'log_meta': log_meta,
         'transient': transient,
     }
     return entry
