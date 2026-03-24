@@ -244,33 +244,28 @@ def operator_view():
                     if not item:
                         return
                     state_text = str(item.get('display_state') or item['state']).upper()
-                    deps_text = 'READY' if item.get('dependency_health') == 'clear' else 'WAITING ON ' + ', '.join(item.get('dependency_blockers') or [])
+                    deps_text = 'Ready' if item.get('dependency_health') == 'clear' else 'Waiting on ' + ', '.join(item.get('dependency_blockers') or [])
                     last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
-                    last_component_action = COMPONENT_ACTION_RESULTS.get(item['group']) or 'No recent action'
-                    with ui.card().classes('glass-panel w-full p-3'):
-                        with ui.row().classes('w-full items-center justify-between gap-3 wrap'):
-                            with ui.column().classes('gap-1 min-w-[220px]'):
-                                ui.label(str(item['label'])).classes('font-semibold text-base')
-                                ui.label(f'{state_text} • {deps_text}').classes('signal-meta')
-                            with ui.column().classes('gap-0 min-w-[120px]'):
-                                ui.label('Last success').classes('telemetry-key')
-                                ui.label(last_success).classes('telemetry-value')
-                            with ui.column().classes('gap-0 min-w-[220px]'):
-                                ui.label('Last action').classes('telemetry-key')
-                                ui.label(last_component_action).classes('telemetry-value')
-                            with ui.row().classes('gap-2 items-center justify-end wrap'):
+                    with ui.row().classes('w-full items-center justify-between gap-2 wrap telemetry-row'):
+                        ui.label(str(item['label'])).classes('font-semibold min-w-[180px]')
+                        ui.label(state_text).classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
+                        ui.label(deps_text).classes('signal-meta min-w-[180px]')
+                        ui.label(f'Last {last_success}').classes('signal-meta min-w-[80px]')
+                        with ui.row().classes('gap-1 items-center justify-end wrap'):
+                            if item.get('dependency_health') == 'blocked':
+                                inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
+                                inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                            else:
                                 start_label = item.get('start_label') or ('Run' if item.get('kind') == 'job' else 'Start')
-                                start_btn = ui.button(start_label).props('color=positive unelevated').classes('min-w-[104px]')
+                                start_btn = ui.button(start_label).props('size=sm color=positive unelevated').classes('min-w-[90px]')
                                 if item.get('running') and item.get('kind') == 'service':
                                     start_btn.disable()
-                                if item.get('controls_blocked'):
-                                    start_btn.disable()
                                 start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                stop_btn = ui.button('Stop').props('color=negative outline').classes('min-w-[104px]')
+                                stop_btn = ui.button('Stop').props('size=sm color=negative outline').classes('min-w-[90px]')
                                 if item.get('kind') != 'service' or not item.get('running'):
                                     stop_btn.disable()
                                 stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
-                                inspect_btn = ui.button('Inspect').props('color=secondary outline').classes('min-w-[104px]')
+                                inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
                                 inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                 with ui.column().classes('w-full gap-4'):
@@ -284,31 +279,32 @@ def operator_view():
                         ui.button('Inspect Loop Log').props('color=secondary outline').classes('min-w-[160px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
                     ui.label('Core Systems').classes('panel-title')
-                    with ui.column().classes('w-full gap-2'):
-                        for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
-                            compact_row(component_id)
+                    with ui.card().classes('glass-panel w-full p-3'):
+                        with ui.column().classes('w-full gap-1'):
+                            for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
+                                compact_row(component_id)
 
                     ui.label('Outputs & Automation').classes('panel-title')
-                    with ui.column().classes('w-full gap-2'):
-                        for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
-                            item = runtime_map.get(component_id)
-                            if not item:
-                                continue
-                            with ui.card().classes('glass-panel w-full p-3'):
-                                with ui.row().classes('w-full items-center justify-between gap-3 wrap'):
-                                    with ui.column().classes('gap-1 min-w-[220px]'):
-                                        ui.label(str(item['label'])).classes('font-semibold text-base')
-                                        ui.label(f"Mode {str(item.get('desired_state') or 'unknown').upper()} • {str(item.get('display_state') or item.get('state') or 'IDLE').upper()}").classes('signal-meta')
-                                    with ui.row().classes('gap-2 items-center justify-end wrap'):
-                                        enable_btn = ui.button('Enable').props('color=positive outline').classes('min-w-[104px]')
+                    with ui.card().classes('glass-panel w-full p-3'):
+                        with ui.column().classes('w-full gap-1'):
+                            for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
+                                item = runtime_map.get(component_id)
+                                if not item:
+                                    continue
+                                with ui.row().classes('w-full items-center justify-between gap-2 wrap telemetry-row'):
+                                    ui.label(str(item['label'])).classes('font-semibold min-w-[180px]')
+                                    ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
+                                    ui.label(str(item.get('display_state') or item.get('state') or 'IDLE').upper()).classes('signal-meta min-w-[120px]')
+                                    with ui.row().classes('gap-1 items-center justify-end wrap'):
+                                        enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[90px]')
                                         if str(item.get('desired_state')) == 'enabled':
                                             enable_btn.disable()
                                         enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
-                                        disable_btn = ui.button('Disable').props('color=negative outline').classes('min-w-[104px]')
+                                        disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[90px]')
                                         if str(item.get('desired_state')) == 'disabled':
                                             disable_btn.disable()
                                         disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
-                                        inspect_btn = ui.button('Inspect').props('color=secondary outline').classes('min-w-[104px]')
+                                        inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
                                         inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                     with ui.expansion('Advanced Components').classes('w-full'):
