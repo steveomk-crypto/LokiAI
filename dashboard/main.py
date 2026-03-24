@@ -199,7 +199,11 @@ def operator_view():
     ws_age = None
     try:
         if scanner_dt:
-            scanner_age = now.timestamp() - datetime.fromisoformat(scanner_dt.replace('Z', '+00:00')).replace(tzinfo=timezone.utc).timestamp()
+            parsed = datetime.fromisoformat(scanner_dt.replace('Z', '+00:00'))
+            if parsed.tzinfo is None:
+                from zoneinfo import ZoneInfo
+                parsed = parsed.replace(tzinfo=ZoneInfo('America/Los_Angeles'))
+            scanner_age = now.timestamp() - parsed.astimezone(timezone.utc).timestamp()
     except Exception:
         scanner_age = None
     try:
