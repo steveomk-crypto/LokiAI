@@ -47,6 +47,7 @@ def _append_post_log(entry: dict[str, Any]) -> None:
 
 def generate_draft(post_class: str = 'build_in_public') -> dict[str, Any]:
     ensure_x_layout()
+    state = get_x_state()
     source = _latest_legacy_post()
     if not source:
         raise FileNotFoundError('No source post_*.txt found in x_posts/')
@@ -54,7 +55,6 @@ def generate_draft(post_class: str = 'build_in_public') -> dict[str, Any]:
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     draft_path = DRAFT_DIR / f'{stamp}_{post_class}.txt'
     draft_path.write_text(text + '\n', encoding='utf-8')
-    state = get_x_state()
     state['lastDraftAt'] = _utc_now()
     state['lastResult'] = f'draft:{draft_path.name}'
     save_x_state(state)
@@ -63,6 +63,9 @@ def generate_draft(post_class: str = 'build_in_public') -> dict[str, Any]:
 
 def queue_latest_draft() -> dict[str, Any]:
     ensure_x_layout()
+    state = get_x_state()
+    if state.get('mode') == 'off':
+        raise RuntimeError('X mode is off; queueing is disabled')
     drafts = sorted(DRAFT_DIR.glob('*.txt'))
     if not drafts:
         raise FileNotFoundError('No drafts available in x_posts/drafts/')
@@ -77,6 +80,12 @@ def queue_latest_draft() -> dict[str, Any]:
 
 def post_latest_queue() -> dict[str, Any]:
     ensure_x_layout()
+    state = get_x_state()
+    mode = state.get('mode') or 'draft_only'
+    if mode == 'off':
+        raise RuntimeError('X mode is off; posting is disabled')
+    if mode == 'draft_only':
+        raise RuntimeError('X mode is draft_only; queue can be prepared but posting is blocked')
     queued = sorted(QUEUE_DIR.glob('*.txt'))
     if not queued:
         raise FileNotFoundError('No queued X posts available')
@@ -89,11 +98,16 @@ def post_latest_queue() -> dict[str, Any]:
         'text_preview': _read_text(source)[:140],
         'status': 'ready_for_post',
     })
-    state = get_x_state()
     state['lastPostAt'] = stamp
     state['lastResult'] = f'post_now:{source.name}'
     save_x_state(state)
-    return {'message': 'Queued post prepared as latest post target', 'post_file': str(LATEST_POST), 'source_queue': str(source)}
+    return {
+        'message': 'Queued post prepared as latest post target',
+        'post_file': str(LATEST_POST),
+        'source_queue': str(source),
+        'mode': mode,
+        'lastResult': state['lastResult'],
+    }
 
 
 def inspect_x() -> dict[str, Any]:

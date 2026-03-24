@@ -101,15 +101,15 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
 
     if component_id == 'x_autoposter' and action == 'draft':
         result = generate_draft('build_in_public')
-        return True, result['message']
+        return True, f"{result['message']} ({Path(result['draft_path']).name})"
 
     if component_id == 'x_autoposter' and action == 'queue':
         result = queue_latest_draft()
-        return True, result['message']
+        return True, f"{result['message']} ({Path(result['queue_path']).name})"
 
     if component_id == 'x_autoposter' and action == 'post_now':
         result = post_latest_queue()
-        return True, result['message']
+        return True, f"{result['message']} [{result.get('mode')}]"
 
     if component_id == 'x_autoposter' and action == 'inspect':
         result = inspect_x()
