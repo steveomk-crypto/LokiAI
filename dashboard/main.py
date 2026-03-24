@@ -299,12 +299,12 @@ def operator_view():
                 with ui.column().classes('w-full gap-3'):
                     for item in state['controls_placeholder']:
                         state_text = item['state']
-                        level = 'healthy' if state_text in {'running', 'online', 'ready'} else 'warning' if state_text in {'pending', 'watch'} else 'locked'
+                        level = 'healthy' if state_text in {'running', 'available'} else 'locked'
                         with ui.card().classes('glass-panel w-full p-3'):
                             with ui.row().classes('w-full justify-between items-center'):
                                 with ui.column().classes('gap-0'):
                                     ui.label(item['label']).classes('panel-title')
-                                    ui.label(f'State • {state_text}').classes(f'panel-subtitle {_status_class(level)}')
+                                    ui.label(f'Status • {state_text.upper()}').classes(f'panel-subtitle {_status_class(level)}')
                                 with ui.row().classes('gap-2 items-center wrap'):
                                     if item['group'] != 'reports':
                                         start_btn = ui.button('Start').props('color=positive unelevated')

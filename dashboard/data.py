@@ -288,13 +288,13 @@ def read_runtime_controls() -> dict[str, dict[str, str | bool | None]]:
     loop_running = _pid_running(loop_pid)
 
     return {
-        'scanner': {'label': 'Scanner', 'running': scanner_running, 'state': 'running' if scanner_running else 'stopped', 'pid_file': str(scanner_pid), 'log_file': str(scanner_log)},
-        'websocket': {'label': 'Coinbase Websocket', 'running': websocket_running, 'state': 'online' if websocket_running else 'offline', 'pid_file': str(websocket_pid)},
-        'paper_trader_v2': {'label': 'Paper Trader V2', 'running': paper_trader_running, 'state': 'engaged' if paper_trader_running else 'watch', 'pid_file': str(paper_trader_pid)},
-        'operator': {'label': 'Operator Dashboard', 'running': dashboard_running, 'state': 'online' if dashboard_running else 'offline', 'pid_file': str(dashboard_pid)},
-        'stream': {'label': 'Stream Dashboard', 'running': stream_running, 'state': 'online' if stream_running else 'offline', 'pid_file': str(stream_pid)},
-        'loop': {'label': 'Main Loop', 'running': loop_running, 'state': 'running' if loop_running else 'stopped', 'pid_file': str(loop_pid)},
-        'reports': {'label': 'Reports / Outputs', 'running': reports_ready, 'state': 'ready' if reports_ready else 'empty', 'pid_file': None},
+        'scanner': {'label': 'Scanner Engine', 'running': scanner_running, 'state': 'running' if scanner_running else 'stopped', 'pid_file': str(scanner_pid), 'log_file': str(scanner_log)},
+        'websocket': {'label': 'Coinbase Feed', 'running': websocket_running, 'state': 'running' if websocket_running else 'stopped', 'pid_file': str(websocket_pid)},
+        'paper_trader_v2': {'label': 'Paper Trader V2', 'running': paper_trader_running, 'state': 'running' if paper_trader_running else 'stopped', 'pid_file': str(paper_trader_pid)},
+        'operator': {'label': 'Operator Dashboard', 'running': dashboard_running, 'state': 'running' if dashboard_running else 'stopped', 'pid_file': str(dashboard_pid)},
+        'stream': {'label': 'Stream Dashboard', 'running': stream_running, 'state': 'running' if stream_running else 'stopped', 'pid_file': str(stream_pid)},
+        'loop': {'label': 'Main Loop Daemon', 'running': loop_running, 'state': 'running' if loop_running else 'stopped', 'pid_file': str(loop_pid)},
+        'reports': {'label': 'Reports Folder', 'running': reports_ready, 'state': 'available' if reports_ready else 'empty', 'pid_file': None},
     }
 
 
