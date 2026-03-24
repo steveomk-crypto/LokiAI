@@ -246,27 +246,26 @@ def operator_view():
                     state_text = str(item.get('display_state') or item['state']).upper()
                     deps_text = 'Ready' if item.get('dependency_health') == 'clear' else 'Waiting on ' + ', '.join(item.get('dependency_blockers') or [])
                     last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
-                    with ui.row().classes('w-full items-center justify-between gap-2 wrap telemetry-row'):
-                        ui.label(str(item['label'])).classes('font-semibold min-w-[180px]')
+                    with ui.row().classes('w-full items-center justify-between gap-2 telemetry-row'):
+                        ui.label(str(item['label'])).classes('font-semibold min-w-[150px]')
                         ui.label(state_text).classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
-                        ui.label(deps_text).classes('signal-meta min-w-[180px]')
-                        ui.label(f'Last {last_success}').classes('signal-meta min-w-[80px]')
-                        with ui.row().classes('gap-1 items-center justify-end wrap'):
-                            if item.get('dependency_health') == 'blocked':
-                                inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
-                                inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
-                            else:
-                                start_label = item.get('start_label') or ('Run' if item.get('kind') == 'job' else 'Start')
-                                start_btn = ui.button(start_label).props('size=sm color=positive unelevated').classes('min-w-[90px]')
-                                if item.get('running') and item.get('kind') == 'service':
+                        ui.label(deps_text).classes('signal-meta min-w-[150px]')
+                        ui.label(f'Last {last_success}').classes('signal-meta min-w-[72px]')
+                        with ui.row().classes('gap-1 items-center justify-end'):
+                            if item.get('kind') == 'service':
+                                start_btn = ui.button('Start').props('size=sm color=positive unelevated').classes('min-w-[78px]')
+                                if item.get('running'):
                                     start_btn.disable()
                                 start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                stop_btn = ui.button('Stop').props('size=sm color=negative outline').classes('min-w-[90px]')
-                                if item.get('kind') != 'service' or not item.get('running'):
+                                stop_btn = ui.button('Stop').props('size=sm color=negative outline').classes('min-w-[78px]')
+                                if not item.get('running'):
                                     stop_btn.disable()
                                 stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
-                                inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[90px]')
-                                inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                            elif item.get('kind') == 'job' and item.get('start_script') and item.get('dependency_health') != 'blocked':
+                                run_btn = ui.button(item.get('start_label') or 'Run').props('size=sm color=positive unelevated').classes('min-w-[78px]')
+                                run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                            inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
+                            inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                 with ui.column().classes('w-full gap-3'):
                     ui.label('System Controls').classes('panel-title')
