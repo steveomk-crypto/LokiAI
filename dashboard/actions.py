@@ -1,0 +1,107 @@
+from __future__ import annotations
+
+import os
+import signal
+import subprocess
+from pathlib import Path
+from typing import Tuple
+
+from .runtime_registry import COMPONENTS
+from .data import read_runtime_controls
+
+
+def run_root() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
+def run_script(script_name: str) -> Tuple[bool, str]:
+    root = run_root()
+    script = root / 'scripts' / script_name
+    if not script.exists():
+        return False, f'Missing script: {script_name}'
+    result = subprocess.run(['bash', str(script)], cwd=root, capture_output=True, text=True)
+    if result.returncode != 0:
+        message = (result.stderr or result.stdout or f'Failed to run {script_name}').strip()
+        return False, message
+    output = (result.stdout or '').strip()
+    return True, output.splitlines()[0].strip() if output else f'Started {script_name}'
+
+
+def open_path(path: Path) -> Tuple[bool, str]:
+    path.mkdir(parents=True, exist_ok=True) if path.suffix == '' else path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        subprocess.Popen(['xdg-open', str(path)])
+        return True, f'Opened {path}'
+    except Exception:
+        return True, f'Path: {path}'
+
+
+def run_background_command(command: str, pid_file: str, log_file: str) -> Tuple[bool, str]:
+    root = run_root()
+    Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+    Path(pid_file).parent.mkdir(parents=True, exist_ok=True)
+    wrapped = f"nohup bash -lc {command!r} >> {log_file!r} 2>&1 & echo $! > {pid_file!r}"
+    result = subprocess.run(['bash', '-lc', wrapped], cwd=root, capture_output=True, text=True)
+    if result.returncode != 0:
+        return False, (result.stderr or result.stdout or 'Failed to start background command').strip()
+    return True, f'Started background job ({Path(pid_file).name})'
+
+
+def stop_pid(pid_file: str) -> Tuple[bool, str]:
+    path = Path(pid_file)
+    if not path.exists():
+        return False, 'PID file not found'
+    try:
+        pid = int(path.read_text().strip())
+        os.kill(pid, signal.SIGTERM)
+        return True, f'Stopped PID {pid}'
+    except ProcessLookupError:
+        return True, 'Process already exited'
+    except Exception as exc:
+        return False, str(exc)
+
+
+def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]:
+    runtime = read_runtime_controls()
+    root = run_root()
+    comp = COMPONENTS.get(component_id)
+
+    if not comp:
+        return False, f'{component_id} control not wired yet'
+
+    if action == 'start' and runtime.get(component_id, {}).get('controls_blocked'):
+        return False, f"Blocked by dependencies: {runtime[component_id].get('blocked_reason')}"
+
+    if component_id == 'main_loop':
+        if action == 'start':
+            return run_background_command(
+                './scripts/market_cycle_daemon.sh',
+                str(root / 'system_logs' / 'market_cycle_daemon.pid'),
+                str(root / 'system_logs' / 'market_loop_cron.log'),
+            )
+        if action == 'stop' and runtime.get(component_id, {}).get('pid_file'):
+            return stop_pid(str(runtime[component_id]['pid_file']))
+        return open_path(comp.inspect_target or root / 'system_logs' / 'market_loop_cron.log')
+
+    if component_id == 'operator_dashboard':
+        if action == 'start' and comp.start_script:
+            return run_script(comp.start_script)
+        if action == 'stop' and runtime.get(component_id, {}).get('pid_file'):
+            return stop_pid(str(runtime[component_id]['pid_file']))
+        return True, 'Operator dashboard is this page'
+
+    if component_id == 'stream_dashboard':
+        if action == 'start' and comp.start_script:
+            return run_script(comp.start_script)
+        if action == 'stop' and runtime.get(component_id, {}).get('pid_file'):
+            return stop_pid(str(runtime[component_id]['pid_file']))
+        return True, 'Open http://127.0.0.1:8501'
+
+    if action == 'start' and comp.start_script:
+        return run_script(comp.start_script)
+    if action == 'stop' and runtime.get(component_id, {}).get('pid_file'):
+        return stop_pid(str(runtime[component_id]['pid_file']))
+    if action == 'inspect':
+        return open_path(comp.inspect_target or comp.log_path or root)
+
+    return False, f'{component_id} action {action} not wired yet'

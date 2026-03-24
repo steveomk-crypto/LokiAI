@@ -8,8 +8,9 @@ from pathlib import Path
 
 from nicegui import ui
 
+from .actions import perform_component_action
 from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
-from .runtime_registry import COMPONENTS, components_by_category
+from .runtime_registry import components_by_category
 
 
 def _fmt_ts(value: str | None) -> str:
@@ -66,60 +67,6 @@ def _pill(text: str, level: str = 'info') -> None:
     ui.label(text).classes(f'status-pill {_status_class(level)}')
 
 
-def _run_root() -> Path:
-    return Path(__file__).resolve().parent.parent
-
-
-def _run_script(script_name: str) -> tuple[bool, str]:
-    root = _run_root()
-    script = root / 'scripts' / script_name
-    if not script.exists():
-        return False, f'Missing script: {script_name}'
-    result = subprocess.run(['bash', str(script)], cwd=root, capture_output=True, text=True)
-    if result.returncode != 0:
-        message = (result.stderr or result.stdout or f'Failed to run {script_name}').strip()
-        return False, message
-    output = (result.stdout or '').strip()
-    if output:
-        first_line = output.splitlines()[0].strip()
-        return True, first_line
-    return True, f'Started {script_name}'
-
-
-def _open_path(path: Path) -> tuple[bool, str]:
-    path.mkdir(parents=True, exist_ok=True) if path.suffix == '' else path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        subprocess.Popen(['xdg-open', str(path)])
-        return True, f'Opened {path}'
-    except Exception:
-        return True, f'Path: {path}'
-
-
-def _run_background_command(command: str, pid_file: str, log_file: str) -> tuple[bool, str]:
-    root = _run_root()
-    Path(log_file).parent.mkdir(parents=True, exist_ok=True)
-    Path(pid_file).parent.mkdir(parents=True, exist_ok=True)
-    wrapped = f"nohup bash -lc {command!r} >> {log_file!r} 2>&1 & echo $! > {pid_file!r}"
-    result = subprocess.run(['bash', '-lc', wrapped], cwd=root, capture_output=True, text=True)
-    if result.returncode != 0:
-        return False, (result.stderr or result.stdout or 'Failed to start background command').strip()
-    return True, f'Started background job ({Path(pid_file).name})'
-
-
-def _stop_pid(pid_file: str) -> tuple[bool, str]:
-    path = Path(pid_file)
-    if not path.exists():
-        return False, 'PID file not found'
-    try:
-        pid = int(path.read_text().strip())
-        os.kill(pid, signal.SIGTERM)
-        return True, f'Stopped PID {pid}'
-    except ProcessLookupError:
-        return True, 'Process already exited'
-    except Exception as exc:
-        return False, str(exc)
-
-
 LAST_ACTION_RESULT = {'message': 'No recent actions'}
 
 
@@ -131,42 +78,7 @@ def _format_meta_time(value: str | None) -> str:
 
 
 def _control_action(group: str, action: str) -> None:
-    runtime = read_runtime_controls()
-    root = _run_root()
-    comp = COMPONENTS.get(group)
-
-    if not comp:
-        ok, msg = False, f'{group} control not wired yet'
-    elif group == 'main_loop':
-        if action == 'start':
-            ok, msg = _run_background_command('./scripts/market_cycle_daemon.sh', str(root / 'system_logs' / 'market_cycle_daemon.pid'), str(root / 'system_logs' / 'market_loop_cron.log'))
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime[group]['pid_file']))
-        else:
-            ok, msg = _open_path(comp.inspect_target or root / 'system_logs' / 'market_loop_cron.log')
-    elif group == 'operator_dashboard':
-        if action == 'start' and comp.start_script:
-            ok, msg = _run_script(comp.start_script)
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime[group]['pid_file']))
-        else:
-            ok, msg = True, 'Operator dashboard is this page'
-    elif group == 'stream_dashboard':
-        if action == 'start' and comp.start_script:
-            ok, msg = _run_script(comp.start_script)
-        elif action == 'stop':
-            ok, msg = _stop_pid(str(runtime[group]['pid_file']))
-        else:
-            ok, msg = True, 'Open http://127.0.0.1:8501'
-    elif action == 'start' and comp.start_script:
-        ok, msg = _run_script(comp.start_script)
-    elif action == 'stop' and runtime.get(group, {}).get('pid_file'):
-        ok, msg = _stop_pid(str(runtime[group]['pid_file']))
-    elif action == 'inspect':
-        ok, msg = _open_path(comp.inspect_target or comp.log_path or root)
-    else:
-        ok, msg = False, f'{group} action {action} not wired yet'
-
+    ok, msg = perform_component_action(group, action)
     LAST_ACTION_RESULT['message'] = f'{group} {action}: {msg}'
     ui.notify(msg, type='positive' if ok else 'negative')
     operator_view.refresh()
