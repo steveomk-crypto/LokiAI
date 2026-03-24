@@ -5,8 +5,15 @@ import os
 from nicegui import ui
 
 from .common import fmt_num, panel, pill
-from .data import compute_dashboard_state, read_runtime_controls
+from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
 from .theme import apply_theme
+
+
+def _fmt_meta_ts(value: str | None) -> str:
+    dt = _safe_iso_to_dt(value)
+    if not dt:
+        return '–'
+    return dt.astimezone().strftime('%H:%M:%S')
 
 
 def _candles_svg(candles: list[dict]) -> str:
@@ -81,6 +88,12 @@ def stream_view():
     feed_status = 'RUNNING' if runtime['websocket']['running'] else 'STOPPED'
     trader_status = 'RUNNING' if runtime['paper_trader_v2']['running'] else 'STOPPED'
     loop_status = 'RUNNING' if runtime['loop']['running'] else 'STOPPED'
+    scanner_log_time = _fmt_meta_ts((runtime.get('scanner') or {}).get('log_meta', {}).get('updated_at'))
+    loop_log_time = _fmt_meta_ts((runtime.get('loop') or {}).get('log_meta', {}).get('updated_at'))
+    flatten_status = 'RUNNING' if runtime['flatten']['running'] else 'IDLE'
+    flatten_log_time = _fmt_meta_ts((runtime.get('flatten') or {}).get('log_meta', {}).get('updated_at'))
+    log_outputs_status = 'RUNNING' if runtime['log_outputs']['running'] else 'IDLE'
+    log_outputs_time = _fmt_meta_ts((runtime.get('log_outputs') or {}).get('log_meta', {}).get('updated_at'))
 
     with ui.column().classes('stream-stage w-full h-screen gap-2 p-3'):
         with ui.card().classes('top-bar w-full stream-hero stage-top'):
@@ -92,6 +105,7 @@ def stream_view():
                     pill('STREAM • LIVE', 'healthy')
                     pill(f"SCANNER DATA • {market_state.get('metrics', {}).get('total_signals', 0)} SIGNALS", 'info')
                     pill(f"SCANNER JOB • {scanner_status}", 'healthy' if scanner_status == 'RUNNING' else 'info')
+                    pill(f"SCANNER LOG • {scanner_log_time}", 'info')
                     pill(f"COINBASE FEED • {feed_status}", 'healthy' if feed_status == 'RUNNING' else 'danger')
 
         with ui.row().classes('w-full no-wrap gap-2 stage-main'):
@@ -175,6 +189,7 @@ def stream_view():
                                 ui.label('no live slot yet • waiting for positive confirmation + tier pass').classes('mission-card-meta')
                             else:
                                 ui.label(f'scanner {scanner_status.lower()} • trader {trader_status.lower()} • loop {loop_status.lower()}').classes('mission-card-meta')
+                                ui.label(f'flatten {flatten_status.lower()} @ {flatten_log_time} • logging {log_outputs_status.lower()} @ {log_outputs_time}').classes('mission-card-meta')
                                 ui.label('paper-only observation mode').classes('mission-card-meta')
 
                         with ui.card().classes('mission-overlay-card flex-1'):
@@ -207,7 +222,11 @@ def stream_view():
                     ui.label('Coinbase feed').classes('telemetry-key compact-key mt-1')
                     ui.label(feed_status).classes('telemetry-value compact-value')
                     ui.label('Main loop').classes('telemetry-key compact-key mt-1')
-                    ui.label(loop_status).classes('telemetry-value compact-value')
+                    ui.label(f'{loop_status} • {loop_log_time}').classes('telemetry-value compact-value')
+                    ui.label('Flatten job').classes('telemetry-key compact-key mt-1')
+                    ui.label(f'{flatten_status} • {flatten_log_time}').classes('telemetry-value compact-value')
+                    ui.label('Output logging').classes('telemetry-key compact-key mt-1')
+                    ui.label(f'{log_outputs_status} • {log_outputs_time}').classes('telemetry-value compact-value')
                     ui.label('Active V2 slots').classes('telemetry-key compact-key mt-1')
                     ui.label(str(len(open_positions_v2))).classes('telemetry-value compact-value')
                     ui.label('Closed V2 trades').classes('telemetry-key compact-key mt-1')
