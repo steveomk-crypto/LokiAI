@@ -1,0 +1,64 @@
+{
+  "updated_at": "2026-03-24T02:45:03+00:00",
+  "items": [
+    {
+      "timestamp": "2026-03-23T19:45",
+      "category": "narrative",
+      "headline": "Scanner focus narrowing to APT",
+      "source": "internal synthesis",
+      "symbol_scope": [
+        "APT"
+      ],
+      "importance": "medium",
+      "market_implication": "Mode is baseline; only the strongest Coinbase-actionable names are surviving the intake filter. Top momentum lead is APT at 10.3%.",
+      "confidence": "medium",
+      "actionability": "monitor"
+    },
+    {
+      "timestamp": "2026-03-24T02:45:03+00:00",
+      "category": "exchange",
+      "headline": "Coinbase Websocket online",
+      "source": "internal telemetry",
+      "symbol_scope": [
+        "Coinbase"
+      ],
+      "importance": "high",
+      "market_implication": "Live Coinbase market state is available; last message at 2026-03-24T02:44:51+00:00.",
+      "confidence": "high",
+      "actionability": "observe"
+    },
+    {
+      "timestamp": "Tue, 17 Mar 2026 16:30:00 +0000",
+      "category": "narrative",
+      "headline": "Facing a crisis, Bitcoin treasury companies need to pivot to survive",
+      "source": "CoinDesk RSS",
+      "symbol_scope": [],
+      "importance": "medium",
+      "market_implication": "Here, Wellener offers tactics that firms must use to prove they\u2019re more than just a crypto play.",
+      "confidence": "medium",
+      "actionability": "monitor"
+    },
+    {
+      "timestamp": "Tue, 17 Mar 2026 15:44:01 +0000",
+      "category": "narrative",
+      "headline": "Strategy\u2019s latest massive bitcoin purchase offers insight into its evolving funding model",
+      "source": "CoinDesk RSS",
+      "symbol_scope": [],
+      "importance": "medium",
+      "market_implication": "A $1.18 billion preferred stock raise, roughly equivalent to 16,800 BTC, signals a shift away from common stock as dividend obligations top $1 billion.",
+      "confidence": "medium",
+      "actionability": "monitor"
+    },
+    {
+      "timestamp": "Tue, 17 Mar 2026 15:06:21 +0000",
+      "category": "regulatory",
+      "headline": "Popular Solana wallet Phantom wins CFTC nod to access regulated derivatives markets",
+      "source": "CoinDesk RSS",
+      "symbol_scope": [],
+      "importance": "high",
+      "market_implication": "This means Phantom can act as a non-custodial interface connecting users to registered derivatives platforms, removing the need for broker registration under specific conditions.",
+      "confidence": "medium",
+      "actionability": "monitor"
+    }
+  ]
+}

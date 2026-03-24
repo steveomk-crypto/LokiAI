@@ -73,6 +73,9 @@ def stream_view():
     btc_payload = state.get('btc_candles', {})
     btc_candles = btc_payload.get('candles', [])
     open_positions = state.get('open_positions', [])
+    open_positions_v2 = state.get('open_positions_v2', [])
+    v2_audit = state.get('paper_trader_v2_audit', {})
+    social_pulse = state.get('social_intel_pulse', {})
 
     with ui.column().classes('stream-stage w-full h-screen gap-2 p-3'):
         with ui.card().classes('top-bar w-full stream-hero stage-top'):
@@ -120,7 +123,7 @@ def stream_view():
 
             with ui.column().classes('stream-center gap-3'):
                 with ui.card().classes('glass-panel cockpit-hero w-full h-full'):
-                    active_slots = open_positions[:3]
+                    active_slots = open_positions_v2[:3]
                     primary_slot = active_slots[-1] if active_slots else None
                     secondary_slots = active_slots[:-1]
                     focus_asset = top_opps[0] if top_opps else None
@@ -133,7 +136,7 @@ def stream_view():
                     else:
                         mission_state = 'WATCH MODE'
                         focus_token = focus_asset.get('token', 'BTC-USD') if focus_asset else 'BTC-USD'
-                        mission_reason = 'scanner lead / market anchor monitoring'
+                        mission_reason = 'no candidate cleared intake • watching for confirmed momentum'
                         last_close = btc_candles[-1]['close'] if btc_candles else None
 
                     with ui.row().classes('w-full justify-between items-start'):
@@ -157,7 +160,8 @@ def stream_view():
                             if primary_slot:
                                 ui.label(f"entry {fmt_num(primary_slot.get('entry_price'), 4)} • pnl {fmt_num(primary_slot.get('pnl_percent'), 2)}%" ).classes('mission-card-meta')
                             elif focus_asset:
-                                ui.label(f"scanner momentum {fmt_num(focus_asset.get('momentum'), 1)}% • persistence {focus_asset.get('persistence', 0)}").classes('mission-card-meta')
+                                ui.label(f"scanner lead {focus_asset.get('token', '?')} • momentum {fmt_num(focus_asset.get('momentum'), 1)}% • persistence {focus_asset.get('persistence', 0)}").classes('mission-card-meta')
+                                ui.label('no live slot yet • waiting for positive confirmation + tier pass').classes('mission-card-meta')
                             else:
                                 ui.label('paper-only observation mode').classes('mission-card-meta')
 
@@ -167,42 +171,47 @@ def stream_view():
                                 for idx in range(3):
                                     if idx < len(active_slots):
                                         slot = active_slots[idx]
-                                        ui.label(f"slot {idx+1} • {slot.get('token', '?')} • {fmt_num(slot.get('pnl_percent'), 2)}%").classes('mission-card-meta')
+                                        ui.label(f"slot {idx+1} • {slot.get('token', '?')} • {slot.get('trade_state', 'ACTIVE')} • {fmt_num(slot.get('pnl_percent'), 2)}%").classes('mission-card-meta')
                                     else:
                                         ui.label(f"slot {idx+1} • STANDBY • waiting for setup").classes('mission-card-meta')
                             else:
-                                ui.label('slot 1 • STANDBY • waiting for setup').classes('mission-card-meta')
-                                ui.label('slot 2 • STANDBY • waiting for setup').classes('mission-card-meta')
-                                ui.label('slot 3 • STANDBY • waiting for setup').classes('mission-card-meta')
+                                ui.label('slot 1 • STANDBY • intake clear required').classes('mission-card-meta')
+                                ui.label('slot 2 • STANDBY • positive drift required').classes('mission-card-meta')
+                                ui.label('slot 3 • STANDBY • conviction not met yet').classes('mission-card-meta')
 
                     with ui.row().classes('w-full justify-between items-center chart-footer'):
                         ui.label('live market view • paper trader tactical watch v1').classes('panel-subtitle')
-                        ui.label(f"captured {metrics.get('total_signals', 0)} • active slots {len(active_slots)}").classes('panel-subtitle')
+                        ui.label(f"captured {metrics.get('total_signals', 0)} • active slots {len(active_slots)} • closed {v2_audit.get('closed_trade_count', 0)}").classes('panel-subtitle')
 
 
-            with ui.column().classes('stream-right gap-3'):
-                with panel('Operating / Mission Status', 'Current system stance', 'right-panel-tall'):
+            with ui.column().classes('stream-right gap-2 compact-right-rail'):
+                with panel('Operating / Mission Status', 'Current system stance', 'right-panel-tall compact-status-panel'):
                     ui.label('Paper-only mode.').classes('text-sm font-semibold status-info')
-                    ui.label('Funds are staged, not deployed.').classes('text-sm panel-row')
-                    ui.label('System remains in rebuild / stabilization mode.').classes('text-sm panel-row')
-                    ui.separator().classes('my-2 opacity-20')
-                    ui.label('Signals logged today').classes('telemetry-key')
-                    ui.label(str(metrics.get('total_signals', 0))).classes('telemetry-value')
-                    ui.label('High-quality signals').classes('telemetry-key mt-2')
-                    ui.label(str(metrics.get('high_quality_signals', 0))).classes('telemetry-value')
-                    ui.label('Tracked products').classes('telemetry-key mt-2')
-                    ui.label(str(ws_state.get('tracked_products', 0))).classes('telemetry-value')
+                    ui.label('Funds are staged, not deployed.').classes('text-sm panel-row compact-copy')
+                    ui.label('System remains in rebuild / stabilization mode.').classes('text-sm panel-row compact-copy')
+                    ui.separator().classes('my-1 opacity-20')
+                    ui.label('Signals logged today').classes('telemetry-key compact-key')
+                    ui.label(str(metrics.get('total_signals', 0))).classes('telemetry-value compact-value')
+                    ui.label('Active V2 slots').classes('telemetry-key compact-key mt-1')
+                    ui.label(str(len(open_positions_v2))).classes('telemetry-value compact-value')
+                    ui.label('Closed V2 trades').classes('telemetry-key compact-key mt-1')
+                    ui.label(str(v2_audit.get('closed_trade_count', 0))).classes('telemetry-value compact-value')
+                    ui.label('Trader stance').classes('telemetry-key compact-key mt-1')
+                    ui.label('Watch mode is intentional discipline.' if not open_positions_v2 else 'Trader actively managing live paper slots.').classes('telemetry-value compact-value')
 
-                with panel('Latest Intelligence', 'Current research / product output'):
-                    ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold')
-                    ui.label('Daily Coinbase momentum brief.').classes('text-sm panel-row')
-                    ui.label('Distribution layer rebuilding in parallel.').classes('text-sm panel-row')
+                with panel('Latest Intelligence', 'Current research / product output', 'compact-right-panel'):
+                    ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold compact-headline')
+                    ui.label('Daily Coinbase momentum brief.').classes('text-sm panel-row compact-copy')
+                    ui.label('Distribution layer rebuilding in parallel.').classes('text-sm panel-row compact-copy')
 
-                with panel('Social / Intel Pulse', 'Curated catalyst layer coming online'):
-                    ui.label('COMING ONLINE').classes('font-semibold status-warning')
-                    ui.label('• major X posts').classes('text-sm panel-row')
-                    ui.label('• exchange / listing events').classes('text-sm panel-row')
-                    ui.label('• narrative shifts').classes('text-sm panel-row')
+                with panel('Social / Intel Pulse', 'Curated catalyst layer', 'compact-right-panel'):
+                    items = social_pulse.get('items', [])[:2]
+                    if not items:
+                        ui.label('No intel pulse yet').classes('font-semibold status-warning')
+                    for item in items:
+                        ui.label(f"{item.get('category', 'intel').upper()} • {item.get('headline', 'Untitled')}").classes('font-semibold compact-headline')
+                        ui.label(item.get('market_implication', 'No implication yet')).classes('text-sm panel-row compact-copy')
+                        ui.label(f"{item.get('source', 'unknown')} • {item.get('actionability', 'observe')}").classes('text-xs panel-row opacity-70 compact-copy')
 
 
 
@@ -252,7 +261,18 @@ def run():
             .center-lower { flex: 0 0 auto; }
             .mini-panel { min-height: 112px; }
             .mini-panel .panel-row { padding: 0.16rem 0; }
-            .right-panel-tall { min-height: 260px; }
+            .right-panel-tall { min-height: 200px; }
+            .compact-right-rail { gap: 0.45rem !important; }
+            .compact-right-panel { min-height: 132px; }
+            .compact-right-panel .panel-title { font-size: 0.9rem; }
+            .compact-right-panel .panel-subtitle { font-size: 0.66rem; }
+            .compact-right-panel .panel-row { padding: 0.06rem 0; line-height: 1.08; }
+            .compact-status-panel .panel-subtitle { font-size: 0.68rem; }
+            .compact-status-panel .panel-row { padding: 0.08rem 0; line-height: 1.15; }
+            .compact-copy { line-height: 1.08; margin: 0; }
+            .compact-key { margin-top: 0.12rem !important; }
+            .compact-value { line-height: 1.02; }
+            .compact-headline { font-size: 0.82rem; line-height: 1.05; }
             .mission-strip {
                 border: 1px solid rgba(255,255,255,0.06);
                 background: rgba(255,255,255,0.03);

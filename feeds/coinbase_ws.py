@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import os
 import time
@@ -139,6 +140,8 @@ class CoinbaseWSService:
         self.connected = False
         self.messages_received = 0
         self.reconnect_count = 0
+        self.last_error: str | None = None
+        self.last_disconnect_at: str | None = None
         self.products_meta: list[dict[str, Any]] = []
         self.products: dict[str, ProductState] = {}
 
@@ -196,37 +199,47 @@ class CoinbaseWSService:
         while True:
             try:
                 await self._run_once()
+            except asyncio.CancelledError:
+                self.connected = False
+                self.last_disconnect_at = now_iso()
+                self.last_error = 'service_cancelled'
+                self._write_state(extra={'status': 'stopped'})
+                raise
             except Exception as exc:
                 self.connected = False
                 self.reconnect_count += 1
-                self._write_state(extra={'last_error': str(exc)})
+                self.last_disconnect_at = now_iso()
+                self.last_error = str(exc)
+                self._write_state(extra={'status': 'reconnecting'})
                 await asyncio.sleep(min(30, 2 + self.reconnect_count))
 
     async def _run_once(self) -> None:
         product_ids = [p['product_id'] for p in self.products_meta]
-        async with websockets.connect(COINBASE_WS_URL, ping_interval=20, ping_timeout=20, max_size=2_000_000) as ws:
-            self.connected = True
-            self._write_state()
-            subscribe_message = {
-                'type': 'subscribe',
-                'product_ids': product_ids,
-                'channels': ['ticker', 'heartbeat'],
-            }
-            await ws.send(json.dumps(subscribe_message))
-            try:
-                first_message = await asyncio.wait_for(ws.recv(), timeout=10)
-                first_payload = json.loads(first_message)
-                self.messages_received += 1
-                self.last_message_at = now_iso()
-                if first_payload.get('type') == 'ticker':
-                    product_id = first_payload.get('product_id')
-                    state = self.products.get(product_id)
-                    if state:
-                        state.update_from_ticker(first_payload, time.time())
-            except asyncio.TimeoutError:
-                pass
-            flush_task = asyncio.create_task(self._periodic_flush())
-            try:
+        flush_task = None
+        try:
+            async with websockets.connect(COINBASE_WS_URL, ping_interval=20, ping_timeout=20, max_size=2_000_000) as ws:
+                self.connected = True
+                self.last_error = None
+                self._write_state(extra={'status': 'connected'})
+                subscribe_message = {
+                    'type': 'subscribe',
+                    'product_ids': product_ids,
+                    'channels': ['ticker', 'heartbeat'],
+                }
+                await ws.send(json.dumps(subscribe_message))
+                try:
+                    first_message = await asyncio.wait_for(ws.recv(), timeout=10)
+                    first_payload = json.loads(first_message)
+                    self.messages_received += 1
+                    self.last_message_at = now_iso()
+                    if first_payload.get('type') == 'ticker':
+                        product_id = first_payload.get('product_id')
+                        state = self.products.get(product_id)
+                        if state:
+                            state.update_from_ticker(first_payload, time.time())
+                except asyncio.TimeoutError:
+                    pass
+                flush_task = asyncio.create_task(self._periodic_flush())
                 async for raw in ws:
                     msg = json.loads(raw)
                     self.messages_received += 1
@@ -239,12 +252,27 @@ class CoinbaseWSService:
                             state.update_from_ticker(msg, time.time())
                     elif msg_type == 'error':
                         raise RuntimeError(f"Coinbase WS error: {msg}")
-            finally:
+        except asyncio.CancelledError:
+            self.connected = False
+            self.last_disconnect_at = now_iso()
+            self.last_error = 'run_once_cancelled'
+            self._write_state(extra={'status': 'stopped'})
+            raise
+        except Exception as exc:
+            self.connected = False
+            self.last_disconnect_at = now_iso()
+            self.last_error = str(exc)
+            self._write_state(extra={'status': 'reconnecting'})
+            raise
+        finally:
+            if flush_task:
                 flush_task.cancel()
-                with contextlib.suppress(Exception):
+                with contextlib.suppress(asyncio.CancelledError, Exception):
                     await flush_task
-                self.connected = False
-                self._write_state()
+            self.connected = False
+            if self.last_disconnect_at is None:
+                self.last_disconnect_at = now_iso()
+            self._write_state(extra={'status': 'disconnected' if not self.last_error else 'reconnecting'})
 
     async def _periodic_flush(self) -> None:
         while True:
@@ -280,6 +308,8 @@ class CoinbaseWSService:
             'started_at': self.started_at,
             'last_message_at': self.last_message_at,
             'last_flush_at': self.last_flush_at,
+            'last_disconnect_at': self.last_disconnect_at,
+            'last_error': self.last_error,
             'tracked_products': len(self.products),
             'messages_received': self.messages_received,
             'reconnect_count': self.reconnect_count,

@@ -40,13 +40,20 @@
 - **Twitter pixel ID:** empty at capture
 - **Developer / API token:** not captured yet
 
-## Captured post
+## Captured posts
 - **Title:** `Atlas Pulse — March 22, 2026 (beta)`
 - **Post URL:** `https://lokiai.substack.com/p/atlas-pulse-march-22-2026-beta`
 - **Subtitle / dek:** `Daily Coinbase momentum brief while Atlas Loop runs in quality-only mode.`
 - **Byline:** `LOKI AI`
 - **Date:** `Mar 22, 2026`
 - **Content matches the Atlas Pulse brief captured in the Gumroad pack** (`artifacts/gumroad/atlas_pulse/2026-03-22/atlas_pulse_20260322_pro.md`).
+
+- **Title:** `I Rebuilt My Market Machine Today`
+- **Post URL:** `https://lokiai.substack.com/p/i-rebuilt-my-market-machine-today`
+- **Subtitle / dek:** `A Coinbase-first rebuild in search of cleaner signals, stricter discipline, and a machine that stops lying.`
+- **Byline:** `LokiAI`
+- **Date:** `Mar 23, 2026`
+- **Notes:** First LokiAI-voice rebuild essay; published after the machine recovery/rebuild session.
 
 ## Still missing
 1. Welcome email copy

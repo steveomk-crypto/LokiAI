@@ -21,7 +21,8 @@ TIER_A_MIN_SCORE = 0.42
 TIER_B_MIN_SCORE = 0.30
 FRESHNESS_LIMIT_SECONDS = 180
 TIER_A_MIN_DRIFT_300S = 0.10
-TIER_B_MIN_DRIFT_300S = 0.03
+TIER_B_MIN_DRIFT_300S = 0.08
+TIER_B_MIN_PERSISTENCE = 2
 COOLDOWN_MINUTES = 45
 TIER_A_STOP_LOSS_PCT = -4.0
 TIER_B_STOP_LOSS_PCT = -3.0
@@ -99,14 +100,24 @@ def _candidate_tier(candidate: dict, ticker: dict) -> str:
     score = float(candidate.get('score') or 0.0)
     freshness = ticker.get('freshness_seconds')
     freshness = float(freshness) if freshness is not None else None
-    drift = abs(float(ticker.get('drift_300s') or 0.0))
+    drift = float(ticker.get('drift_300s') or 0.0)
+    trend = (candidate.get('trend') or candidate.get('status') or '').lower()
+    momentum = float(candidate.get('momentum') or 0.0)
 
     if freshness is None or freshness > FRESHNESS_LIMIT_SECONDS:
         return ''
+    if drift <= 0:
+        return ''
+    if trend in {'isolated spike', 'fading'}:
+        return ''
+    if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
+        return ''
+
+    persistence = int(candidate.get('persistence') or 0)
 
     if score >= TIER_A_MIN_SCORE and drift >= TIER_A_MIN_DRIFT_300S:
         return 'A'
-    if score >= TIER_B_MIN_SCORE and drift >= TIER_B_MIN_DRIFT_300S:
+    if score >= TIER_B_MIN_SCORE and drift >= TIER_B_MIN_DRIFT_300S and persistence >= TIER_B_MIN_PERSISTENCE:
         return 'B'
     return ''
 

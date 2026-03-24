@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from nicegui import ui
+
+LOCAL_TZ = ZoneInfo('America/Los_Angeles')
 
 
 def fmt_ts(value: str | None) -> str:
@@ -27,6 +30,16 @@ def status_class(level: str) -> str:
         'locked': 'status-muted',
         'pending': 'status-warning',
         'ready later': 'status-info',
+        'running': 'status-healthy',
+        'online': 'status-healthy',
+        'watch': 'status-info',
+        'engaged': 'status-healthy',
+        'offline': 'status-danger',
+        'stopped': 'status-warning',
+        'stale': 'status-warning',
+        'error': 'status-danger',
+        'reconnecting': 'status-warning',
+        'degraded': 'status-warning',
     }.get(level, 'status-info')
 
 
@@ -66,13 +79,19 @@ def compute_ages(market_state: dict, ws_state: dict) -> tuple[float | None, floa
     try:
         scanner_dt = market_state.get('computed_at')
         if scanner_dt:
-            scanner_age = now.timestamp() - datetime.fromisoformat(scanner_dt.replace('Z', '+00:00')).replace(tzinfo=timezone.utc).timestamp()
+            parsed = datetime.fromisoformat(scanner_dt.replace('Z', '+00:00'))
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=LOCAL_TZ)
+            scanner_age = now.timestamp() - parsed.astimezone(timezone.utc).timestamp()
     except Exception:
         scanner_age = None
     try:
         ws_dt = ws_state.get('last_message_at')
         if ws_dt:
-            ws_age = now.timestamp() - datetime.fromisoformat(ws_dt.replace('Z', '+00:00')).timestamp()
+            parsed = datetime.fromisoformat(ws_dt.replace('Z', '+00:00'))
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=LOCAL_TZ)
+            ws_age = now.timestamp() - parsed.astimezone(timezone.utc).timestamp()
     except Exception:
         ws_age = None
     return scanner_age, ws_age

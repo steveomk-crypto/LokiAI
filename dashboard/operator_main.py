@@ -17,6 +17,9 @@ def operator_view():
     live_movers = state['live_movers']
     top_opps = market_state.get('top_opportunities', [])
     metrics = market_state.get('metrics', {})
+    open_positions_v2 = state.get('open_positions_v2', [])
+    v2_audit = state.get('paper_trader_v2_audit', {})
+    social_pulse = state.get('social_intel_pulse', {})
 
     scanner_age, ws_age = compute_ages(market_state, ws_state)
     scanner_text, scanner_class = stale_state_label(scanner_age, 3600)
@@ -119,10 +122,45 @@ def operator_view():
                         ui.label(snap.get('timestamp', '–')[-8:]).classes('telemetry-key')
                         ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
 
-            with panel('Command / Controls Bay', 'Placeholder control surface'):
+            with panel('Paper Trader V2 Slots', 'Current slot state and trade posture'):
+                if not open_positions_v2:
+                    ui.label('No active V2 positions • watch mode').classes('text-gray-400')
+                for pos in open_positions_v2[:3]:
+                    with ui.row().classes('w-full justify-between items-center telemetry-row'):
+                        ui.label(f"{pos.get('token', '?')} • {pos.get('tier', '?')} • {pos.get('trade_state', 'ACTIVE')}").classes('telemetry-key')
+                        ui.label(f"{fmt_num(pos.get('pnl_percent'), 2)}% • {pos.get('move_character', '–')}").classes('telemetry-value')
+
+            with panel('Paper Trader V2 Audit', 'Latest trader audit summary'):
+                telemetry_row('Mode', v2_audit.get('mode', '–'))
+                telemetry_row('Active slots', str(v2_audit.get('active_slot_count', 0)))
+                telemetry_row('Latest open count', str(len(v2_audit.get('latest_open', []) or [])))
+                latest_open = v2_audit.get('latest_open', []) or []
+                tier_a_open = sum(1 for pos in latest_open if pos.get('tier') == 'A')
+                tier_b_open = sum(1 for pos in latest_open if pos.get('tier') == 'B')
+                telemetry_row('Tier A live', str(tier_a_open), 'status-healthy' if tier_a_open else 'status-muted')
+                telemetry_row('Tier B live', str(tier_b_open), 'status-info' if tier_b_open else 'status-muted')
+                telemetry_row('Closed trades', str(v2_audit.get('closed_trade_count', 0)))
+                telemetry_row('Wins', str(v2_audit.get('win_count', 0)))
+                telemetry_row('Losses', str(v2_audit.get('loss_count', 0)))
+                telemetry_row('Avg win %', fmt_num(v2_audit.get('avg_win_pct'), 3))
+                telemetry_row('Avg loss %', fmt_num(v2_audit.get('avg_loss_pct'), 3))
+                watch_reason = 'Awaiting confirmed momentum.' if not latest_open else 'Trader actively managing qualified paper slots.'
+                telemetry_row('Watch logic', watch_reason, 'status-info')
+
+            with panel('Social / Intel Pulse', 'Curated catalyst layer now feeding the machine'):
+                items = social_pulse.get('items', [])[:5]
+                if not items:
+                    ui.label('No intel items loaded yet').classes('text-gray-400')
+                for item in items:
+                    with ui.column().classes('w-full gap-0 mb-2'):
+                        ui.label(f"{item.get('category', 'intel').upper()} • {item.get('headline', 'Untitled')}").classes('telemetry-key')
+                        ui.label(item.get('market_implication', 'No implication yet')).classes('text-sm panel-row')
+                        ui.label(f"{item.get('source', 'unknown')} • {item.get('importance', 'low')} • {item.get('actionability', 'observe')}").classes('signal-meta')
+
+            with panel('Command / Controls Bay', 'Canonical subsystem names and honest state display'):
                 with ui.grid(columns=2).classes('w-full gap-2'):
                     for item in state['controls_placeholder']:
-                        level = item['state'] if item['state'] in {'locked', 'pending', 'ready later'} else 'locked'
+                        level = item['state']
                         ui.button(f"{item['label']} • {item['state']}").props('outline color=secondary').classes(f'w-full control-button {status_class(level)}')
 
 

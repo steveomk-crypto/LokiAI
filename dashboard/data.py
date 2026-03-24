@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -18,6 +19,10 @@ COINBASE_PRODUCTS_PATH = CACHE_DIR / 'coinbase_products.json'
 COINBASE_TICKERS_PATH = CACHE_DIR / 'coinbase_tickers.json'
 BTC_CANDLES_CACHE_PATH = CACHE_DIR / 'btc_usd_candles_5m.json'
 OPEN_POSITIONS_PATH = WORKDIR / 'paper_trades' / 'open_positions.json'
+OPEN_POSITIONS_V2_PATH = WORKDIR / 'paper_trades' / 'open_positions_v2.json'
+PAPER_TRADER_V2_AUDIT_PATH = WORKDIR / 'paper_trades' / 'paper_trader_v2_audit_summary.json'
+SOCIAL_INTEL_PULSE_PATH = CACHE_DIR / 'social_intel_pulse.json'
+LOCAL_TZ = ZoneInfo('America/Los_Angeles')
 
 
 def _load_json(path: Path, default: Any):
@@ -36,8 +41,8 @@ def _safe_iso_to_dt(value: str | None) -> datetime | None:
     except ValueError:
         return None
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-    return dt
+        dt = dt.replace(tzinfo=LOCAL_TZ)
+    return dt.astimezone(timezone.utc)
 
 
 def _iso_now() -> datetime:
@@ -124,6 +129,18 @@ def load_btc_candles(limit: int = 48) -> dict[str, Any]:
 
 def load_open_positions() -> list[dict[str, Any]]:
     return _load_json(OPEN_POSITIONS_PATH, [])
+
+
+def load_open_positions_v2() -> list[dict[str, Any]]:
+    return _load_json(OPEN_POSITIONS_V2_PATH, [])
+
+
+def load_paper_trader_v2_audit() -> dict[str, Any]:
+    return _load_json(PAPER_TRADER_V2_AUDIT_PATH, {})
+
+
+def load_social_intel_pulse() -> dict[str, Any]:
+    return _load_json(SOCIAL_INTEL_PULSE_PATH, {'updated_at': None, 'items': []})
 
 
 def load_latest_market_log_entries(limit: int = 500) -> list[dict[str, Any]]:
@@ -241,15 +258,18 @@ def build_status_flags(market_state: dict[str, Any], ws_state: dict[str, Any]) -
     return flags
 
 
-def build_controls_placeholder() -> list[dict[str, str]]:
+def build_controls_placeholder(market_state: dict[str, Any], ws_state: dict[str, Any], open_positions_v2: list[dict[str, Any]], audit_v2: dict[str, Any]) -> list[dict[str, str]]:
+    scanner_state = 'running' if market_state.get('computed_at') else 'stopped'
+    websocket_state = 'online' if ws_state.get('connected') else 'offline'
+    trader_state = audit_v2.get('mode', 'watch') if audit_v2 else ('engaged' if open_positions_v2 else 'watch')
     return [
-        {'group': 'scanner', 'label': 'Scanner', 'state': 'locked'},
-        {'group': 'websocket', 'label': 'Coinbase WS', 'state': 'locked'},
-        {'group': 'dashboard', 'label': 'Dashboard', 'state': 'locked'},
+        {'group': 'scanner', 'label': 'Scanner', 'state': scanner_state},
+        {'group': 'websocket', 'label': 'Coinbase Websocket', 'state': websocket_state},
+        {'group': 'trader', 'label': 'Paper Trader V2', 'state': trader_state},
+        {'group': 'operator', 'label': 'Operator Dashboard', 'state': 'online'},
+        {'group': 'stream', 'label': 'Stream Dashboard', 'state': 'online'},
         {'group': 'loop', 'label': 'Main Loop', 'state': 'pending'},
-        {'group': 'trader', 'label': 'Trader', 'state': 'ready later'},
-        {'group': 'alerts', 'label': 'Alerts', 'state': 'locked'},
-        {'group': 'reports', 'label': 'Reports', 'state': 'locked'},
+        {'group': 'reports', 'label': 'Reports / Outputs', 'state': 'locked'},
     ]
 
 
@@ -262,6 +282,9 @@ def compute_dashboard_state() -> dict[str, Any]:
     ws_snapshots = load_coinbase_ws_snapshots()
     btc_candles = load_btc_candles()
     open_positions = load_open_positions()
+    open_positions_v2 = load_open_positions_v2()
+    paper_trader_v2_audit = load_paper_trader_v2_audit()
+    social_intel_pulse = load_social_intel_pulse()
 
     return {
         'market_state': market_state,
@@ -272,12 +295,15 @@ def compute_dashboard_state() -> dict[str, Any]:
         'ws_snapshots': ws_snapshots,
         'btc_candles': btc_candles,
         'open_positions': open_positions,
+        'open_positions_v2': open_positions_v2,
+        'paper_trader_v2_audit': paper_trader_v2_audit,
+        'social_intel_pulse': social_intel_pulse,
         'scanner_history': build_scanner_run_history(scanner_entries),
         'persistence_summary': build_persistence_summary(scanner_entries),
         'live_movers': build_coinbase_live_movers(tickers),
         'universe_health': build_coinbase_universe_health(products, tickers, ws_state),
         'status_flags': build_status_flags(market_state, ws_state),
-        'controls_placeholder': build_controls_placeholder(),
+        'controls_placeholder': build_controls_placeholder(market_state, ws_state, open_positions_v2, paper_trader_v2_audit),
         'meta': {
             'market_state': _file_meta(MARKET_STATE_PATH),
             'coinbase_ws_state': _file_meta(COINBASE_WS_STATE_PATH),

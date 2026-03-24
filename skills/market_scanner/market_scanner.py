@@ -10,13 +10,17 @@ from strategy_config import get_strategy_value
 HIGH_VOLUME_LEVEL = 75000   # USD volume threshold
 HIGH_MOMENTUM_LEVEL = get_strategy_value("momentum_threshold")
 RUN_LOOKBACK = 5            # Number of prior runs to compare
+MIN_PERSISTENCE_FOR_PRIORITY = 2
+STRONG_VOLUME_FLOOR = 5_000_000
+HIGH_CONVICTION_SCORE_FLOOR = 0.45
 timestamp_format = "%Y-%m-%dT%H:%M"
 
-LOG_DIR = '/data/.openclaw/workspace/market_logs/'
+LOG_DIR = '/home/lokiai/.openclaw/workspace/market_logs/'
 DEX_API_URL = 'https://api.dexscreener.com/latest/dex/pairs'
-CANDIDATE_PATH = '/data/.openclaw/workspace/market_scanner/candidates.json'
-MARKET_STATE_PATH = '/data/.openclaw/workspace/cache/market_state.json'
-HELIUS_SECRET_PATH = '/data/.openclaw/workspace/secrets/helius_api_credentials.env'
+CANDIDATE_PATH = '/home/lokiai/.openclaw/workspace/market_scanner/candidates.json'
+MARKET_STATE_PATH = '/home/lokiai/.openclaw/workspace/cache/market_state.json'
+COINBASE_PRODUCTS_PATH = '/home/lokiai/.openclaw/workspace/cache/coinbase_products.json'
+HELIUS_SECRET_PATH = '/home/lokiai/.openclaw/workspace/secrets/helius_api_credentials.env'
 
 
 def _load_env_from_file(path):
@@ -232,6 +236,26 @@ def _safe_float(value):
         return float(value)
     except (TypeError, ValueError):
         return None
+
+
+def _load_coinbase_bases() -> set[str]:
+    if not os.path.exists(COINBASE_PRODUCTS_PATH):
+        return set()
+    try:
+        products = json.load(open(COINBASE_PRODUCTS_PATH, 'r'))
+    except Exception:
+        return set()
+    allowed_quotes = {'USD', 'USDC', 'USDT'}
+    bases = set()
+    for product in products:
+        base = (product.get('base_currency') or '').upper()
+        quote = (product.get('quote_currency') or '').upper()
+        if not base or quote not in allowed_quotes:
+            continue
+        if product.get('cancel_only') or product.get('trading_disabled'):
+            continue
+        bases.add(base)
+    return bases
 
 
 def _ui_amount(entry):
@@ -514,16 +538,23 @@ def market_scanner(tokens, volume_data, momentum_data):
 
     recent_runs = _load_recent_runs(log_path, RUN_LOOKBACK)
     history = _build_history(recent_runs)
+    coinbase_bases = _load_coinbase_bases()
 
     candidates = []
     for token in tokens:
+        token = (token or '').upper().strip()
+        if not token:
+            continue
+        if coinbase_bases and token not in coinbase_bases:
+            continue
         volume = float(volume_data.get(token, 0) or 0)
         momentum = float(momentum_data.get(token, 0) or 0)
         if volume > HIGH_VOLUME_LEVEL and momentum > HIGH_MOMENTUM_LEVEL:
             candidates.append({
                 'token': token,
                 'volume': volume,
-                'momentum': momentum
+                'momentum': momentum,
+                'coinbase_actionable': token in coinbase_bases,
             })
 
     filtered_entries = []
@@ -569,6 +600,7 @@ def market_scanner(tokens, volume_data, momentum_data):
             'momentum': round(candidate['momentum'], 6),
             'status': status,
             'persistence': persistence,
+            'coinbase_actionable': candidate.get('coinbase_actionable', False),
             'liquidity_change_ratio': None if liquidity_change_ratio is None else round(liquidity_change_ratio, 6),
             'volume_acceleration_ratio': None if volume_accel_ratio is None else round(volume_accel_ratio, 6),
             'buy_pressure_proxy': None if buy_pressure_proxy is None else round(buy_pressure_proxy, 6),
@@ -600,14 +632,34 @@ def market_scanner(tokens, volume_data, momentum_data):
             liquidity_score * 0.15 +
             alignment_score * 0.15
         )
+
+        trend = entry.get('momentum_trend') or 'steady'
+        if trend == 'fading':
+            composite -= 0.08
+        elif trend == 'isolated spike':
+            composite -= 0.12
+        elif trend == 'accelerating':
+            composite += 0.05
+
+        if entry['persistence'] < MIN_PERSISTENCE_FOR_PRIORITY:
+            composite -= 0.08
+        if entry['volume'] < STRONG_VOLUME_FLOOR:
+            composite -= 0.05
+
         entry['momentum_score'] = round(momentum_score, 6)
         entry['volume_score'] = round(volume_score, 6)
         entry['persistence_score'] = round(persistence_score, 6)
         entry['liquidity_score'] = round(liquidity_score, 6)
         entry['alignment_score'] = round(alignment_score, 6)
-        entry['score'] = round(composite, 6)
+        entry['score'] = round(max(composite, 0), 6)
 
-    ranked = sorted(filtered_entries, key=lambda e: e['score'], reverse=True)
+    ranked = [
+        entry for entry in sorted(filtered_entries, key=lambda e: e['score'], reverse=True)
+        if entry['score'] >= HIGH_CONVICTION_SCORE_FLOOR
+        and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
+        and entry['volume'] >= STRONG_VOLUME_FLOOR
+        and entry.get('momentum_trend') not in {'isolated spike'}
+    ]
     top_three = ranked[:3]
     summary = {
         'timestamp': timestamp,
@@ -650,3 +702,25 @@ def market_scanner(tokens, volume_data, momentum_data):
 
     result_lines.extend(log_lines)
     return result_lines
+
+
+def _load_runtime_snapshot():
+    try:
+        from autonomous_market_loop import _fetch_market_snapshot, _prepare_scanner_payload
+    except Exception:
+        return [], {}, {}
+
+    data = _fetch_market_snapshot()
+    return _prepare_scanner_payload(data)
+
+
+def main():
+    tokens, volume_data, momentum_data = _load_runtime_snapshot()
+    results = market_scanner(tokens, volume_data, momentum_data)
+    for line in results:
+        print(line)
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
