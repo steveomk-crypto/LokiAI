@@ -9,8 +9,9 @@ from typing import Dict, List
 from urllib.request import urlopen, URLError, Request
 
 from api_usage import log_api_call
+from dashboard.modes import get_modes
 
-WORKSPACE = "/data/.openclaw/workspace"
+WORKSPACE = "/home/lokiai/.openclaw/workspace"
 SYSTEM_LOG_DIR = os.path.join(WORKSPACE, "system_logs")
 LOG_FILE = os.path.join(SYSTEM_LOG_DIR, "autonomous_market_loop.log")
 SECRET_ENV_FILE = os.path.join(WORKSPACE, "secrets", "x_api_credentials.env")
@@ -413,31 +414,43 @@ def main(task: str):
     status = 'ok'
     message = ''
     details = {}
-    try:
-        if task == 'market_scanner':
-            message, details = run_market_scanner()
-        elif task == 'paper_trader':
-            message, details = run_paper_trader()
-        elif task == 'market_broadcaster':
-            message, details = run_market_broadcaster()
-        elif task == 'telegram_sender':
-            message, details = run_telegram_sender()
-        elif task == 'x_autoposter':
-            message, details = run_x_autoposter()
-        elif task == 'performance_analyzer':
-            message, details = run_performance_analyzer()
-        elif task == 'position_manager':
-            message, details = run_position_manager()
-        elif task == 'sol_paper_trader':
-            message, details = run_sol_paper_trader()
-        else:
-            raise ValueError(f"Unknown task: {task}")
-    except (URLError, ConnectionError) as net_err:
-        status = 'network_error'
-        message = str(net_err)
-    except Exception as exc:  # pylint: disable=broad-except
-        status = 'error'
-        message = str(exc)
+    modes = get_modes()
+    task_mode_map = {
+        'market_broadcaster': 'market_broadcaster',
+        'telegram_sender': 'telegram_sender',
+        'x_autoposter': 'x_autoposter',
+        'performance_analyzer': 'performance_analyzer',
+    }
+    if task in task_mode_map and not modes.get(task_mode_map[task], True):
+        status = 'skipped'
+        message = f"{task} skipped (disabled in dashboard modes)."
+        details = {'reason': 'dashboard_mode_disabled', 'component': task_mode_map[task]}
+    else:
+        try:
+            if task == 'market_scanner':
+                message, details = run_market_scanner()
+            elif task == 'paper_trader':
+                message, details = run_paper_trader()
+            elif task == 'market_broadcaster':
+                message, details = run_market_broadcaster()
+            elif task == 'telegram_sender':
+                message, details = run_telegram_sender()
+            elif task == 'x_autoposter':
+                message, details = run_x_autoposter()
+            elif task == 'performance_analyzer':
+                message, details = run_performance_analyzer()
+            elif task == 'position_manager':
+                message, details = run_position_manager()
+            elif task == 'sol_paper_trader':
+                message, details = run_sol_paper_trader()
+            else:
+                raise ValueError(f"Unknown task: {task}")
+        except (URLError, ConnectionError) as net_err:
+            status = 'network_error'
+            message = str(net_err)
+        except Exception as exc:  # pylint: disable=broad-except
+            status = 'error'
+            message = str(exc)
 
     log_entry = {
         'timestamp': now_iso,
