@@ -6,6 +6,7 @@ from nicegui import ui
 
 from .common import fmt_num, panel, pill
 from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
+from .runtime_registry import components_by_category
 from .theme import apply_theme
 
 
@@ -219,26 +220,31 @@ def stream_view():
                     ui.label('Funds are staged, not deployed.').classes('text-sm panel-row compact-copy')
                     ui.label('System remains in rebuild / stabilization mode.').classes('text-sm panel-row compact-copy')
                     ui.separator().classes('my-1 opacity-20')
-                    ui.label('Scanner job').classes('telemetry-key compact-key')
-                    ui.label(scanner_status).classes('telemetry-value compact-value')
-                    ui.label('Coinbase feed').classes('telemetry-key compact-key mt-1')
-                    ui.label(feed_status).classes('telemetry-value compact-value')
-                    ui.label('Loop daemon').classes('telemetry-key compact-key mt-1')
-                    ui.label(f'{loop_status} • {loop_log_time}').classes('telemetry-value compact-value')
+                    category_titles = {
+                        'data_plane': 'Data Plane',
+                        'trading_plane': 'Trading Plane',
+                        'orchestration': 'Orchestration',
+                        'control_plane': 'Control Plane',
+                        'output_plane': 'Output Plane',
+                    }
+                    for category, defs in components_by_category().items():
+                        ui.label(category_titles.get(category, category.replace('_', ' ').title())).classes('telemetry-key compact-key mt-1')
+                        for comp in defs[:3]:
+                            item = runtime.get(comp.id)
+                            if not item:
+                                continue
+                            status_text = str(item.get('state', 'unknown')).upper()
+                            if comp.id == 'main_loop':
+                                status_text = f'{loop_status} • {loop_log_time}'
+                            ui.label(f"{comp.name}: {status_text}").classes('telemetry-value compact-value')
                     ui.label('Last cycle').classes('telemetry-key compact-key mt-1')
                     ui.label(loop_cycle_status).classes('telemetry-value compact-value')
-                    ui.label('Flatten job').classes('telemetry-key compact-key mt-1')
-                    ui.label(f'{flatten_status} • {flatten_log_time}').classes('telemetry-value compact-value')
                     ui.label('Last flatten').classes('telemetry-key compact-key mt-1')
                     ui.label(last_manual_flatten).classes('telemetry-value compact-value')
-                    ui.label('Output logging').classes('telemetry-key compact-key mt-1')
-                    ui.label(f'{log_outputs_status} • {log_outputs_time}').classes('telemetry-value compact-value')
                     ui.label('Active V2 slots').classes('telemetry-key compact-key mt-1')
                     ui.label(str(len(open_positions_v2))).classes('telemetry-value compact-value')
                     ui.label('Closed V2 trades').classes('telemetry-key compact-key mt-1')
                     ui.label(str(v2_audit.get('closed_trade_count', 0))).classes('telemetry-value compact-value')
-                    ui.label('Trader engine').classes('telemetry-key compact-key mt-1')
-                    ui.label(trader_status).classes('telemetry-value compact-value')
 
                 with panel('Latest Intelligence', 'Current research / product output', 'compact-right-panel'):
                     ui.label('Atlas Pulse — March 22, 2026 (beta)').classes('font-semibold compact-headline')

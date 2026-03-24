@@ -9,6 +9,7 @@ from pathlib import Path
 from nicegui import ui
 
 from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
+from .runtime_registry import components_by_category
 
 
 def _fmt_ts(value: str | None) -> str:
@@ -355,43 +356,58 @@ def operator_view():
                         ui.label(f"msgs {snap.get('messages_received', 0)} • tracked {snap.get('tracked_products', 0)}").classes('telemetry-value')
 
             with _panel('Control Surface', 'Start, stop, inspect, and open every core service'):
-                with ui.column().classes('w-full gap-3'):
-                    for item in state['controls_placeholder']:
-                        state_text = str(item['state'])
-                        level = 'healthy' if state_text in {'running', 'available'} else 'locked'
-                        log_meta = item.get('log_meta') or {}
-                        pid_value = item.get('pid')
-                        log_updated = _format_meta_time(log_meta.get('updated_at')) if log_meta else '–'
-                        with ui.card().classes('glass-panel w-full p-3'):
-                            with ui.row().classes('w-full justify-between items-start'):
-                                with ui.column().classes('gap-1'):
-                                    ui.label(str(item['label'])).classes('panel-title')
-                                    ui.label(f'Status • {state_text.upper()}').classes(f'panel-subtitle {_status_class(level)}')
-                                    meta_bits = []
-                                    if item.get('transient') and item['group'] in {'scanner', 'flatten', 'log_outputs'}:
-                                        meta_bits.append('One-shot task')
-                                    if pid_value:
-                                        meta_bits.append(f'PID {pid_value}')
-                                    if log_meta:
-                                        meta_bits.append(f'Log {log_updated}')
-                                    if not meta_bits:
-                                        meta_bits.append('No runtime metadata')
-                                    ui.label(' • '.join(meta_bits)).classes('signal-meta')
-                                with ui.row().classes('gap-2 items-center wrap'):
-                                    if item['group'] != 'reports':
-                                        start_label = 'Run Scan' if item.get('transient') and item['group'] == 'scanner' else 'Flatten Now' if item.get('transient') and item['group'] == 'flatten' else 'Log Now' if item.get('transient') and item['group'] == 'log_outputs' else 'Start'
-                                        start_btn = ui.button(start_label).props('color=positive unelevated')
-                                        if item.get('running') and not item.get('transient'):
-                                            start_btn.disable()
-                                        start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                        stop_btn = ui.button('Stop').props('color=negative outline')
-                                        if not item.get('running'):
-                                            stop_btn.disable()
-                                        if item.get('transient') and item['group'] == 'scanner':
-                                            stop_btn.disable()
-                                        stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
-                                    inspect_btn = ui.button('Inspect').props('color=secondary outline')
-                                    inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                category_titles = {
+                    'data_plane': 'Data Plane',
+                    'trading_plane': 'Trading Plane',
+                    'orchestration': 'Orchestration',
+                    'control_plane': 'Control Plane',
+                    'output_plane': 'Output Plane',
+                }
+                runtime_map = {item['group']: item for item in state['controls_placeholder']}
+                with ui.column().classes('w-full gap-4'):
+                    for category, defs in components_by_category().items():
+                        ui.label(category_titles.get(category, category.replace('_', ' ').title())).classes('panel-title')
+                        with ui.column().classes('w-full gap-3'):
+                            for comp in defs:
+                                item = runtime_map.get(comp.id)
+                                if not item:
+                                    continue
+                                state_text = str(item['state'])
+                                level = 'healthy' if state_text in {'running', 'available', 'recently completed', 'active recently', 'running (data healthy)'} else 'locked'
+                                log_meta = item.get('log_meta') or {}
+                                pid_value = item.get('pid')
+                                log_updated = _format_meta_time(log_meta.get('updated_at')) if log_meta else '–'
+                                with ui.card().classes('glass-panel w-full p-3'):
+                                    with ui.row().classes('w-full justify-between items-start'):
+                                        with ui.column().classes('gap-1'):
+                                            ui.label(str(item['label'])).classes('panel-title')
+                                            ui.label(f"{item.get('kind', 'component').upper()} • Status • {state_text.upper()}").classes(f'panel-subtitle {_status_class(level)}')
+                                            meta_bits = []
+                                            if item.get('dependencies'):
+                                                meta_bits.append('deps: ' + ', '.join(item['dependencies']))
+                                            if pid_value:
+                                                meta_bits.append(f'PID {pid_value}')
+                                            if log_meta:
+                                                meta_bits.append(f'Log {log_updated}')
+                                            if item.get('notes'):
+                                                meta_bits.append(str(item['notes']))
+                                            if not meta_bits:
+                                                meta_bits.append('No runtime metadata')
+                                            ui.label(' • '.join(meta_bits)).classes('signal-meta')
+                                        with ui.row().classes('gap-2 items-center wrap'):
+                                            start_label = 'Run Now' if item.get('kind') == 'job' else 'Start'
+                                            if comp.id == 'market_scanner':
+                                                start_label = 'Run Scan'
+                                            start_btn = ui.button(start_label).props('color=positive unelevated')
+                                            if item.get('running') and item.get('kind') == 'service':
+                                                start_btn.disable()
+                                            start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                            stop_btn = ui.button('Stop').props('color=negative outline')
+                                            if item.get('kind') != 'service' or not item.get('running'):
+                                                stop_btn.disable()
+                                            stop_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'stop'))
+                                            inspect_btn = ui.button('Inspect').props('color=secondary outline')
+                                            inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
 
 @ui.refreshable
