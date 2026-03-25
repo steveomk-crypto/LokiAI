@@ -63,9 +63,19 @@ def remove_pid() -> None:
 
 
 def ensure_singleton() -> None:
+    heartbeat_pid = None
+    if HEARTBEAT_FILE.exists():
+        try:
+            heartbeat = json.loads(HEARTBEAT_FILE.read_text())
+            heartbeat_pid = int(heartbeat.get('pid')) if heartbeat.get('pid') is not None else None
+        except Exception:
+            heartbeat_pid = None
+
     if PID_FILE.exists():
         try:
             existing_pid = int(PID_FILE.read_text().strip())
+            if heartbeat_pid and heartbeat_pid != existing_pid:
+                existing_pid = heartbeat_pid
             cmdline = subprocess.run(
                 ['ps', '-p', str(existing_pid), '-o', 'args='],
                 capture_output=True,
@@ -73,6 +83,7 @@ def ensure_singleton() -> None:
                 check=False,
             ).stdout.strip()
             if cmdline and 'market_cycle_daemon.py' in cmdline:
+                PID_FILE.write_text(str(existing_pid))
                 log(f'market cycle daemon already running as PID {existing_pid}')
                 sys.exit(1)
         except Exception:
