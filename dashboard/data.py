@@ -218,6 +218,33 @@ def build_coinbase_live_movers(tickers: dict[str, dict[str, Any]], limit: int = 
     return rows[:limit]
 
 
+def build_focus_leads(market_state: dict[str, Any], products: list[dict[str, Any]], tickers: dict[str, dict[str, Any]], limit: int = 3) -> list[dict[str, Any]]:
+    top_opps = market_state.get('top_opportunities', []) or []
+    valid_products = {str(row.get('product_id') or row.get('id') or '').upper() for row in products if row.get('product_id') or row.get('id')}
+    leads: list[dict[str, Any]] = []
+
+    for opp in top_opps:
+        token = str(opp.get('token') or '').upper().strip()
+        if not token:
+            continue
+        product_id = f'{token}-USD'
+        if valid_products and product_id not in valid_products:
+            continue
+
+        ticker = tickers.get(product_id, {}) if isinstance(tickers, dict) else {}
+        lead = dict(opp)
+        lead['product_id'] = product_id
+        lead['ticker'] = ticker
+        lead['candles'] = load_product_candles(product_id, limit=24).get('candles', [])
+        lead['freshness_seconds'] = ticker.get('freshness_seconds')
+        lead['drift_300s'] = ticker.get('drift_300s')
+        leads.append(lead)
+        if len(leads) >= limit:
+            break
+
+    return leads
+
+
 def build_coinbase_universe_health(products: list[dict[str, Any]], tickers: dict[str, dict[str, Any]], ws_state: dict[str, Any]) -> dict[str, Any]:
     ticker_rows = list(tickers.values())
     active = sum(1 for row in ticker_rows if row.get('price') is not None)
@@ -532,6 +559,7 @@ def compute_dashboard_state() -> dict[str, Any]:
         'scanner_history': build_scanner_run_history(scanner_entries),
         'persistence_summary': build_persistence_summary(scanner_entries),
         'live_movers': build_coinbase_live_movers(tickers),
+        'focus_leads': build_focus_leads(market_state, products, tickers),
         'universe_health': build_coinbase_universe_health(products, tickers, ws_state),
         'main_loop_status': build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log'),
         'status_flags': build_status_flags(market_state, ws_state),

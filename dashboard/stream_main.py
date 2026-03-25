@@ -90,6 +90,7 @@ def stream_view():
     ws_state = state['ws_state']
     metrics = market_state.get('metrics', {})
     top_opps = market_state.get('top_opportunities', [])
+    focus_leads = state.get('focus_leads', [])
     live_movers = state['live_movers']
     btc_payload = state.get('btc_candles', {})
     btc_candles = btc_payload.get('candles', [])
@@ -169,7 +170,7 @@ def stream_view():
             with ui.column().classes('stream-center gap-2'):
                 with ui.card().classes('glass-panel cockpit-hero w-full h-full'):
                     active_slots = open_positions_v2[:3]
-                    focus_items = top_opps[:4]
+                    focus_items = focus_leads[:3]
 
                     with ui.row().classes('w-full justify-between items-start stream-center-header'):
                         with ui.column().classes('gap-0'):
@@ -202,13 +203,14 @@ def stream_view():
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
                                 opp = focus_items[idx] if idx < len(focus_items) else None
-                                chart = _candidate_candles(btc_candles, idx + 1.5)
+                                chart = (opp or {}).get('candles') or _candidate_candles(btc_candles, idx + 1.5)
                                 shell_cls = 'mini-candle-shell compact-slot' if opp else 'mini-candle-shell compact-slot ghost-shell'
                                 with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
                                     if opp:
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('status', 'watch')).upper()}").classes('signal-meta')
                                         ui.label(f"mom {fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
+                                        ui.label(f"{str(opp.get('product_id', '–'))} • drift {fmt_num((opp.get('drift_300s') or 0), 3)}%").classes('signal-meta')
                                         ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label(str(opp.get('status', 'WATCH')).upper()).classes('status-pill status-info')
                                     else:
