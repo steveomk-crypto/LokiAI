@@ -457,6 +457,8 @@ def _canonical_display_state(entry: dict[str, Any]) -> str:
         return 'FAILED'
     if any(term in state for term in ('active recently', 'recently completed', 'available')):
         return 'ACTIVE'
+    if state == 'managed by main loop':
+        return 'ACTIVE'
     if desired in {'enabled', 'disabled'}:
         return state.upper() if state else desired.upper()
     if entry.get('dependency_health') == 'blocked':
@@ -472,6 +474,10 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
     loop_info = build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log') if 'main_loop' in runtime else {}
     x_state = get_x_state() if 'x_autoposter' in runtime else {}
     telegram_lanes = load_telegram_lanes() if 'telegram_sender' in runtime else {}
+
+    main_loop_engaged = False
+    if 'main_loop' in runtime:
+        main_loop_engaged = bool(runtime['main_loop'].get('running')) or _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120)
 
     if 'coinbase_feed' in runtime and ws_state.get('connected') and _is_recent(ws_state.get('last_message_at'), 300):
         runtime['coinbase_feed']['running'] = True
@@ -494,6 +500,16 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
         if component_id in runtime and completed_at and _is_recent(completed_at, 90):
             runtime[component_id]['state'] = 'recently completed'
             runtime[component_id]['last_success_at'] = completed_at
+
+    if main_loop_engaged:
+        if 'market_scanner' in runtime and not runtime['market_scanner'].get('last_success_at'):
+            runtime['market_scanner']['state'] = 'managed by main loop'
+        if 'paper_trader_v2' in runtime and str(runtime['paper_trader_v2'].get('last_error') or '').lower().startswith('blocked by dependencies'):
+            runtime['paper_trader_v2']['state'] = 'managed by main loop'
+            runtime['paper_trader_v2']['last_error'] = None
+        if 'position_manager' in runtime and not runtime['position_manager'].get('last_success_at'):
+            runtime['position_manager']['state'] = 'managed by main loop'
+
     if 'x_autoposter' in runtime:
         runtime['x_autoposter']['state'] = str(x_state.get('mode') or 'draft_only')
         runtime['x_autoposter']['last_success_at'] = x_state.get('lastPostAt') or x_state.get('lastDraftAt')
