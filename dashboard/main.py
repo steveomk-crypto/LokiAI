@@ -247,10 +247,11 @@ def operator_view():
                         ui.label(str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')).classes('signal-meta')
                         with ui.row().classes('operator-actions'):
                             if item.get('kind') == 'service':
-                                start_btn = ui.button('Start').props('size=sm color=positive unelevated').classes('min-w-[78px]')
-                                if item.get('running'):
-                                    start_btn.disable()
-                                start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                if item['group'] != 'main_loop':
+                                    start_btn = ui.button('Start').props('size=sm color=positive unelevated').classes('min-w-[78px]')
+                                    if item.get('running'):
+                                        start_btn.disable()
+                                    start_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                 stop_btn = ui.button('Stop').props('size=sm color=negative outline').classes('min-w-[78px]')
                                 if not item.get('running'):
                                     stop_btn.disable()
@@ -288,6 +289,7 @@ def operator_view():
                 with ui.column().classes('w-full gap-4'):
                     with ui.column().classes('w-full gap-2 operator-table'):
                         ui.label('Core Systems').classes('panel-title')
+                        ui.label('Status + manual overrides. Use the top action bar for normal machine operation.').classes('panel-subtitle')
                         with ui.card().classes('glass-panel w-full p-3'):
                             with ui.row().classes('w-full operator-header-row'):
                                 ui.label('Name')

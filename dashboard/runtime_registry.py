@@ -71,7 +71,7 @@ COMPONENTS: dict[str, ComponentDef] = {
         notes='Consumes scanner/feed state and maintains V2 trade book.',
         start_script='run_paper_trader_v2.sh',
         inspect_target=SYSTEM_LOG_DIR / 'paper_trader_v2.log',
-        start_label='Run Now',
+        start_label='Run Once',
         desired_default='auto',
     ),
     'position_manager': ComponentDef(
