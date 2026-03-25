@@ -100,7 +100,15 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
             loop_entry = runtime.get('main_loop', {})
             pid_file = root / 'system_logs' / 'market_cycle_daemon.pid'
             log_file = root / 'system_logs' / 'market_loop_cron.log'
+            heartbeat_file = root / 'system_logs' / 'market_cycle_heartbeat.json'
             cycle_recent = _is_recent_iso(loop_entry.get('last_success_at') or (loop_entry.get('log_meta') or {}).get('updated_at'), 90)
+            heartbeat_recent = False
+            if heartbeat_file.exists():
+                try:
+                    heartbeat = __import__('json').loads(heartbeat_file.read_text())
+                    heartbeat_recent = _is_recent_iso(heartbeat.get('timestamp'), 90)
+                except Exception:
+                    heartbeat_recent = False
             pid_alive = False
             if pid_file.exists():
                 try:
@@ -109,18 +117,24 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                     pid_alive = result.returncode == 0 and 'market_cycle_daemon.py' in (result.stdout or '')
                 except Exception:
                     pid_alive = False
-            stale_loop = bool(pid_file.exists()) and (not pid_alive or not cycle_recent)
+            healthy_loop = pid_alive and heartbeat_recent and cycle_recent
+            stale_loop = bool(pid_file.exists() or heartbeat_file.exists()) and not healthy_loop
             if stale_loop:
                 try:
-                    pid = int(pid_file.read_text().strip())
-                    try:
-                        os.kill(pid, signal.SIGTERM)
-                    except ProcessLookupError:
-                        pass
+                    if pid_file.exists():
+                        pid = int(pid_file.read_text().strip())
+                        try:
+                            os.kill(pid, signal.SIGTERM)
+                        except ProcessLookupError:
+                            pass
                 except Exception:
                     pass
                 try:
                     pid_file.unlink(missing_ok=True)
+                except Exception:
+                    pass
+                try:
+                    heartbeat_file.unlink(missing_ok=True)
                 except Exception:
                     pass
 
