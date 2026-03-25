@@ -169,6 +169,50 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 str(pid_file),
                 str(log_file),
             )
+            daemon_ready = False
+            daemon_status = msg1
+            if ok1:
+                import time as _time
+                for _ in range(20):
+                    _time.sleep(0.25)
+                    try:
+                        spawned_pid = int(pid_file.read_text().strip()) if pid_file.exists() else None
+                    except Exception:
+                        spawned_pid = None
+                    hb_state = None
+                    hb_pid = None
+                    hb_recent = False
+                    if heartbeat_file.exists():
+                        try:
+                            heartbeat = __import__('json').loads(heartbeat_file.read_text())
+                            hb_state = str(heartbeat.get('state') or '').lower()
+                            hb_pid = int(heartbeat.get('pid')) if heartbeat.get('pid') is not None else None
+                            hb_recent = _is_recent_iso(heartbeat.get('timestamp'), 30)
+                        except Exception:
+                            hb_state = None
+                    pid_live = False
+                    if spawned_pid:
+                        try:
+                            result = subprocess.run(['ps', '-p', str(spawned_pid), '-o', 'args='], cwd=root, capture_output=True, text=True)
+                            pid_live = result.returncode == 0 and 'market_cycle_daemon.py' in (result.stdout or '')
+                        except Exception:
+                            pid_live = False
+                    if pid_live and hb_recent and hb_pid == spawned_pid and hb_state in {'started', 'running_cycle', 'sleeping'}:
+                        daemon_ready = True
+                        daemon_status = f'Started detached process ({spawned_pid}) with heartbeat {hb_state}'
+                        break
+                if not daemon_ready:
+                    try:
+                        if pid_file.exists():
+                            bad_pid = int(pid_file.read_text().strip())
+                            try:
+                                os.kill(bad_pid, signal.SIGTERM)
+                            except Exception:
+                                pass
+                    except Exception:
+                        pass
+                    daemon_status = 'Daemon failed readiness check (no live process + heartbeat confirmation)'
+                    ok1 = False
             ok2, msg2 = run_background_command(
                 './scripts/output_cycle_daemon.sh',
                 str(root / 'system_logs' / 'output_cycle.pid'),
@@ -180,7 +224,7 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 str(root / 'system_logs' / 'telegram_summary.log'),
             )
             stale_note = ' (restarted stale loop daemon)' if stale_loop else ''
-            return (ok1 and ok2 and ok3), f"core: {msg1}{stale_note} | outputs: {msg2} | telegram: {msg3}"
+            return (ok1 and ok2 and ok3), f"core: {daemon_status}{stale_note} | outputs: {msg2} | telegram: {msg3}"
         if action == 'run_cycle':
             return run_script('run_core_cycle.sh')
         if action == 'stop':

@@ -72,6 +72,21 @@ def remove_pid() -> None:
         pass
 
 
+def _pid_is_live_daemon(pid: int | None) -> bool:
+    if not pid:
+        return False
+    try:
+        cmdline = subprocess.run(
+            ['ps', '-p', str(pid), '-o', 'args='],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+        return bool(cmdline and 'market_cycle_daemon.py' in cmdline)
+    except Exception:
+        return False
+
+
 def ensure_singleton() -> None:
     heartbeat_pid = None
     if HEARTBEAT_FILE.exists():
@@ -81,27 +96,29 @@ def ensure_singleton() -> None:
         except Exception:
             heartbeat_pid = None
 
+    pid_candidates = []
     if PID_FILE.exists():
         try:
-            existing_pid = int(PID_FILE.read_text().strip())
-            if heartbeat_pid and heartbeat_pid != existing_pid:
-                existing_pid = heartbeat_pid
-            cmdline = subprocess.run(
-                ['ps', '-p', str(existing_pid), '-o', 'args='],
-                capture_output=True,
-                text=True,
-                check=False,
-            ).stdout.strip()
-            if cmdline and 'market_cycle_daemon.py' in cmdline:
-                PID_FILE.write_text(str(existing_pid))
-                log(f'market cycle daemon already running as PID {existing_pid}')
-                sys.exit(1)
+            pid_candidates.append(int(PID_FILE.read_text().strip()))
         except Exception:
             pass
-        try:
-            PID_FILE.unlink()
-        except Exception:
-            pass
+    if heartbeat_pid:
+        pid_candidates.append(heartbeat_pid)
+
+    for existing_pid in pid_candidates:
+        if _pid_is_live_daemon(existing_pid):
+            PID_FILE.write_text(str(existing_pid))
+            log(f'market cycle daemon already running as PID {existing_pid}')
+            sys.exit(1)
+
+    try:
+        PID_FILE.unlink(missing_ok=True)
+    except Exception:
+        pass
+    try:
+        HEARTBEAT_FILE.unlink(missing_ok=True)
+    except Exception:
+        pass
 
 
 def run_cycle() -> int:
