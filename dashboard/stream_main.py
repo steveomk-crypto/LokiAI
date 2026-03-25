@@ -120,9 +120,9 @@ def stream_view():
     v2_audit = state.get('paper_trader_v2_audit', {})
     social_pulse = state.get('social_intel_pulse', {})
     runtime = read_runtime_controls()
-    scanner_status = 'RUNNING' if runtime['market_scanner']['running'] else 'IDLE'
+    scanner_status = str((runtime.get('market_scanner') or {}).get('display_state') or 'IDLE').upper()
     feed_status = 'RUNNING' if runtime['coinbase_feed']['running'] else 'STOPPED'
-    trader_status = 'RUNNING' if runtime['paper_trader_v2']['running'] else 'STOPPED'
+    trader_status = str((runtime.get('paper_trader_v2') or {}).get('display_state') or 'STOPPED').upper()
     loop_cycle_status = 'RECENT' if state.get('main_loop_status', {}).get('last_cycle_started_at') else 'NONE'
     loop_status = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_cycle_status == 'RECENT' else 'IDLE'
     scanner_log_time = _fmt_meta_ts((runtime.get('market_scanner') or {}).get('log_meta', {}).get('updated_at'))
