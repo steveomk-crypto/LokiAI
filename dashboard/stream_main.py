@@ -267,38 +267,48 @@ def stream_view():
 
             with ui.column().classes('stream-right gap-2 compact-right-rail'):
                 with panel('System State', 'Core runtime posture', 'right-panel-tall compact-status-panel'):
-                    ui.label('PAPER ONLY').classes('text-sm font-semibold status-info')
-                    ui.label('No live funds active.').classes('text-sm panel-row compact-copy')
-                    ui.label('Focus: stability, control, signal quality.').classes('text-sm panel-row compact-copy')
-                    ui.separator().classes('my-1 opacity-20')
-                    ui.label('Core Systems').classes('telemetry-key compact-key mt-1')
-                    ui.label(f'Feed: {str(runtime.get("coinbase_feed", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
-                    ui.label(f'Scanner: {str(runtime.get("market_scanner", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
-                    ui.label(f'Trader: {str(runtime.get("paper_trader_v2", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
-                    ui.label(f'Loop: {loop_status}').classes('telemetry-value compact-value')
-                    ui.label('Data Freshness').classes('telemetry-key compact-key mt-1')
-                    ui.label(f'Scanner log: {scanner_log_time}').classes('telemetry-value compact-value')
-                    ui.label(f'Loop log: {loop_log_time}').classes('telemetry-value compact-value')
-                    ui.label(f'Feed: {feed_status}').classes('telemetry-value compact-value')
+                    with ui.column().classes('w-full h-full justify-between gap-2'):
+                        with ui.column().classes('w-full gap-0'):
+                            ui.label('PAPER ONLY').classes('text-sm font-semibold status-info')
+                            ui.label('No live funds active.').classes('text-sm panel-row compact-copy')
+                            ui.label('Focus: stability, control, signal quality.').classes('text-sm panel-row compact-copy')
+                        with ui.column().classes('w-full gap-1'):
+                            ui.label('Core Systems').classes('telemetry-key compact-key mt-1')
+                            ui.label(f'Feed: {str(runtime.get("coinbase_feed", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                            ui.label(f'Scanner: {str(runtime.get("market_scanner", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                            ui.label(f'Trader: {str(runtime.get("paper_trader_v2", {}).get("display_state", "IDLE")).upper()}').classes('telemetry-value compact-value')
+                            ui.label(f'Loop: {loop_status}').classes('telemetry-value compact-value')
+                        with ui.column().classes('w-full gap-1'):
+                            ui.label('Data Freshness').classes('telemetry-key compact-key mt-1')
+                            ui.label(f'Scanner log: {scanner_log_time}').classes('telemetry-value compact-value')
+                            ui.label(f'Loop log: {loop_log_time}').classes('telemetry-value compact-value')
+                            ui.label(f'Feed: {feed_status}').classes('telemetry-value compact-value')
 
                 with panel('Trading State', 'Paper trader execution posture', 'compact-right-panel compact-status-panel'):
-                    ui.label(f'Mode: {trader_mode}').classes('font-semibold compact-headline')
-                    ui.label(f'Active slots: {active_slot_count}/3').classes('text-sm panel-row compact-copy')
-                    ui.label(f'Closed trades: {closed_trade_count}').classes('text-sm panel-row compact-copy')
-                    ui.label(f'Win / Loss: {win_count}-{loss_count}').classes('text-sm panel-row compact-copy')
-                    ui.label(f'Last flatten: {last_manual_flatten}').classes('text-sm panel-row compact-copy')
-                    ui.label(f'Broadcaster: {str(runtime.get("market_broadcaster", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
-                    ui.label(f'Reports: {str(runtime.get("performance_analyzer", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
+                    with ui.column().classes('w-full h-full justify-between gap-2'):
+                        with ui.column().classes('w-full gap-0'):
+                            ui.label(f'Mode: {trader_mode}').classes('font-semibold compact-headline')
+                            ui.label(f'Active slots: {active_slot_count}/3').classes('text-sm panel-row compact-copy')
+                            ui.label(f'Closed trades: {closed_trade_count}').classes('text-sm panel-row compact-copy')
+                        with ui.column().classes('w-full gap-0'):
+                            ui.label(f'Win / Loss: {win_count}-{loss_count}').classes('text-sm panel-row compact-copy')
+                            ui.label(f'Last flatten: {last_manual_flatten}').classes('text-sm panel-row compact-copy')
+                        with ui.column().classes('w-full gap-0'):
+                            ui.label(f'Broadcaster: {str(runtime.get("market_broadcaster", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
+                            ui.label(f'Reports: {str(runtime.get("performance_analyzer", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
 
                 with panel('Social / Intel Pulse', 'Curated catalyst layer', 'compact-right-panel'):
-                    items = social_pulse.get('items', [])[:2]
-                    if not items:
-                        ui.label('No intel pulse yet').classes('font-semibold status-warning')
-                        ui.label('Research layer standing by for fresh catalysts.').classes('text-sm panel-row compact-copy')
-                    for item in items:
-                        ui.label(f"{item.get('category', 'intel').upper()} • {item.get('headline', 'Untitled')}").classes('font-semibold compact-headline')
-                        ui.label(item.get('market_implication', 'No implication yet')).classes('text-sm panel-row compact-copy')
-                        ui.label(f"{item.get('source', 'unknown')} • {item.get('actionability', 'observe')}").classes('text-xs panel-row opacity-70 compact-copy')
+                    with ui.column().classes('w-full h-full justify-between gap-2'):
+                        items = social_pulse.get('items', [])[:2]
+                        if not items:
+                            with ui.column().classes('w-full gap-1'):
+                                ui.label('No intel pulse yet').classes('font-semibold status-warning')
+                                ui.label('Research layer standing by for fresh catalysts.').classes('text-sm panel-row compact-copy')
+                        for item in items:
+                            with ui.column().classes('w-full gap-1'):
+                                ui.label(f"{item.get('category', 'intel').upper()} • {item.get('headline', 'Untitled')}").classes('font-semibold compact-headline')
+                                ui.label(item.get('market_implication', 'No implication yet')).classes('text-sm panel-row compact-copy')
+                                ui.label(f"{item.get('source', 'unknown')} • {item.get('actionability', 'observe')}").classes('text-xs panel-row opacity-70 compact-copy')
 
 
 
