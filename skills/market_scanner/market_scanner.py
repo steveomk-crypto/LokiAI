@@ -19,6 +19,9 @@ RUN_LOOKBACK = 5            # Number of prior runs to compare
 MIN_PERSISTENCE_FOR_PRIORITY = 2
 STRONG_VOLUME_FLOOR = 5_000_000
 HIGH_CONVICTION_SCORE_FLOOR = 0.45
+SECONDARY_MOMENTUM_FLOOR = 2.75
+SECONDARY_VOLUME_FLOOR = 8_000_000
+SECONDARY_SCORE_FLOOR = 0.40
 timestamp_format = "%Y-%m-%dT%H:%M"
 
 LOG_DIR = '/home/lokiai/.openclaw/workspace/market_logs/'
@@ -555,7 +558,10 @@ def market_scanner(tokens, volume_data, momentum_data):
             continue
         volume = float(volume_data.get(token, 0) or 0)
         momentum = float(momentum_data.get(token, 0) or 0)
-        if volume > HIGH_VOLUME_LEVEL and momentum > HIGH_MOMENTUM_LEVEL:
+        if (
+            (volume > HIGH_VOLUME_LEVEL and momentum > HIGH_MOMENTUM_LEVEL)
+            or (volume >= SECONDARY_VOLUME_FLOOR and momentum >= SECONDARY_MOMENTUM_FLOOR)
+        ):
             candidates.append({
                 'token': token,
                 'volume': volume,
@@ -578,8 +584,14 @@ def market_scanner(tokens, volume_data, momentum_data):
                 status = 'strengthening'
             else:
                 still_valid = (
-                    candidate['momentum'] >= HIGH_MOMENTUM_LEVEL * 1.25 and
-                    candidate['volume'] >= STRONG_VOLUME_FLOOR
+                    (
+                        candidate['momentum'] >= HIGH_MOMENTUM_LEVEL * 1.25 and
+                        candidate['volume'] >= STRONG_VOLUME_FLOOR
+                    )
+                    or (
+                        candidate['momentum'] >= SECONDARY_MOMENTUM_FLOOR and
+                        candidate['volume'] >= SECONDARY_VOLUME_FLOOR
+                    )
                 )
                 if not still_valid:
                     continue  # repeated signal lost too much quality, drop it
