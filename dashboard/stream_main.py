@@ -189,7 +189,7 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full compact-active-panel stream-focus-block'):
+                    with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-focus-block'):
                         ui.label('TRADER FOCUS').classes('mission-card-title focus-title')
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
