@@ -5,7 +5,7 @@ import os
 from nicegui import ui
 
 from .common import fmt_num, panel, pill
-from .data import compute_dashboard_state, read_runtime_controls, _safe_iso_to_dt
+from .data import compute_dashboard_state, read_runtime_controls, load_product_candles, _safe_iso_to_dt
 from .runtime_registry import components_by_category
 from .theme import apply_theme
 
