@@ -139,6 +139,7 @@ def position_manager():
         tier_cfg = TIER_BEHAVIOR.get(tier, TIER_BEHAVIOR['A'])
         atr_usd = float(position.get('atr_usd') or 0.0)
         atr_meta = {'id': position.get('coin_id')}
+        move_character = str(position.get('move_character') or '').lower()
         if atr_usd <= 0 or _minutes_since(position.get('atr_last_updated'), now) > ATR_REFRESH_MINUTES:
             atr_info = get_atr_for_symbol(token, atr_meta)
             if atr_info:
