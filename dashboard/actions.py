@@ -140,7 +140,8 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 try:
                     existing_pid = int(pid_file.read_text().strip())
                     result = subprocess.run(['ps', '-p', str(existing_pid), '-o', 'args='], cwd=root, capture_output=True, text=True)
-                    pid_alive = result.returncode == 0 and 'market_cycle_daemon.py' in (result.stdout or '')
+                    args_out = result.stdout or ''
+                    pid_alive = result.returncode == 0 and ('market_cycle_daemon.py' in args_out or 'market_cycle_daemon.sh' in args_out)
                 except Exception:
                     pid_alive = False
             healthy_loop = pid_alive and heartbeat_recent and (cycle_recent or heartbeat_state in {'started', 'running_cycle', 'sleeping'})

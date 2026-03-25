@@ -5,10 +5,23 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORKDIR="${ROOT}"
 LOG_FILE="${WORKDIR}/system_logs/market_loop_cron.log"
 PID_FILE="${WORKDIR}/system_logs/market_cycle_daemon.pid"
+HEARTBEAT_FILE="${WORKDIR}/system_logs/market_cycle_heartbeat.json"
 RUNNER="${WORKDIR}/scripts/run_core_cycle.sh"
 SLEEP_SECONDS=30
 
 mkdir -p "$(dirname "${LOG_FILE}")"
+
+write_heartbeat() {
+  local state="$1"
+  cat > "${HEARTBEAT_FILE}" <<EOF
+{
+  "timestamp": "$(date -Iseconds)",
+  "pid": $$,
+  "state": "${state}",
+  "sleep_seconds": ${SLEEP_SECONDS}
+}
+EOF
+}
 
 if [ -f "${PID_FILE}" ]; then
   existing_pid="$(cat "${PID_FILE}")"
@@ -24,16 +37,19 @@ if [ -f "${PID_FILE}" ]; then
 fi
 
 echo $$ > "${PID_FILE}"
-trap 'rm -f "${PID_FILE}"' EXIT INT TERM
+trap 'write_heartbeat "stopping"; rm -f "${PID_FILE}"' EXIT INT TERM
 
 exec >> "${LOG_FILE}"
 exec 2>&1
 
 echo "$(date -Iseconds) - market cycle daemon started (PID $$)"
+write_heartbeat "started"
 
 while true; do
   echo "$(date -Iseconds) - invoking run_market_cycle.sh"
+  write_heartbeat "running_cycle"
   bash "${RUNNER}"
   echo "$(date -Iseconds) - cycle finished, sleeping ${SLEEP_SECONDS}s"
+  write_heartbeat "sleeping"
   sleep "${SLEEP_SECONDS}"
 done
