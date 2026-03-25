@@ -33,8 +33,8 @@ TIER_A_STOP_LOSS_PCT = -4.0
 TIER_B_STOP_LOSS_PCT = -3.0
 TIER_A_TIMEOUT_MINUTES = 90
 TIER_B_TIMEOUT_MINUTES = 60
-NO_MOVE_THRESHOLD_PCT = 0.35
-NO_MOVE_MINUTES = 15
+NO_MOVE_THRESHOLD_PCT = 0.15
+NO_MOVE_MINUTES = 12
 TIER_A_TRIM_LEVELS = [0.75, 2.0, 4.0]
 TIER_B_TRIM_LEVELS = [0.6, 1.5, 3.0]
 TIER_A_TRAIL_AFTER_FIRST = 0.4
@@ -43,6 +43,11 @@ TIER_B_TRAIL_AFTER_FIRST = 0.35
 TIER_B_TRAIL_AFTER_SECOND = 0.7
 FAKE_PUMP_DRIFT_THRESHOLD = 0.35
 FAKE_PUMP_DE_RISK_PCT = 25
+EARLY_PROTECT_PNL_PCT = 0.40
+EARLY_PROTECT_GIVEBACK_PCT = 0.30
+FAILED_CONTINUATION_MINUTES = 12
+FAILED_CONTINUATION_PEAK_PCT = 0.35
+FAILED_CONTINUATION_RETAIN_PCT = 0.08
 
 
 def _load_json(path: Path, default: Any):
@@ -409,9 +414,16 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
             exit_category = 'TRAIL'
             trade_state = 'TRAILING'
         elif (
-            time_in_trade_minutes >= 20
-            and highest_pnl >= 0.3
-            and pnl_percent < 0.1
+            highest_pnl >= EARLY_PROTECT_PNL_PCT
+            and pnl_percent <= max(0.0, highest_pnl - EARLY_PROTECT_GIVEBACK_PCT)
+            and drift_300s < 0
+        ):
+            exit_reason = 'early_profit_giveback'
+            exit_category = 'EP'
+        elif (
+            time_in_trade_minutes >= FAILED_CONTINUATION_MINUTES
+            and highest_pnl >= FAILED_CONTINUATION_PEAK_PCT
+            and pnl_percent < FAILED_CONTINUATION_RETAIN_PCT
             and drift_300s < 0
         ):
             exit_reason = 'failed_continuation'
