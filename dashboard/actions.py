@@ -126,12 +126,15 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
             heartbeat_file = root / 'system_logs' / 'market_cycle_heartbeat.json'
             cycle_recent = _is_recent_iso(loop_entry.get('last_success_at') or (loop_entry.get('log_meta') or {}).get('updated_at'), 90)
             heartbeat_recent = False
+            heartbeat_state = None
             if heartbeat_file.exists():
                 try:
                     heartbeat = __import__('json').loads(heartbeat_file.read_text())
                     heartbeat_recent = _is_recent_iso(heartbeat.get('timestamp'), 90)
+                    heartbeat_state = str(heartbeat.get('state') or '').lower()
                 except Exception:
                     heartbeat_recent = False
+                    heartbeat_state = None
             pid_alive = False
             if pid_file.exists():
                 try:
@@ -140,7 +143,7 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                     pid_alive = result.returncode == 0 and 'market_cycle_daemon.py' in (result.stdout or '')
                 except Exception:
                     pid_alive = False
-            healthy_loop = pid_alive and heartbeat_recent and cycle_recent
+            healthy_loop = pid_alive and heartbeat_recent and (cycle_recent or heartbeat_state in {'started', 'running_cycle', 'sleeping'})
             stale_loop = bool(pid_file.exists() or heartbeat_file.exists()) and not healthy_loop
             if stale_loop:
                 try:

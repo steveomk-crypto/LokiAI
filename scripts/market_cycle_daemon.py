@@ -18,6 +18,7 @@ HEARTBEAT_FILE = SYSTEM_LOG_DIR / 'market_cycle_heartbeat.json'
 RUNNER = ROOT / 'scripts' / 'run_core_cycle.sh'
 SLEEP_SECONDS = 30
 STOP = False
+STOP_REASON = None
 
 
 def iso_now() -> str:
@@ -49,9 +50,18 @@ def write_heartbeat(state: str, extra: dict | None = None) -> None:
         pass
 
 
-def cleanup(*_: object) -> None:
-    global STOP
+def cleanup(signum: int | None = None, *_: object) -> None:
+    global STOP, STOP_REASON
     STOP = True
+    sig_name = None
+    if signum is not None:
+        try:
+            sig_name = signal.Signals(signum).name
+        except Exception:
+            sig_name = str(signum)
+    STOP_REASON = sig_name or 'unknown_signal'
+    log(f'received stop signal: {STOP_REASON}')
+    write_heartbeat('stop_requested', {'signal': STOP_REASON})
 
 
 def remove_pid() -> None:
@@ -124,8 +134,8 @@ def main() -> int:
                 if STOP:
                     break
                 time.sleep(1)
-        log('market cycle daemon stopping')
-        write_heartbeat('stopping')
+        log(f'market cycle daemon stopping ({STOP_REASON or "requested"})')
+        write_heartbeat('stopping', {'signal': STOP_REASON or 'requested'})
         return 0
     finally:
         remove_pid()
