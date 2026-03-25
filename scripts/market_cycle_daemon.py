@@ -6,6 +6,7 @@ import signal
 import subprocess
 import sys
 import time
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -24,21 +25,28 @@ def iso_now() -> str:
 
 
 def log(message: str) -> None:
-    SYSTEM_LOG_DIR.mkdir(parents=True, exist_ok=True)
-    with LOG_FILE.open('a', encoding='utf-8') as fh:
-        fh.write(f"{iso_now()} - {message}\n")
+    try:
+        SYSTEM_LOG_DIR.mkdir(parents=True, exist_ok=True)
+        with LOG_FILE.open('a', encoding='utf-8') as fh:
+            fh.write(f"{iso_now()} - {message}\n")
+    except Exception:
+        pass
 
 
 def write_heartbeat(state: str, extra: dict | None = None) -> None:
-    payload = {
-        'timestamp': iso_now(),
-        'pid': os.getpid(),
-        'state': state,
-        'sleep_seconds': SLEEP_SECONDS,
-    }
-    if extra:
-        payload.update(extra)
-    HEARTBEAT_FILE.write_text(__import__('json').dumps(payload, indent=2))
+    try:
+        payload = {
+            'timestamp': iso_now(),
+            'pid': os.getpid(),
+            'state': state,
+            'sleep_seconds': SLEEP_SECONDS,
+        }
+        if extra:
+            payload.update(extra)
+        SYSTEM_LOG_DIR.mkdir(parents=True, exist_ok=True)
+        HEARTBEAT_FILE.write_text(json.dumps(payload, indent=2))
+    except Exception:
+        pass
 
 
 def cleanup(*_: object) -> None:
@@ -85,11 +93,12 @@ def run_cycle() -> int:
 def main() -> int:
     signal.signal(signal.SIGTERM, cleanup)
     signal.signal(signal.SIGINT, cleanup)
+    signal.signal(signal.SIGHUP, signal.SIG_IGN)
     ensure_singleton()
     SYSTEM_LOG_DIR.mkdir(parents=True, exist_ok=True)
     PID_FILE.write_text(str(os.getpid()))
-    log(f'market cycle daemon started (PID {os.getpid()})')
     write_heartbeat('started')
+    log(f'market cycle daemon started (PID {os.getpid()})')
 
     try:
         while not STOP:
