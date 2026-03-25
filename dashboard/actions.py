@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import signal
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Tuple
 
@@ -50,6 +51,18 @@ def run_background_command(command: str, pid_file: str, log_file: str) -> Tuple[
     return True, f'Started background job ({Path(pid_file).name})'
 
 
+def _is_recent_iso(value: str | None, max_age_seconds: int) -> bool:
+    if not value:
+        return False
+    try:
+        parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return (datetime.now(timezone.utc) - parsed.astimezone(timezone.utc)).total_seconds() <= max_age_seconds
+    except Exception:
+        return False
+
+
 def stop_pid(pid_file: str) -> Tuple[bool, str]:
     path = Path(pid_file)
     if not path.exists():
@@ -83,10 +96,29 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
 
     if component_id == 'main_loop':
         if action == 'start':
+            loop_entry = runtime.get('main_loop', {})
+            pid_file = root / 'system_logs' / 'market_cycle_daemon.pid'
+            log_file = root / 'system_logs' / 'market_loop_cron.log'
+            cycle_recent = _is_recent_iso(loop_entry.get('last_success_at') or (loop_entry.get('log_meta') or {}).get('updated_at'), 90)
+            stale_loop = bool(pid_file.exists()) and not cycle_recent
+            if stale_loop:
+                try:
+                    pid = int(pid_file.read_text().strip())
+                    try:
+                        os.kill(pid, signal.SIGTERM)
+                    except ProcessLookupError:
+                        pass
+                except Exception:
+                    pass
+                try:
+                    pid_file.unlink(missing_ok=True)
+                except Exception:
+                    pass
+
             ok1, msg1 = run_background_command(
                 './scripts/market_cycle_daemon.sh',
-                str(root / 'system_logs' / 'market_cycle_daemon.pid'),
-                str(root / 'system_logs' / 'market_loop_cron.log'),
+                str(pid_file),
+                str(log_file),
             )
             ok2, msg2 = run_background_command(
                 './scripts/output_cycle_daemon.sh',
@@ -98,7 +130,8 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 str(root / 'system_logs' / 'telegram_summary.pid'),
                 str(root / 'system_logs' / 'telegram_summary.log'),
             )
-            return (ok1 and ok2 and ok3), f"core: {msg1} | outputs: {msg2} | telegram: {msg3}"
+            stale_note = ' (restarted stale loop daemon)' if stale_loop else ''
+            return (ok1 and ok2 and ok3), f"core: {msg1}{stale_note} | outputs: {msg2} | telegram: {msg3}"
         if action == 'run_cycle':
             return run_script('run_core_cycle.sh')
         if action == 'stop':
