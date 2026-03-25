@@ -243,6 +243,8 @@ def build_main_loop_status(log_path: Path) -> dict[str, Any]:
         'last_task': None,
         'last_task_completed': None,
         'last_error': None,
+        'task_started_at': {},
+        'task_completed_at': {},
     }
     if not log_path.exists():
         return info
@@ -266,9 +268,13 @@ def build_main_loop_status(log_path: Path) -> dict[str, Any]:
         if 'Market cycle complete' in text:
             info['last_cycle_completed_at'] = text[:25]
         if 'Running ' in text:
-            info['last_task'] = text.split('Running ', 1)[1].strip()
+            task_name = text.split('Running ', 1)[1].strip()
+            info['last_task'] = task_name
+            info['task_started_at'][task_name] = text[:25]
         if 'Completed ' in text:
-            info['last_task_completed'] = text.split('Completed ', 1)[1].strip()
+            task_name = text.split('Completed ', 1)[1].strip()
+            info['last_task_completed'] = task_name
+            info['task_completed_at'][task_name] = text[:25]
         if 'Traceback' in text or 'Permission denied' in text or 'FileNotFoundError' in text:
             info['last_error'] = text
     return info

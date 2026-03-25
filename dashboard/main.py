@@ -148,7 +148,9 @@ def operator_view():
                 _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
                 _telemetry_row('Last cycle start', loop_info.get('last_cycle_started_at') or '–', 'status-healthy' if loop_info.get('last_cycle_started_at') else 'status-warning')
                 _telemetry_row('Last cycle end', loop_info.get('last_cycle_completed_at') or '–', 'status-healthy' if loop_info.get('last_cycle_completed_at') else 'status-warning')
-                _telemetry_row('Last task', loop_info.get('last_task_completed') or loop_info.get('last_task') or '–')
+                _telemetry_row('Scanner run', loop_info.get('task_completed_at', {}).get('market_scanner') or '–')
+                _telemetry_row('Trader run', loop_info.get('task_completed_at', {}).get('paper_trader') or '–')
+                _telemetry_row('Manager run', loop_info.get('task_completed_at', {}).get('position_manager') or '–')
                 _telemetry_row('Open V2 slots', str(len(state.get('open_positions_v2', []))), 'status-warning' if len(state.get('open_positions_v2', [])) else 'status-healthy')
                 _telemetry_row('Signals in snapshot', str(metrics.get('total_signals', 0)), 'status-warning' if int(metrics.get('total_signals', 0) or 0) == 0 else 'status-healthy')
 
