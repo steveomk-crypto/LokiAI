@@ -164,8 +164,8 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 except Exception:
                     pass
 
-            ok1, msg1 = run_detached_process(
-                ['python3', './scripts/market_cycle_daemon.py'],
+            ok1, msg1 = run_background_command(
+                './scripts/market_cycle_daemon.sh',
                 str(pid_file),
                 str(log_file),
             )
@@ -194,7 +194,8 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                     if spawned_pid:
                         try:
                             result = subprocess.run(['ps', '-p', str(spawned_pid), '-o', 'args='], cwd=root, capture_output=True, text=True)
-                            pid_live = result.returncode == 0 and 'market_cycle_daemon.py' in (result.stdout or '')
+                            args_out = result.stdout or ''
+                            pid_live = result.returncode == 0 and ('market_cycle_daemon.py' in args_out or 'market_cycle_daemon.sh' in args_out)
                         except Exception:
                             pid_live = False
                     if pid_live and hb_recent and hb_pid == spawned_pid and hb_state in {'started', 'running_cycle', 'sleeping'}:
