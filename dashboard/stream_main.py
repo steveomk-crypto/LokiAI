@@ -276,12 +276,11 @@ def run():
             .stage-top { flex: 0 0 auto; }
             .stage-main { flex: 1 1 auto; min-height: 0; align-items: stretch; }
             .stream-left, .stream-right { width: 22%; min-width: 22%; max-width: 22%; }
-            .stream-center { width: 56%; min-width: 56%; max-width: 56%; max-height: calc(100vh - 180px); overflow: hidden; }
+            .stream-center { width: 56%; min-width: 56%; max-width: 56%; min-height: 0; height: 100%; }
             .cockpit-hero {
                 position: relative;
                 overflow: hidden;
                 height: 100%;
-                max-height: calc(100vh - 180px);
                 border-color: rgba(115, 245, 255, 0.32);
                 box-shadow: 0 0 30px rgba(0, 220, 255, 0.16), inset 0 0 48px rgba(180, 0, 255, 0.07);
             }
