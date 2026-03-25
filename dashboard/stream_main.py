@@ -138,6 +138,18 @@ def stream_view():
     closed_trade_count = int(v2_audit.get('closed_trade_count', 0) or 0)
     win_count = int(v2_audit.get('win_count', 0) or 0)
     loss_count = int(v2_audit.get('loss_count', 0) or 0)
+    realized_pnl_pct = 0.0
+    for closed in (v2_audit.get('latest_closed') or []):
+        try:
+            realized_pnl_pct += float(closed.get('pnl_percent') or 0.0)
+        except Exception:
+            pass
+    unrealized_pnl_pct = 0.0
+    for slot in open_positions_v2:
+        try:
+            unrealized_pnl_pct += float(slot.get('pnl_percent') or 0.0)
+        except Exception:
+            pass
     high_quality_signals = int(metrics.get('high_quality_signals', 0) or 0)
     total_signals = int(metrics.get('total_signals', 0) or 0)
     trader_runtime_state = str(runtime.get('paper_trader_v2', {}).get('display_state', trader_status)).upper()
@@ -286,17 +298,27 @@ def stream_view():
                                 ui.label(f'Feed: {feed_status}').classes('telemetry-value compact-value')
 
                 with panel('Trading State', 'Paper trader execution posture', 'compact-right-panel compact-status-panel'):
-                    with ui.column().classes('w-full h-full justify-between gap-2'):
-                        with ui.column().classes('w-full gap-0'):
-                            ui.label(f'Mode: {trader_mode}').classes('font-semibold compact-headline')
-                            ui.label(f'Active slots: {active_slot_count}/3').classes('text-sm panel-row compact-copy')
-                            ui.label(f'Closed trades: {closed_trade_count}').classes('text-sm panel-row compact-copy')
-                        with ui.column().classes('w-full gap-0'):
-                            ui.label(f'Win / Loss: {win_count}-{loss_count}').classes('text-sm panel-row compact-copy')
-                            ui.label(f'Last flatten: {last_manual_flatten}').classes('text-sm panel-row compact-copy')
-                        with ui.column().classes('w-full gap-0'):
-                            ui.label(f'Broadcaster: {str(runtime.get("market_broadcaster", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
-                            ui.label(f'Reports: {str(runtime.get("performance_analyzer", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
+                    with ui.row().classes('w-full h-full gap-3 no-wrap items-start'):
+                        with ui.column().classes('flex-1 h-full justify-between gap-2 min-w-0'):
+                            with ui.column().classes('w-full gap-0'):
+                                ui.label(f'Mode: {trader_mode}').classes('font-semibold compact-headline')
+                                ui.label(f'Active slots: {active_slot_count}/3').classes('text-sm panel-row compact-copy')
+                                ui.label(f'Closed trades: {closed_trade_count}').classes('text-sm panel-row compact-copy')
+                            with ui.column().classes('w-full gap-0'):
+                                ui.label(f'Win / Loss: {win_count}-{loss_count}').classes('text-sm panel-row compact-copy')
+                                ui.label(f'Last flatten: {last_manual_flatten}').classes('text-sm panel-row compact-copy')
+                            with ui.column().classes('w-full gap-0'):
+                                ui.label(f'Broadcaster: {str(runtime.get("market_broadcaster", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
+                                ui.label(f'Reports: {str(runtime.get("performance_analyzer", {}).get("display_state", "IDLE")).upper()}').classes('text-sm panel-row compact-copy')
+                        with ui.column().classes('flex-1 h-full justify-between gap-2 min-w-0'):
+                            with ui.column().classes('w-full gap-0'):
+                                ui.label('PnL Snapshot').classes('font-semibold compact-headline')
+                                ui.label(f'Realized: {fmt_num(realized_pnl_pct, 2)}%').classes('text-sm panel-row compact-copy')
+                                ui.label(f'Unrealized: {fmt_num(unrealized_pnl_pct, 2)}%').classes('text-sm panel-row compact-copy')
+                            with ui.column().classes('w-full gap-0'):
+                                ui.label(f'Net: {fmt_num(realized_pnl_pct + unrealized_pnl_pct, 2)}%').classes('text-sm panel-row compact-copy')
+                                ui.label(f'Winners: {win_count}').classes('text-sm panel-row compact-copy')
+                                ui.label(f'Losers: {loss_count}').classes('text-sm panel-row compact-copy')
 
                 with panel('Social / Intel Pulse', 'Curated catalyst layer', 'compact-right-panel'):
                     with ui.column().classes('w-full h-full justify-between gap-2'):
