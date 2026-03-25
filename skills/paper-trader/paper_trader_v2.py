@@ -108,24 +108,30 @@ def _candidate_tier(candidate: dict, ticker: dict) -> str:
     drift = float(ticker.get('drift_300s') or 0.0)
     trend = (candidate.get('trend') or candidate.get('status') or '').lower()
     momentum = float(candidate.get('momentum') or 0.0)
+    persistence = int(candidate.get('persistence') or 0)
 
     if freshness is None or freshness > FRESHNESS_LIMIT_SECONDS:
         return ''
-    if drift <= 0:
-        return ''
     if trend in {'isolated spike', 'fading', 'stalling'}:
+        return ''
+    if drift < -0.12:
         return ''
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
         return ''
 
-    persistence = int(candidate.get('persistence') or 0)
-
     if persistence == 4 and score < 0.56:
         return ''
 
-    if score >= TIER_A_MIN_SCORE and drift >= TIER_A_MIN_DRIFT_300S and persistence >= TIER_A_MIN_PERSISTENCE:
+    strong_setup = score >= TIER_A_MIN_SCORE and persistence >= TIER_A_MIN_PERSISTENCE
+    valid_setup = score >= TIER_B_MIN_SCORE and persistence >= TIER_B_MIN_PERSISTENCE
+
+    if strong_setup and drift >= TIER_A_MIN_DRIFT_300S:
         return 'A'
-    if score >= TIER_B_MIN_SCORE and drift >= TIER_B_MIN_DRIFT_300S and persistence >= TIER_B_MIN_PERSISTENCE:
+    if strong_setup and drift >= 0:
+        return 'B'
+    if valid_setup and drift >= TIER_B_MIN_DRIFT_300S:
+        return 'B'
+    if valid_setup and drift >= -0.02:
         return 'B'
     return ''
 
