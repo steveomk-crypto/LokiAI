@@ -165,19 +165,19 @@ def stream_view():
 
                     with ui.row().classes('w-full justify-between items-start'):
                         with ui.column().classes('gap-0'):
-                            ui.label('Trader Watchboard').classes('panel-title')
-                            ui.label('Active positions, top candidates, and current trigger logic').classes('panel-subtitle')
-                        with ui.column().classes('items-end gap-1'):
-                            ui.label('PAPER-FIRST').classes('status-pill status-info')
-                            ui.label('REFRESH TARGET • 3S VISUAL / 30S CORE').classes('panel-subtitle')
+                            ui.label('Trader Watchboard').classes('panel-title text-sm')
+                            ui.label('Active positions, top candidates, and current trigger logic').classes('panel-subtitle text-xs')
+                        with ui.column().classes('items-end gap-0'):
+                            ui.label('PAPER-FIRST').classes('status-pill status-info text-[10px]')
+                            ui.label('3S VISUAL • 30S CORE').classes('panel-subtitle text-xs')
 
-                    with ui.card().classes('mission-overlay-card w-full'):
-                        ui.label('ACTIVE POSITIONS').classes('mission-card-title')
+                    with ui.card().classes('mission-overlay-card w-full compact-active-panel'):
+                        ui.label('ACTIVE POSITIONS').classes('mission-card-title focus-title')
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
                                 slot = active_slots[idx] if idx < len(active_slots) else None
                                 chart = _candidate_candles(btc_candles, idx + 1)
-                                with ui.card().classes('glass-panel flex-1 min-w-[160px] p-2'):
+                                with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
                                     if slot:
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
@@ -379,13 +379,16 @@ def run():
                 box-shadow: inset 0 0 20px rgba(115,245,255,0.04);
             }
             .compact-slot {
-                min-height: 88px;
+                min-height: 70px;
             }
             .compact-focus {
                 min-height: 62px;
             }
             .focus-panel {
                 padding: 0.5rem !important;
+            }
+            .compact-active-panel {
+                padding: 0.45rem !important;
             }
             .focus-title {
                 margin-bottom: 0.15rem;
