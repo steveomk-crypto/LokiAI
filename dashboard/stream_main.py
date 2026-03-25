@@ -189,12 +189,12 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full flex-1'):
-                        ui.label('TRADER FOCUS').classes('mission-card-title')
-                        with ui.grid(columns=2).classes('w-full gap-3 mt-2'):
+                    with ui.card().classes('mission-overlay-card w-full focus-panel'):
+                        ui.label('TRADER FOCUS').classes('mission-card-title focus-title')
+                        with ui.grid(columns=2).classes('w-full gap-2 mt-1'):
                             for idx in range(4):
                                 opp = focus_items[idx] if idx < len(focus_items) else None
-                                with ui.card().classes('glass-panel w-full p-[0.4rem]'):
+                                with ui.card().classes('glass-panel w-full focus-card p-[0.28rem]'):
                                     if opp:
                                         chart = _candidate_candles(btc_candles, idx + 1.5)
                                         status = 'READY' if idx == 0 else 'WATCH' if idx < 3 else 'FADING'
@@ -382,7 +382,16 @@ def run():
                 min-height: 88px;
             }
             .compact-focus {
-                min-height: 76px;
+                min-height: 62px;
+            }
+            .focus-panel {
+                padding: 0.5rem !important;
+            }
+            .focus-title {
+                margin-bottom: 0.15rem;
+            }
+            .focus-card {
+                min-height: 0;
             }
             .empty-mini {
                 color: rgba(210, 225, 255, 0.6);
