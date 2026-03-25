@@ -35,7 +35,7 @@ COINGECKO_CACHE_TTL = 300
 
 SKILL_PATHS = {
     'market_scanner': os.path.join(WORKSPACE, 'skills', 'market_scanner', 'market_scanner.py'),
-    'paper_trader': os.path.join(WORKSPACE, 'skills', 'paper-trader', 'paper_trader.py'),
+    'paper_trader': os.path.join(WORKSPACE, 'skills', 'paper-trader', 'paper_trader_v2.py'),
     'market_broadcaster': os.path.join(WORKSPACE, 'skills', 'market-broadcaster', 'market_broadcaster.py'),
     'performance_analyzer': os.path.join(WORKSPACE, 'skills', 'performance-analyzer', 'performance_analyzer.py'),
     'position_manager': os.path.join(WORKSPACE, 'skills', 'position-manager', 'position_manager.py'),
@@ -334,9 +334,14 @@ def run_market_scanner():
 
 def run_paper_trader():
     module = _load_module('paper_trader')
-    result = module.paper_trader()
-    message = result.get('summary') or f"Paper trader updated ({len(result.get('open_positions', []))} open)."
-    details = {'summary': result.get('summary'), 'open_positions': len(result.get('open_positions', []))}
+    runner = getattr(module, 'paper_trader_v2', None) or getattr(module, 'paper_trader', None)
+    if runner is None:
+        raise AttributeError('paper_trader module missing paper_trader_v2()/paper_trader() entrypoint')
+    result = runner()
+    summary = result.get('summary') if isinstance(result, dict) else None
+    open_positions = result.get('open_positions', []) if isinstance(result, dict) else []
+    message = summary or f"Paper trader updated ({len(open_positions)} open)."
+    details = {'summary': summary, 'open_positions': len(open_positions)}
     return message, details
 
 
