@@ -574,9 +574,16 @@ def market_scanner(tokens, volume_data, momentum_data):
 
         if prev_entries:
             improved = (candidate['momentum'] > prev_momentum) or (candidate['volume'] > prev_volume)
-            if not improved:
-                continue  # repeated weak signal, drop it
-            status = 'strengthening'
+            if improved:
+                status = 'strengthening'
+            else:
+                still_valid = (
+                    candidate['momentum'] >= HIGH_MOMENTUM_LEVEL * 1.25 and
+                    candidate['volume'] >= STRONG_VOLUME_FLOOR
+                )
+                if not still_valid:
+                    continue  # repeated signal lost too much quality, drop it
+                status = 'persistent'
         else:
             status = 'new'
 
