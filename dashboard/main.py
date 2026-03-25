@@ -324,26 +324,26 @@ def operator_view():
                                     last_result = str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')
                                     ui.label(last_result).classes('signal-meta')
                                     with ui.row().classes('operator-actions'):
-                                        enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                        enable_btn = ui.button('On').props('size=sm color=positive outline').classes('min-w-[62px]')
                                         if str(item.get('desired_state')) == 'enabled':
                                             enable_btn.disable()
                                         enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
-                                        disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[78px]')
+                                        disable_btn = ui.button('Off').props('size=sm color=negative outline').classes('min-w-[62px]')
                                         if str(item.get('desired_state')) == 'disabled':
                                             disable_btn.disable()
                                         disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
                                         if item['group'] == 'x_autoposter':
-                                            ui.button('Draft').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'draft'))
-                                            ui.button('Queue').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'queue'))
-                                            ui.button('Post').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'post_now'))
+                                            ui.button('Draft').props('size=sm color=positive outline').classes('min-w-[66px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'draft'))
+                                            ui.button('Queue').props('size=sm color=secondary outline').classes('min-w-[66px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'queue'))
+                                            ui.button('Post').props('size=sm color=warning outline').classes('min-w-[66px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'post_now'))
                                         elif item['group'] == 'telegram_sender':
-                                            ui.button('Test').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'test_lanes'))
-                                            ui.button('Social').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'run_social'))
-                                            ui.button('Run').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                            ui.button('Test').props('size=sm color=positive outline').classes('min-w-[66px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'test_lanes'))
+                                            ui.button('Social').props('size=sm color=secondary outline').classes('min-w-[66px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'run_social'))
+                                            ui.button('Run').props('size=sm color=warning outline').classes('min-w-[66px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
                                         else:
-                                            run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                            run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[66px]')
                                             run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                        inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
+                                        inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[66px]')
                                         inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                 with ui.expansion('Advanced Components').classes('w-full'):
@@ -520,9 +520,10 @@ def apply_theme() -> None:
             }
             .operator-actions {
                 display: flex;
-                gap: 0.35rem;
+                gap: 0.28rem;
                 justify-content: flex-end;
                 align-items: center;
+                flex-wrap: wrap;
             }
             .telemetry-key {
                 color: rgba(220, 232, 255, 0.7);
