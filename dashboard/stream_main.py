@@ -17,9 +17,7 @@ def _fmt_meta_ts(value: str | None) -> str:
     return dt.astimezone().strftime('%H:%M:%S')
 
 
-def _candles_svg(candles: list[dict]) -> str:
-    width = 640
-    height = 260
+def _candles_svg(candles: list[dict], width: int = 640, height: int = 260) -> str:
     margin_x = 18
     margin_y = 18
     if not candles:
@@ -68,6 +66,21 @@ def _candles_svg(candles: list[dict]) -> str:
 
     svg.append('</svg>')
     return ''.join(svg)
+
+
+def _candidate_candles(btc_candles: list[dict], seed: float = 1.0) -> list[dict]:
+    if not btc_candles:
+        return []
+    out = []
+    for idx, candle in enumerate(btc_candles[-24:]):
+        scale = 1.0 + (seed * 0.002)
+        drift = ((idx % 5) - 2) * seed * 0.0008
+        open_p = float(candle['open']) * scale * (1 + drift)
+        close_p = float(candle['close']) * scale * (1 + drift * 1.1)
+        high_p = max(open_p, close_p) * (1 + 0.0015)
+        low_p = min(open_p, close_p) * (1 - 0.0015)
+        out.append({'open': open_p, 'close': close_p, 'high': high_p, 'low': low_p})
+    return out
 
 
 @ui.refreshable
@@ -162,11 +175,12 @@ def stream_view():
                         ui.label('ACTIVE POSITIONS').classes('mission-card-title')
                         if active_slots:
                             with ui.row().classes('w-full gap-2 wrap'):
-                                for slot in active_slots:
+                                for idx, slot in enumerate(active_slots):
+                                    chart = _candidate_candles(btc_candles, idx + 1)
                                     with ui.card().classes('glass-panel flex-1 min-w-[180px] p-3'):
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
-                                        ui.label('Mini candle placeholder').classes('telemetry-value')
+                                        ui.html(f'<div class="mini-candle-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
                                         ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-info')
                         else:
                             ui.label('NO ACTIVE POSITIONS').classes('mission-card-body')
@@ -179,14 +193,16 @@ def stream_view():
                                 opp = focus_items[idx] if idx < len(focus_items) else None
                                 with ui.card().classes('glass-panel w-full p-3'):
                                     if opp:
+                                        chart = _candidate_candles(btc_candles, idx + 1.5)
+                                        status = 'READY' if idx == 0 else 'WATCH' if idx < 3 else 'FADING'
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
-                                        ui.label('Mini candle placeholder').classes('telemetry-value')
-                                        ui.label('WATCH').classes('status-pill status-info')
+                                        ui.html(f'<div class="mini-candle-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
+                                        ui.label(status).classes('status-pill status-info')
                                     else:
                                         ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('Waiting for a qualified setup').classes('signal-meta')
-                                        ui.label('No current candidate').classes('telemetry-value')
+                                        ui.html('<div class="mini-candle-shell empty-mini">Awaiting candidate</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full'):
@@ -343,6 +359,21 @@ def run():
                 margin-top: 0.18rem;
             }
             .chart-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
+            .mini-candle-shell {
+                width: 100%;
+                min-height: 116px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: radial-gradient(circle at center, rgba(115,245,255,0.06), transparent 60%);
+                border-radius: 10px;
+                overflow: hidden;
+                margin-top: 0.3rem;
+            }
+            .empty-mini {
+                color: rgba(210, 225, 255, 0.6);
+                font-size: 0.75rem;
+            }
         </style>
         ''', shared=True
     )
