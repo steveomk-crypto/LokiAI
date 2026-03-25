@@ -40,11 +40,12 @@ def open_path(path: Path) -> Tuple[bool, str]:
         return True, f'Path: {path}'
 
 
-def run_background_command(command: str, pid_file: str, log_file: str) -> Tuple[bool, str]:
+def run_background_command(command: str, pid_file: str, log_file: str, detached: bool = False) -> Tuple[bool, str]:
     root = run_root()
     Path(log_file).parent.mkdir(parents=True, exist_ok=True)
     Path(pid_file).parent.mkdir(parents=True, exist_ok=True)
-    wrapped = f"nohup bash -lc {command!r} >> {log_file!r} 2>&1 & echo $! > {pid_file!r}"
+    launcher = 'nohup bash -lc' if not detached else 'nohup setsid bash -lc'
+    wrapped = f"{launcher} {command!r} >> {log_file!r} 2>&1 < /dev/null & echo $! > {pid_file!r}"
     result = subprocess.run(['bash', '-lc', wrapped], cwd=root, capture_output=True, text=True)
     if result.returncode != 0:
         return False, (result.stderr or result.stdout or 'Failed to start background command').strip()
@@ -119,6 +120,7 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 './scripts/market_cycle_daemon.sh',
                 str(pid_file),
                 str(log_file),
+                detached=True,
             )
             ok2, msg2 = run_background_command(
                 './scripts/output_cycle_daemon.sh',
