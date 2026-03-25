@@ -455,7 +455,9 @@ def _canonical_display_state(entry: dict[str, Any]) -> str:
         return 'RUNNING'
     if entry.get('last_error') and 'blocked by dependencies' not in str(entry.get('last_error')).lower():
         return 'FAILED'
-    if any(term in state for term in ('active recently', 'recently completed', 'available')):
+    if any(term in state for term in ('active recently', 'recently completed', 'available', 'recent activity')):
+        return 'ACTIVE'
+    if state.startswith('v2 '):
         return 'ACTIVE'
     if state == 'managed by main loop':
         return 'ACTIVE'
