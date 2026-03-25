@@ -393,6 +393,16 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
         runtime['main_loop']['state'] = 'active recently'
     if 'main_loop' in runtime and loop_info.get('last_error'):
         runtime['main_loop']['last_error'] = loop_info.get('last_error')
+    automation_stage_map = {
+        'market_scanner': 'market_scanner',
+        'paper_trader_v2': 'paper_trader',
+        'position_manager': 'position_manager',
+    }
+    for component_id, task_name in automation_stage_map.items():
+        completed_at = loop_info.get('task_completed_at', {}).get(task_name)
+        if component_id in runtime and completed_at and _is_recent(completed_at, 90):
+            runtime[component_id]['state'] = 'recently completed'
+            runtime[component_id]['last_success_at'] = completed_at
     if 'x_autoposter' in runtime:
         runtime['x_autoposter']['state'] = str(x_state.get('mode') or 'draft_only')
         runtime['x_autoposter']['last_success_at'] = x_state.get('lastPostAt') or x_state.get('lastDraftAt')
