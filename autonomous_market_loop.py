@@ -84,14 +84,19 @@ def _load_module(task: str):
 
 def lint_skills() -> bool:
     failures: List[str] = []
+    entrypoint_aliases = {
+        'paper_trader': ('paper_trader_v2', 'paper_trader'),
+    }
     for task, path in SKILL_PATHS.items():
         try:
             module = _load_module(task)
         except FileNotFoundError:
             failures.append(f"{task}: file not found ({path})")
             continue
-        if not hasattr(module, task):
-            failures.append(f"{task}: missing '{task}()' entrypoint")
+        expected = entrypoint_aliases.get(task, (task,))
+        if not any(hasattr(module, name) for name in expected):
+            pretty = ' or '.join(f"'{name}()'" for name in expected)
+            failures.append(f"{task}: missing {pretty} entrypoint")
     if failures:
         print("Skill lint failures:")
         for failure in failures:
