@@ -439,7 +439,9 @@ def run():
                 display: flex;
                 flex-direction: column;
                 min-height: 0;
+                height: 100%;
                 overflow: hidden;
+                justify-content: space-between;
                 gap: 0.08rem;
             }
             .stream-context-block { flex: 0 0 auto; }
