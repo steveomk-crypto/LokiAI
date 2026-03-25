@@ -366,7 +366,7 @@ def run():
             .stream-center-header { flex: 0 0 10%; }
             .stream-active-block { flex: 0 0 18%; }
             .stream-focus-block { flex: 0 0 auto; }
-            .stream-context-block { flex: 0 0 8%; }
+            .stream-context-block { flex: 1 1 auto; }
             .chart-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
             .mini-candle-shell {
                 width: 100%;
