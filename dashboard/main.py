@@ -381,37 +381,43 @@ def stream_view():
 
         with ui.row().classes('w-full gap-4 no-wrap stream-main'):
             with ui.column().classes('w-2/3 gap-4'):
-                with _panel('Live Coinbase Pulse', 'Short-horizon movers from tracked universe', 'anchor-panel'):
-                    if not live_movers:
-                        ui.label('Waiting for live ticker population').classes('text-gray-400')
-                    for mover in live_movers[:10]:
-                        with ui.row().classes('w-full justify-between items-center signal-row'):
-                            with ui.column().classes('gap-0'):
-                                ui.label(mover['product_id']).classes('signal-symbol')
-                                ui.label(f"fresh { _fmt_num(mover.get('freshness_seconds'), 1) }s").classes('signal-meta')
-                            with ui.column().classes('items-end gap-0'):
-                                drift = float(mover.get('drift_300s') or 0.0)
-                                drift_cls = 'status-healthy' if drift > 0 else 'status-warning' if drift < 0 else 'telemetry-value'
-                                ui.label(f"{_fmt_num(drift, 3)}%").classes(f'font-semibold {drift_cls}')
-                                ui.label(f"px {_fmt_num(mover.get('price'), 4)}").classes('signal-meta')
+                active_positions = state.get('open_positions_v2', [])
+                with _panel('Active Positions', 'Paper trader positions in focus', 'anchor-panel'):
+                    if not active_positions:
+                        with ui.card().classes('glass-panel w-full p-4'):
+                            ui.label('NO ACTIVE POSITIONS').classes('hero-title text-base')
+                            ui.label('Trader is waiting for confirmed setup conditions.').classes('hero-subtitle')
+                    else:
+                        with ui.row().classes('w-full gap-3 wrap'):
+                            for pos in active_positions[:3]:
+                                with ui.card().classes('glass-panel flex-1 min-w-[200px] p-3'):
+                                    ui.label(str(pos.get('token') or pos.get('symbol') or '?')).classes('signal-symbol')
+                                    ui.label(f"PnL {_fmt_num(pos.get('pnl_pct', pos.get('pnl', 0.0)), 2)}% • entry {_fmt_num(pos.get('entry_price', 0.0), 4)}").classes('signal-meta')
+                                    ui.label('Mini candle / live tape placeholder').classes('telemetry-value')
 
-                with _panel('Scanner Highlights', 'Top ranked opportunities from the latest scan'):
-                    if not top_opps:
-                        ui.label('No scanner highlights yet').classes('text-gray-400')
-                    for opp in top_opps[:6]:
-                        with ui.row().classes('w-full justify-between items-center signal-row'):
-                            with ui.column().classes('gap-0'):
-                                ui.label(opp.get('token', '?')).classes('signal-symbol')
-                                ui.label(f"trend • {opp.get('trend', '–')}").classes('signal-meta')
-                            with ui.column().classes('items-end gap-0'):
-                                ui.label(f"{_fmt_num(opp.get('momentum'), 1)}%").classes('signal-momentum')
-                                ui.label(f"p{opp.get('persistence', 0)} • score {_fmt_num(opp.get('score'), 3)}").classes('signal-meta')
+                with _panel('Trader Focus', 'Top candidates and open slots'):
+                    focus_items = top_opps[:4]
+                    with ui.grid(columns=2).classes('w-full gap-3'):
+                        for idx in range(4):
+                            opp = focus_items[idx] if idx < len(focus_items) else None
+                            with ui.card().classes('glass-panel w-full p-3'):
+                                if opp:
+                                    ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
+                                    ui.label(f"{_fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
+                                    ui.label('Mini candle / focus chart placeholder').classes('telemetry-value')
+                                    ui.label('WATCH').classes('status-pill status-info')
+                                else:
+                                    ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
+                                    ui.label('Waiting for a qualified setup').classes('signal-meta')
+                                    ui.label('No current candidate').classes('telemetry-value')
+                                    ui.label('IDLE').classes('status-pill status-info')
 
-                with _panel('System Progress', 'What the machine has done today'):
-                    _telemetry_row('Signals logged', str(metrics.get('total_signals', 0)))
-                    _telemetry_row('High-quality signals', str(metrics.get('high_quality_signals', 0)))
-                    _telemetry_row('Tracked Coinbase products', str(ws_state.get('tracked_products', 0)))
-                    _telemetry_row('Current mode', 'rebuild / paper only')
+                with _panel('Trader Context', 'Mode, slots, and trigger logic'):
+                    _telemetry_row('Mode', 'paper-first / tactical watch')
+                    _telemetry_row('Open positions', str(len(active_positions)))
+                    _telemetry_row('Open slots', str(max(0, 4 - len(active_positions))))
+                    _telemetry_row('Trigger', 'momentum + persistence + volume confirmation')
+                    _telemetry_row('Last action', 'watching for next qualified entry')
 
             with ui.column().classes('w-1/3 gap-4'):
                 with _panel('Operating Status', 'Transparency over hype'):
