@@ -32,20 +32,33 @@ def _candles_svg(candles: list[dict], width: int = 640, height: int = 260) -> st
     plot_w = width - margin_x * 2
     plot_h = height - margin_y * 2
     step = plot_w / max(len(candles), 1)
-    body_w = max(step * 0.55, 4)
+    body_w = max(step * 0.62, 4.5)
 
     def y(price: float) -> float:
         return margin_y + (max_high - price) / price_range * plot_h
 
+    latest_close = float(candles[-1]['close']) if candles else 0.0
+    latest_open = float(candles[-1]['open']) if candles else latest_close
+    latest_y = y(latest_close)
+    latest_up = latest_close >= latest_open
+    latest_color = '#2dffb2' if latest_up else '#ff5f87'
+
     svg = [
         f'<svg viewBox="0 0 {width} {height}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">',
-        '<defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#73f5ff" stop-opacity="0.20"/><stop offset="100%" stop-color="#050816" stop-opacity="0"/></linearGradient></defs>',
+        '<defs>'
+        '<linearGradient id="g" x1="0" x2="0" y1="0" y2="1">'
+        '<stop offset="0%" stop-color="#0c1626" stop-opacity="1"/>'
+        '<stop offset="100%" stop-color="#04070f" stop-opacity="1"/>'
+        '</linearGradient>'
+        '<filter id="glow"><feGaussianBlur stdDeviation="2.4" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+        '</defs>',
         f'<rect x="0" y="0" width="{width}" height="{height}" fill="url(#g)"/>',
+        f'<line x1="{margin_x}" y1="{latest_y:.2f}" x2="{width-margin_x}" y2="{latest_y:.2f}" stroke="{latest_color}" stroke-width="1.6" opacity="0.38"/>',
     ]
 
     for i in range(5):
         gy = margin_y + (plot_h / 4) * i
-        svg.append(f'<line x1="{margin_x}" y1="{gy:.2f}" x2="{width-margin_x}" y2="{gy:.2f}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>')
+        svg.append(f'<line x1="{margin_x}" y1="{gy:.2f}" x2="{width-margin_x}" y2="{gy:.2f}" stroke="rgba(120,170,255,0.10)" stroke-width="1"/>')
 
     closes_path = []
     for idx, candle in enumerate(candles):
@@ -54,15 +67,23 @@ def _candles_svg(candles: list[dict], width: int = 640, height: int = 260) -> st
         low_y = y(float(candle['low']))
         open_y = y(float(candle['open']))
         close_y = y(float(candle['close']))
-        color = '#7bf7c6' if float(candle['close']) >= float(candle['open']) else '#ff8d9b'
+        is_up = float(candle['close']) >= float(candle['open'])
+        is_latest = idx == len(candles) - 1
+        color = '#18e899' if is_up else '#ff4d6d'
+        wick_color = '#74ffd1' if is_up else '#ff92a5'
         top = min(open_y, close_y)
         body_h = max(abs(close_y - open_y), 3)
-        svg.append(f'<line x1="{x:.2f}" y1="{high_y:.2f}" x2="{x:.2f}" y2="{low_y:.2f}" stroke="{color}" stroke-width="2" opacity="0.95"/>')
-        svg.append(f'<rect x="{x - body_w/2:.2f}" y="{top:.2f}" width="{body_w:.2f}" height="{body_h:.2f}" rx="2" fill="{color}" opacity="0.95"/>')
+        wick_width = 2.3 if is_latest else 1.7
+        body_opacity = 1.0 if is_latest else 0.94
+        body_width = body_w * (1.08 if is_latest else 1.0)
+        svg.append(f'<line x1="{x:.2f}" y1="{high_y:.2f}" x2="{x:.2f}" y2="{low_y:.2f}" stroke="{wick_color}" stroke-width="{wick_width}" opacity="0.98" {"filter=\"url(#glow)\"" if is_latest else ""}/>')
+        svg.append(f'<rect x="{x - body_width/2:.2f}" y="{top:.2f}" width="{body_width:.2f}" height="{body_h:.2f}" rx="2" fill="{color}" opacity="{body_opacity:.2f}" {"filter=\"url(#glow)\"" if is_latest else ""}/>')
         closes_path.append(f'{x:.2f},{close_y:.2f}')
 
     if closes_path:
-        svg.append(f'<polyline points="{" ".join(closes_path)}" stroke="#73f5ff" stroke-width="1.5" fill="none" opacity="0.22"/>')
+        svg.append(f'<polyline points="{" ".join(closes_path)}" stroke="{latest_color}" stroke-width="1.8" fill="none" opacity="0.20"/>')
+        last_x = margin_x + step * (len(candles) - 1) + step / 2
+        svg.append(f'<circle cx="{last_x:.2f}" cy="{latest_y:.2f}" r="3.2" fill="{latest_color}" opacity="0.92" filter="url(#glow)"/>')
 
     svg.append('</svg>')
     return ''.join(svg)
