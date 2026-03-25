@@ -151,9 +151,14 @@ def position_manager():
         action = 'HOLD'
         reason = 'Within plan'
 
-        loser_cutoff = float(position.get('max_loss_pct') or LOSER_CUTOFF)
-        time_stop_hours = float(position.get('custom_time_stop_hours') or TIME_DECAY_HOURS)
+        guardrails = position.get('guardrails') or {}
+        loser_cutoff = float(position.get('max_loss_pct') or guardrails.get('stop_loss_pct') or LOSER_CUTOFF)
+        timeout_minutes = float(guardrails.get('timeout_minutes') or (float(position.get('custom_time_stop_hours') or TIME_DECAY_HOURS) * 60.0))
+        time_stop_hours = timeout_minutes / 60.0
         no_move_threshold = float(position.get('custom_no_movement_pct') or NO_MOVEMENT_THRESHOLD)
+        profit_levels = [float(x) for x in (guardrails.get('profit_levels_pct') or [])] or [rule['threshold'] for rule in tier_cfg.get('partial_rules', [])]
+        trail_after_first = float(guardrails.get('trail_after_first_pct') or tier_cfg.get('floor_pct') or 0.0)
+        trail_after_second = float(guardrails.get('trail_after_second_pct') or tier_cfg.get('tight_trail_gap_pct') or trail_after_first)
 
         # Loser control
         if pnl_pct <= loser_cutoff:
@@ -189,24 +194,21 @@ def position_manager():
                     reason = f'Trailing stop exit ({tier} {pnl_pct:.2f}%)'
             if action == 'HOLD':
                 partial_triggered = False
-                for rule in tier_cfg.get('partial_rules', []):
-                    flag_field = f"partial_{rule['flag']}_hit"
+                for idx, threshold in enumerate(profit_levels, start=1):
+                    flag_field = f"partial_profit_level_{idx}_hit"
                     if position.get(flag_field):
                         continue
-                    if pnl_pct >= rule['threshold']:
+                    if pnl_pct >= threshold:
                         action = 'PARTIAL_CLOSE'
-                        reason = rule['label']
-                        portion = float(rule['reduction'])
+                        reason = f'Guardrail trim {idx} at +{threshold:.2f}%'
+                        portion = 0.25 if idx < len(profit_levels) else 0.15
                         new_size = round(position_size * (1 - portion), 2)
                         position['position_size_usd'] = new_size
                         position[flag_field] = True
                         position['trail_active'] = True
                         position['trail_high'] = current_price
-                        gap_pct = tier_cfg.get('trail_gap_pct', TRAILING_GAP_PCT)
-                        desired_trail = current_price * (1 - gap_pct / 100)
-                        floor_pct = tier_cfg.get('floor_pct')
-                        if floor_pct is not None:
-                            desired_trail = max(desired_trail, entry_price * (1 + floor_pct / 100))
+                        floor_pct = trail_after_first if idx == 1 else trail_after_second
+                        desired_trail = entry_price * (1 + floor_pct / 100) if floor_pct else stop_price
                         stop_price = max(stop_price, desired_trail)
                         _append_close_event({
                             'timestamp': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -221,21 +223,21 @@ def position_manager():
                         break
                 if action == 'PARTIAL_CLOSE':
                     pass
-                elif not position.get('trail_active') and tier_cfg.get('trail_arm_pct') and pnl_pct >= tier_cfg['trail_arm_pct']:
+                elif move_character in {'fake_pump', 'stalling', 'fading'} and pnl_pct > 0 and not position.get('de_risked_fake_pump'):
+                    action = 'TRAIL_ARM'
+                    reason = f'De-risk {move_character} move'
+                    position['trail_active'] = True
+                    position['trail_high'] = current_price
+                    stop_floor = entry_price * (1 + trail_after_first / 100) if trail_after_first else entry_price
+                    stop_price = max(stop_price, stop_floor)
+                    position['de_risked_fake_pump'] = True
+                elif not position.get('trail_active') and profit_levels and pnl_pct >= profit_levels[0]:
                     action = 'TRAIL_ARM'
                     reason = f'Trail armed ({tier} @ {pnl_pct:.2f}%)'
                     position['trail_active'] = True
                     position['trail_high'] = current_price
-                    floor_pct = tier_cfg.get('floor_pct')
-                    stop_floor = entry_price * (1 + floor_pct / 100) if floor_pct is not None else entry_price
+                    stop_floor = entry_price * (1 + trail_after_first / 100) if trail_after_first else entry_price
                     stop_price = max(stop_price, stop_floor)
-                elif tier_cfg.get('break_even_pct') and pnl_pct >= tier_cfg['break_even_pct']:
-                    floor_pct = tier_cfg.get('floor_pct')
-                    stop_floor = entry_price * (1 + floor_pct / 100) if floor_pct is not None else entry_price
-                    if stop_price < stop_floor:
-                        action = 'TRAIL_STOP'
-                        stop_price = stop_floor
-                        reason = 'Lock floor at +{:.1f}%'.format(floor_pct) if floor_pct is not None else 'Move stop to break-even'
 
         action_entry = {
             'timestamp': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
