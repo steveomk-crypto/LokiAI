@@ -117,7 +117,7 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                     pass
 
             ok1, msg1 = run_background_command(
-                './scripts/market_cycle_daemon.sh',
+                'python3 ./scripts/market_cycle_daemon.py',
                 str(pid_file),
                 str(log_file),
                 detached=True,
