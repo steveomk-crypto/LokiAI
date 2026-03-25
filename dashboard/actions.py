@@ -52,6 +52,29 @@ def run_background_command(command: str, pid_file: str, log_file: str, detached:
     return True, f'Started background job ({Path(pid_file).name})'
 
 
+def run_detached_process(argv: list[str], pid_file: str, log_file: str) -> Tuple[bool, str]:
+    root = run_root()
+    log_path = Path(log_file)
+    pid_path = Path(pid_file)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    pid_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with log_path.open('a', encoding='utf-8') as log_handle:
+            proc = subprocess.Popen(
+                argv,
+                cwd=root,
+                stdin=subprocess.DEVNULL,
+                stdout=log_handle,
+                stderr=log_handle,
+                start_new_session=True,
+                text=False,
+            )
+        pid_path.write_text(str(proc.pid))
+        return True, f'Started detached process ({proc.pid})'
+    except Exception as exc:
+        return False, str(exc)
+
+
 def _is_recent_iso(value: str | None, max_age_seconds: int) -> bool:
     if not value:
         return False
@@ -138,11 +161,10 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 except Exception:
                     pass
 
-            ok1, msg1 = run_background_command(
-                'python3 ./scripts/market_cycle_daemon.py',
+            ok1, msg1 = run_detached_process(
+                ['python3', './scripts/market_cycle_daemon.py'],
                 str(pid_file),
                 str(log_file),
-                detached=True,
             )
             ok2, msg2 = run_background_command(
                 './scripts/output_cycle_daemon.sh',
