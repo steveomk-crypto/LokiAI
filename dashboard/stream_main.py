@@ -181,9 +181,9 @@ def stream_view():
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
                                         ui.html(f'<div class="mini-candle-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
-                                        ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-info')
+                                        ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-healthy')
                         else:
-                            ui.label('NO ACTIVE POSITIONS').classes('mission-card-body')
+                            ui.label('NO ACTIVE POSITIONS').classes('mission-card-body tactical-empty')
                             ui.label('Trader is waiting for confirmed setup conditions.').classes('mission-card-meta')
 
                     with ui.card().classes('mission-overlay-card w-full flex-1'):
@@ -198,7 +198,8 @@ def stream_view():
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
                                         ui.html(f'<div class="mini-candle-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
-                                        ui.label(status).classes('status-pill status-info')
+                                        badge_cls = 'status-healthy' if status == 'READY' else 'status-info' if status == 'WATCH' else 'status-warning'
+                                        ui.label(status).classes(f'status-pill {badge_cls}')
                                     else:
                                         ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('Waiting for a qualified setup').classes('signal-meta')
@@ -336,10 +337,11 @@ def run():
                 margin-top: 0.35rem;
             }
             .mission-overlay-card {
-                background: rgba(255,255,255,0.03);
-                border: 1px solid rgba(255,255,255,0.08);
+                background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(9,16,28,0.88));
+                border: 1px solid rgba(115,245,255,0.14);
                 border-radius: 14px;
                 padding: 0.7rem;
+                box-shadow: inset 0 0 28px rgba(115,245,255,0.035), 0 0 18px rgba(0,0,0,0.24);
             }
             .mission-card-title {
                 color: rgba(210, 225, 255, 0.72);
@@ -365,14 +367,21 @@ def run():
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: radial-gradient(circle at center, rgba(115,245,255,0.06), transparent 60%);
+                background: radial-gradient(circle at center, rgba(115,245,255,0.10), transparent 60%);
+                border: 1px solid rgba(115,245,255,0.08);
                 border-radius: 10px;
                 overflow: hidden;
                 margin-top: 0.3rem;
+                box-shadow: inset 0 0 20px rgba(115,245,255,0.04);
             }
             .empty-mini {
                 color: rgba(210, 225, 255, 0.6);
                 font-size: 0.75rem;
+            }
+            .tactical-empty {
+                color: #73f5ff;
+                text-shadow: 0 0 10px rgba(115,245,255,0.24);
+                letter-spacing: 0.08em;
             }
         </style>
         ''', shared=True
