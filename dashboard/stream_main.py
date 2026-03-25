@@ -189,12 +189,12 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full focus-panel'):
+                    with ui.card().classes('mission-overlay-card w-full focus-panel ultra-compact-focus-panel'):
                         ui.label('TRADER FOCUS').classes('mission-card-title focus-title')
-                        with ui.grid(columns=2).classes('w-full gap-2 mt-1'):
+                        with ui.grid(columns=2).classes('w-full gap-1 mt-0'):
                             for idx in range(4):
                                 opp = focus_items[idx] if idx < len(focus_items) else None
-                                with ui.card().classes('glass-panel w-full focus-card p-[0.28rem]'):
+                                with ui.card().classes('glass-panel w-full focus-card ultra-compact-focus-card p-[0.18rem]'):
                                     if opp:
                                         chart = _candidate_candles(btc_candles, idx + 1.5)
                                         status = 'READY' if idx == 0 else 'WATCH' if idx < 3 else 'FADING'
@@ -382,10 +382,13 @@ def run():
                 min-height: 70px;
             }
             .compact-focus {
-                min-height: 62px;
+                min-height: 48px;
             }
             .focus-panel {
                 padding: 0.5rem !important;
+            }
+            .ultra-compact-focus-panel {
+                padding: 0.28rem !important;
             }
             .compact-active-panel {
                 padding: 0.45rem !important;
@@ -395,6 +398,9 @@ def run():
             }
             .focus-card {
                 min-height: 0;
+            }
+            .ultra-compact-focus-card {
+                line-height: 1.0;
             }
             .empty-mini {
                 color: rgba(210, 225, 255, 0.6);
