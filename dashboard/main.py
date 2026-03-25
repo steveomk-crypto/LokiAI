@@ -135,9 +135,8 @@ def operator_view():
                     ui.label('Scanner + Coinbase live ingest command surface').classes('hero-subtitle')
                 with ui.row().classes('gap-3 items-center wrap'):
                     _pill('MODE • REBUILD / PAPER ONLY', 'info')
-                    _pill(f"CORE • {'ON' if runtime['main_loop']['running'] else 'OFF'} / 30S", 'healthy' if runtime['main_loop']['running'] else 'warning')
+                    _pill(f"CORE • {'ON' if automation_active else 'OFF'} / 30S", 'healthy' if automation_active else 'warning')
                     _pill(f"SCANNER • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
-                    loop_recent = bool(loop_info.get('last_cycle_started_at'))
                     loop_mode = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_recent else 'IDLE'
                     loop_mode_level = 'healthy' if loop_mode in {'RUNNING', 'ACTIVE'} else 'warning'
                     _pill(f"MAIN LOOP • {loop_mode}", loop_mode_level)
