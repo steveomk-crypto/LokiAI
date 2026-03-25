@@ -620,7 +620,14 @@ def market_scanner(tokens, volume_data, momentum_data):
         filtered_entries.append(entry)
 
     if not filtered_entries:
-        return []
+        summary = {
+            'timestamp': timestamp,
+            'top_opportunities': []
+        }
+        market_state = _evaluate_market_state([], summary, timestamp)
+        _write_market_state(market_state)
+        _save_candidates([])
+        return ["SUMMARY:" + json.dumps(summary)]
 
     max_momentum = max(entry['momentum'] for entry in filtered_entries)
     max_volume = max(entry['volume'] for entry in filtered_entries)
