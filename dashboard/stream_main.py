@@ -148,70 +148,57 @@ def stream_view():
             with ui.column().classes('stream-center gap-3'):
                 with ui.card().classes('glass-panel cockpit-hero w-full h-full'):
                     active_slots = open_positions_v2[:3]
-                    primary_slot = active_slots[-1] if active_slots else None
-                    secondary_slots = active_slots[:-1]
-                    focus_asset = top_opps[0] if top_opps else None
-
-                    if primary_slot:
-                        mission_state = 'PAPER POSITION ACTIVE' if len(active_slots) == 1 else 'MULTI-SLOT MONITORING'
-                        focus_token = primary_slot.get('token', 'UNKNOWN')
-                        mission_reason = 'live paper-trader slot in focus'
-                        last_close = primary_slot.get('current_price') or primary_slot.get('entry_price')
-                    elif False:
-                        mission_state = 'FLATTENING POSITIONS'
-                        focus_token = 'PORTFOLIO'
-                        mission_reason = 'manual flatten job is running'
-                        last_close = btc_candles[-1]['close'] if btc_candles else None
-                    else:
-                        mission_state = 'WATCH MODE'
-                        focus_token = focus_asset.get('token', 'BTC-USD') if focus_asset else 'BTC-USD'
-                        mission_reason = 'no candidate cleared intake • watching for confirmed momentum'
-                        last_close = btc_candles[-1]['close'] if btc_candles else None
+                    focus_items = top_opps[:4]
 
                     with ui.row().classes('w-full justify-between items-start'):
                         with ui.column().classes('gap-0'):
-                            ui.label('Paper Trader Tactical Watch').classes('panel-title')
-                            ui.label('Primary market focus and live paper-trader state').classes('panel-subtitle')
+                            ui.label('Trader Watchboard').classes('panel-title')
+                            ui.label('Active positions, top candidates, and current trigger logic').classes('panel-subtitle')
                         with ui.column().classes('items-end gap-1'):
-                            ui.label(f'PAIR • {focus_token if primary_slot else btc_payload.get("pair", "BTC-USD")}').classes('status-pill status-info')
-                            ui.label(f"TIMEFRAME • 5M • LAST {fmt_num(last_close, 2)}" if last_close else 'TIMEFRAME • 5M').classes('panel-subtitle')
+                            ui.label('PAPER-FIRST').classes('status-pill status-info')
+                            ui.label('REFRESH TARGET • 3S VISUAL / 30S CORE').classes('panel-subtitle')
 
-                    with ui.row().classes('w-full justify-between items-center mission-strip'):
-                        ui.label(mission_state).classes('mission-state')
-                        ui.label(f'FOCUS • {focus_token}').classes('mission-focus')
+                    with ui.card().classes('mission-overlay-card w-full'):
+                        ui.label('ACTIVE POSITIONS').classes('mission-card-title')
+                        if active_slots:
+                            with ui.row().classes('w-full gap-2 wrap'):
+                                for slot in active_slots:
+                                    with ui.card().classes('glass-panel flex-1 min-w-[180px] p-3'):
+                                        ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
+                                        ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
+                                        ui.label('Mini candle placeholder').classes('telemetry-value')
+                                        ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-info')
+                        else:
+                            ui.label('NO ACTIVE POSITIONS').classes('mission-card-body')
+                            ui.label('Trader is waiting for confirmed setup conditions.').classes('mission-card-meta')
 
-                    ui.html(f'<div class="candle-shell">{_candles_svg(btc_candles)}</div>').classes('w-full flex-1')
-
-                    with ui.row().classes('w-full gap-2 no-wrap mission-lower'):
-                        with ui.card().classes('mission-overlay-card flex-1'):
-                            ui.label('Mission Context').classes('mission-card-title')
-                            ui.label(mission_reason).classes('mission-card-body')
-                            if primary_slot:
-                                ui.label(f"entry {fmt_num(primary_slot.get('entry_price'), 4)} • pnl {fmt_num(primary_slot.get('pnl_percent'), 2)}%" ).classes('mission-card-meta')
-                            elif focus_asset:
-                                ui.label(f"scanner lead {focus_asset.get('token', '?')} • momentum {fmt_num(focus_asset.get('momentum'), 1)}% • persistence {focus_asset.get('persistence', 0)}").classes('mission-card-meta')
-                                ui.label('no live slot yet • waiting for positive confirmation + tier pass').classes('mission-card-meta')
-                            else:
-                                ui.label(f'scanner {scanner_status.lower()} • trader {trader_status.lower()} • loop {loop_status.lower()}').classes('mission-card-meta')
-                                ui.label(f'flatten {flatten_status.lower()} @ {flatten_log_time} • logging {log_outputs_status.lower()} @ {log_outputs_time}').classes('mission-card-meta')
-                                ui.label('paper-only observation mode').classes('mission-card-meta')
-
-                        with ui.card().classes('mission-overlay-card flex-1'):
-                            ui.label('Slot Watch').classes('mission-card-title')
-                            if active_slots:
-                                for idx in range(3):
-                                    if idx < len(active_slots):
-                                        slot = active_slots[idx]
-                                        ui.label(f"slot {idx+1} • {slot.get('token', '?')} • {slot.get('trade_state', 'ACTIVE')} • {fmt_num(slot.get('pnl_percent'), 2)}%").classes('mission-card-meta')
+                    with ui.card().classes('mission-overlay-card w-full flex-1'):
+                        ui.label('TRADER FOCUS').classes('mission-card-title')
+                        with ui.grid(columns=2).classes('w-full gap-3 mt-2'):
+                            for idx in range(4):
+                                opp = focus_items[idx] if idx < len(focus_items) else None
+                                with ui.card().classes('glass-panel w-full p-3'):
+                                    if opp:
+                                        ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
+                                        ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
+                                        ui.label('Mini candle placeholder').classes('telemetry-value')
+                                        ui.label('WATCH').classes('status-pill status-info')
                                     else:
-                                        ui.label(f"slot {idx+1} • STANDBY • waiting for setup").classes('mission-card-meta')
-                            else:
-                                ui.label('slot 1 • STANDBY • intake clear required').classes('mission-card-meta')
-                                ui.label('slot 2 • STANDBY • positive drift required').classes('mission-card-meta')
-                                ui.label('slot 3 • STANDBY • conviction not met yet').classes('mission-card-meta')
+                                        ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
+                                        ui.label('Waiting for a qualified setup').classes('signal-meta')
+                                        ui.label('No current candidate').classes('telemetry-value')
+                                        ui.label('IDLE').classes('status-pill status-info')
+
+                    with ui.card().classes('mission-overlay-card w-full'):
+                        ui.label('TRADER CONTEXT').classes('mission-card-title')
+                        with ui.row().classes('w-full justify-between items-center wrap'):
+                            ui.label(f"MODE • PAPER-FIRST / {loop_status}").classes('mission-card-meta')
+                            ui.label(f"OPEN POSITIONS • {len(active_slots)}").classes('mission-card-meta')
+                            ui.label(f"OPEN SLOTS • {max(0, 4 - len(active_slots))}").classes('mission-card-meta')
+                            ui.label('TRIGGER • MOMENTUM + PERSISTENCE + VOLUME').classes('mission-card-meta')
 
                     with ui.row().classes('w-full justify-between items-center chart-footer'):
-                        ui.label('live market view • paper trader tactical watch v1').classes('panel-subtitle')
+                        ui.label('trader-centered stream interface • pass 1 skeleton').classes('panel-subtitle')
                         ui.label(f"captured {metrics.get('total_signals', 0)} • active slots {len(active_slots)} • closed {v2_audit.get('closed_trade_count', 0)}").classes('panel-subtitle')
 
 
