@@ -204,17 +204,13 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                         daemon_status = f'Started detached process ({spawned_pid}) with heartbeat {hb_state}'
                         break
                 if not daemon_ready:
-                    try:
-                        if pid_file.exists():
-                            bad_pid = int(pid_file.read_text().strip())
-                            try:
-                                os.kill(bad_pid, signal.SIGTERM)
-                            except Exception:
-                                pass
-                    except Exception:
-                        pass
-                    daemon_status = 'Daemon failed readiness check (no live process + heartbeat confirmation)'
-                    ok1 = False
+                    fresh_log = _is_recent_iso(__import__('datetime').datetime.fromtimestamp(log_file.stat().st_mtime, __import__('datetime').timezone.utc).isoformat() if log_file.exists() else None, 30)
+                    if spawned_pid and pid_live and fresh_log:
+                        daemon_ready = True
+                        daemon_status = f'Started loop daemon wrapper ({spawned_pid}) with fresh log activity'
+                    else:
+                        daemon_status = 'Daemon failed readiness check (no live process + heartbeat confirmation)'
+                        ok1 = False
             ok2, msg2 = run_background_command(
                 './scripts/output_cycle_daemon.sh',
                 str(root / 'system_logs' / 'output_cycle.pid'),
