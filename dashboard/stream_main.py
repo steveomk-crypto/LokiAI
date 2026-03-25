@@ -407,7 +407,7 @@ def run():
                 font-size: 0.74rem;
                 margin-top: 0.18rem;
             }
-            .stream-center-header { flex: 0 0 10%; }
+            .stream-center-header { flex: 0 0 auto; }
             .stream-active-block { flex: 0 0 18%; }
             .stream-focus-block { flex: 0 0 auto; }
             .stream-context-block { flex: 1 1 auto; }
