@@ -5,11 +5,11 @@ from typing import Dict, List
 
 from atr_utils import get_atr_for_symbol, ATR_REFRESH_MINUTES
 
-OPEN_POSITIONS_PATH = Path("/data/.openclaw/workspace/paper_trades/open_positions.json")
-TRADES_LOG_PATH = Path("/data/.openclaw/workspace/paper_trades/trades_log.json")
-POSITION_ACTION_LOG = Path("/data/.openclaw/workspace/paper_trades/position_actions.json")
-CLOSE_REPORT_PATH = Path("/data/.openclaw/workspace/paper_trades/close_reports.jsonl")
-ALERT_LOG_PATH = Path("/data/.openclaw/workspace/system_logs/pipeline_alerts.jsonl")
+OPEN_POSITIONS_PATH = Path("/home/lokiai/.openclaw/workspace/paper_trades/open_positions_v2.json")
+TRADES_LOG_PATH = Path("/home/lokiai/.openclaw/workspace/paper_trades/trades_log_v2.json")
+POSITION_ACTION_LOG = Path("/home/lokiai/.openclaw/workspace/paper_trades/position_actions_v2.json")
+CLOSE_REPORT_PATH = Path("/home/lokiai/.openclaw/workspace/paper_trades/v2_exit_events.jsonl")
+ALERT_LOG_PATH = Path("/home/lokiai/.openclaw/workspace/system_logs/pipeline_alerts.jsonl")
 
 TRAIL_BREAK_EVEN = 3.0
 TRAIL_PLUS_THREE = 5.0
