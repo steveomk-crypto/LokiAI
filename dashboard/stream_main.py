@@ -177,16 +177,16 @@ def stream_view():
                             for idx in range(3):
                                 slot = active_slots[idx] if idx < len(active_slots) else None
                                 chart = _candidate_candles(btc_candles, idx + 1)
-                                with ui.card().classes('glass-panel flex-1 min-w-[180px] p-3'):
+                                with ui.card().classes('glass-panel flex-1 min-w-[160px] p-2'):
                                     if slot:
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
-                                        ui.html(f'<div class="mini-candle-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
+                                        ui.html(f'<div class="mini-candle-shell compact-slot">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-healthy')
                                     else:
                                         ui.label(f'SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('No active position').classes('signal-meta')
-                                        ui.html(f'<div class="mini-candle-shell ghost-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
+                                        ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full flex-1'):
@@ -377,6 +377,9 @@ def run():
                 overflow: hidden;
                 margin-top: 0.3rem;
                 box-shadow: inset 0 0 20px rgba(115,245,255,0.04);
+            }
+            .compact-slot {
+                min-height: 88px;
             }
             .empty-mini {
                 color: rgba(210, 225, 255, 0.6);
