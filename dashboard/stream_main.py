@@ -213,13 +213,13 @@ def stream_view():
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • live {fmt_num(slot.get('current_price'), 4)}").classes('signal-meta')
                                         ui.label(f"pnl {fmt_num(slot.get('pnl_percent'), 2)}% • {int(slot.get('time_in_trade_minutes', 0) or 0)}m • {str(slot.get('product_id', '–'))}").classes('signal-meta')
-                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
                                         ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-healthy')
                                     else:
                                         ui.label(f'SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('Waiting for qualified entry').classes('signal-meta')
                                         ui.label('No live position in this slot').classes('signal-meta')
-                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
                                         ui.label('STANDBY').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-focus-block'):
@@ -235,13 +235,13 @@ def stream_view():
                                         ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('source', opp.get('status', 'watch'))).upper()}").classes('signal-meta')
                                         ui.label(f"mom {fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
                                         ui.label(f"{str(opp.get('product_id', '–'))} • drift {fmt_num((opp.get('drift_300s') or 0), 3)}% • fresh {fmt_num(opp.get('freshness_seconds'), 1)}s").classes('signal-meta')
-                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
                                         ui.label(str(opp.get('status', opp.get('source', 'WATCH'))).upper()).classes('status-pill status-info')
                                     else:
                                         ui.label(f'LEAD SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('No qualified lead').classes('signal-meta')
                                         ui.label('Scanner awaiting stronger setup').classes('signal-meta')
-                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-warning')
 
                     with ui.card().classes('mission-overlay-card w-full center-tight-panel stream-context-block'):
@@ -424,7 +424,7 @@ def run():
             .chart-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
             .mini-candle-shell {
                 width: 100%;
-                min-height: 116px;
+                min-height: 100px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -436,7 +436,7 @@ def run():
                 box-shadow: inset 0 0 20px rgba(115,245,255,0.04);
             }
             .compact-slot {
-                min-height: 70px;
+                min-height: 62px;
             }
             .compact-focus {
                 min-height: 34px;
