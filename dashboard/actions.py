@@ -101,7 +101,15 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
             pid_file = root / 'system_logs' / 'market_cycle_daemon.pid'
             log_file = root / 'system_logs' / 'market_loop_cron.log'
             cycle_recent = _is_recent_iso(loop_entry.get('last_success_at') or (loop_entry.get('log_meta') or {}).get('updated_at'), 90)
-            stale_loop = bool(pid_file.exists()) and not cycle_recent
+            pid_alive = False
+            if pid_file.exists():
+                try:
+                    existing_pid = int(pid_file.read_text().strip())
+                    result = subprocess.run(['ps', '-p', str(existing_pid), '-o', 'args='], cwd=root, capture_output=True, text=True)
+                    pid_alive = result.returncode == 0 and 'market_cycle_daemon.py' in (result.stdout or '')
+                except Exception:
+                    pid_alive = False
+            stale_loop = bool(pid_file.exists()) and (not pid_alive or not cycle_recent)
             if stale_loop:
                 try:
                     pid = int(pid_file.read_text().strip())

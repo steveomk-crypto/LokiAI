@@ -58,14 +58,13 @@ def ensure_singleton() -> None:
     if PID_FILE.exists():
         try:
             existing_pid = int(PID_FILE.read_text().strip())
-            os.kill(existing_pid, 0)
             cmdline = subprocess.run(
                 ['ps', '-p', str(existing_pid), '-o', 'args='],
                 capture_output=True,
                 text=True,
                 check=False,
             ).stdout.strip()
-            if 'market_cycle_daemon.py' in cmdline:
+            if cmdline and 'market_cycle_daemon.py' in cmdline:
                 log(f'market cycle daemon already running as PID {existing_pid}')
                 sys.exit(1)
         except Exception:
