@@ -130,14 +130,15 @@ def operator_view():
                     ui.label('Scanner + Coinbase live ingest command surface').classes('hero-subtitle')
                 with ui.row().classes('gap-3 items-center wrap'):
                     _pill('MODE • REBUILD / PAPER ONLY', 'info')
-                    _pill(f"AUTOMATION • {'ON' if runtime['main_loop']['running'] else 'OFF'}", 'healthy' if runtime['main_loop']['running'] else 'warning')
+                    _pill(f"CORE • {'ON' if runtime['main_loop']['running'] else 'OFF'} / 30S", 'healthy' if runtime['main_loop']['running'] else 'warning')
                     _pill(f"SCANNER • {scanner_text.upper()}", 'warning' if 'stale' in scanner_text else 'healthy')
                     loop_recent = bool(loop_info.get('last_cycle_started_at'))
                     loop_mode = 'RUNNING' if runtime['main_loop']['running'] else 'ACTIVE' if loop_recent else 'IDLE'
                     loop_mode_level = 'healthy' if loop_mode in {'RUNNING', 'ACTIVE'} else 'warning'
                     _pill(f"MAIN LOOP • {loop_mode}", loop_mode_level)
+                    _pill(f"OUTPUTS • {'ON' if runtime.get('output_cycle', {}).get('running') else 'OFF'} / 5M", 'healthy' if runtime.get('output_cycle', {}).get('running') else 'warning')
+                    _pill(f"TG SUMMARY • {'ON' if runtime.get('telegram_summary_cycle', {}).get('running') else 'OFF'} / 15M", 'healthy' if runtime.get('telegram_summary_cycle', {}).get('running') else 'warning')
                     _pill(f'WEBSOCKET • {"ONLINE" if ws_state.get("connected") else "OFFLINE"}', 'healthy' if ws_state.get('connected') else 'danger')
-                    _pill(f'OUTPUTS • TG {str(runtime.get("telegram_sender", {}).get("display_state") or runtime.get("telegram_sender", {}).get("state") or "idle").upper()} • X {str(runtime.get("x_autoposter", {}).get("state") or "draft_only").upper()}', 'info')
                     _pill(f'ALERTS • {alert_count}', 'warning' if alert_count else 'healthy')
 
         with ui.grid(columns=3).classes('w-full gap-4'):
