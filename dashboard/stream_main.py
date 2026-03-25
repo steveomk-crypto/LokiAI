@@ -158,20 +158,20 @@ def stream_view():
                     ui.label('Pack → lokiclips.gumroad.com').classes('text-sm panel-row')
                     ui.label('Posting → controlled').classes('text-sm panel-row')
 
-            with ui.column().classes('stream-center gap-3'):
+            with ui.column().classes('stream-center gap-2'):
                 with ui.card().classes('glass-panel cockpit-hero w-full h-full'):
                     active_slots = open_positions_v2[:3]
                     focus_items = top_opps[:4]
 
                     with ui.row().classes('w-full justify-between items-start'):
                         with ui.column().classes('gap-0'):
-                            ui.label('Trader Watchboard').classes('panel-title text-sm')
-                            ui.label('Active positions, top candidates, and current trigger logic').classes('panel-subtitle text-xs')
+                            ui.label('Trader Watchboard').classes('panel-title text-[13px]')
+                            ui.label('Active positions, top candidates, and current trigger logic').classes('panel-subtitle text-[10px]')
                         with ui.column().classes('items-end gap-0'):
                             ui.label('PAPER-FIRST').classes('status-pill status-info text-[10px]')
                             ui.label('3S VISUAL • 30S CORE').classes('panel-subtitle text-xs')
 
-                    with ui.card().classes('mission-overlay-card w-full compact-active-panel'):
+                    with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel'):
                         ui.label('ACTIVE POSITIONS').classes('mission-card-title focus-title')
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
@@ -189,7 +189,7 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full focus-panel ultra-compact-focus-panel extreme-focus-panel'):
+                    with ui.card().classes('mission-overlay-card w-full focus-panel ultra-compact-focus-panel extreme-focus-panel center-tight-panel'):
                         ui.label('TRADER FOCUS').classes('mission-card-title focus-title text-[10px]')
                         with ui.grid(columns=2).classes('w-full gap-[0.2rem] mt-0'):
                             for idx in range(4):
@@ -210,8 +210,8 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(ghost, width=250, height=80)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-info text-[10px]')
 
-                    with ui.card().classes('mission-overlay-card w-full'):
-                        ui.label('TRADER CONTEXT').classes('mission-card-title')
+                    with ui.card().classes('mission-overlay-card w-full center-tight-panel'):
+                        ui.label('TRADER CONTEXT').classes('mission-card-title focus-title')
                         with ui.row().classes('w-full justify-between items-center wrap'):
                             ui.label(f"MODE • PAPER-FIRST / {loop_status}").classes('mission-card-meta')
                             ui.label(f"OPEN POSITIONS • {len(active_slots)}").classes('mission-card-meta')
@@ -395,6 +395,9 @@ def run():
             }
             .compact-active-panel {
                 padding: 0.45rem !important;
+            }
+            .center-tight-panel {
+                padding: 0.22rem !important;
             }
             .focus-title {
                 margin-bottom: 0.15rem;
