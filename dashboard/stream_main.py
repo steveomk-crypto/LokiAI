@@ -173,18 +173,21 @@ def stream_view():
 
                     with ui.card().classes('mission-overlay-card w-full'):
                         ui.label('ACTIVE POSITIONS').classes('mission-card-title')
-                        if active_slots:
-                            with ui.row().classes('w-full gap-2 wrap'):
-                                for idx, slot in enumerate(active_slots):
-                                    chart = _candidate_candles(btc_candles, idx + 1)
-                                    with ui.card().classes('glass-panel flex-1 min-w-[180px] p-3'):
+                        with ui.row().classes('w-full gap-2 wrap'):
+                            for idx in range(3):
+                                slot = active_slots[idx] if idx < len(active_slots) else None
+                                chart = _candidate_candles(btc_candles, idx + 1)
+                                with ui.card().classes('glass-panel flex-1 min-w-[180px] p-3'):
+                                    if slot:
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
                                         ui.html(f'<div class="mini-candle-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
                                         ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-healthy')
-                        else:
-                            ui.label('NO ACTIVE POSITIONS').classes('mission-card-body tactical-empty')
-                            ui.label('Trader is waiting for confirmed setup conditions.').classes('mission-card-meta')
+                                    else:
+                                        ui.label(f'SLOT {idx + 1}').classes('signal-symbol')
+                                        ui.label('No active position').classes('signal-meta')
+                                        ui.html(f'<div class="mini-candle-shell ghost-shell">{_candles_svg(chart, width=280, height=120)}</div>').classes('w-full')
+                                        ui.label('EMPTY').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full flex-1'):
                         ui.label('TRADER FOCUS').classes('mission-card-title')
@@ -201,9 +204,10 @@ def stream_view():
                                         badge_cls = 'status-healthy' if status == 'READY' else 'status-info' if status == 'WATCH' else 'status-warning'
                                         ui.label(status).classes(f'status-pill {badge_cls}')
                                     else:
+                                        ghost = _candidate_candles(btc_candles, idx + 2.2)
                                         ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('Waiting for a qualified setup').classes('signal-meta')
-                                        ui.html('<div class="mini-candle-shell empty-mini">Awaiting candidate</div>').classes('w-full')
+                                        ui.html(f'<div class="mini-candle-shell ghost-shell">{_candles_svg(ghost, width=280, height=120)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full'):
@@ -377,6 +381,10 @@ def run():
             .empty-mini {
                 color: rgba(210, 225, 255, 0.6);
                 font-size: 0.75rem;
+            }
+            .ghost-shell {
+                opacity: 0.48;
+                filter: saturate(0.75) brightness(0.88);
             }
             .tactical-empty {
                 color: #73f5ff;
