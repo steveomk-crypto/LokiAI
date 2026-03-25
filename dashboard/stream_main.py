@@ -163,7 +163,7 @@ def stream_view():
                     active_slots = open_positions_v2[:3]
                     focus_items = top_opps[:4]
 
-                    with ui.row().classes('w-full justify-between items-start'):
+                    with ui.row().classes('w-full justify-between items-start stream-center-header'):
                         with ui.column().classes('gap-0'):
                             ui.label('Trader Watchboard').classes('panel-title text-[13px]')
                             ui.label('Active positions, top candidates, and current trigger logic').classes('panel-subtitle text-[10px]')
@@ -171,7 +171,7 @@ def stream_view():
                             ui.label('PAPER-FIRST').classes('status-pill status-info text-[10px]')
                             ui.label('3S VISUAL • 30S CORE').classes('panel-subtitle text-xs')
 
-                    with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel'):
+                    with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-active-block'):
                         ui.label('ACTIVE POSITIONS').classes('mission-card-title focus-title')
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
@@ -189,7 +189,7 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full focus-panel ultra-compact-focus-panel extreme-focus-panel center-tight-panel'):
+                    with ui.card().classes('mission-overlay-card w-full focus-panel ultra-compact-focus-panel extreme-focus-panel center-tight-panel stream-focus-block'):
                         ui.label('TRADER FOCUS').classes('mission-card-title focus-title text-[10px]')
                         with ui.grid(columns=2).classes('w-full gap-[0.2rem] mt-0'):
                             for idx in range(4):
@@ -210,7 +210,7 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(ghost, width=250, height=80)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-info text-[10px]')
 
-                    with ui.card().classes('mission-overlay-card w-full center-tight-panel'):
+                    with ui.card().classes('mission-overlay-card w-full center-tight-panel stream-context-block'):
                         ui.label('TRADER CONTEXT').classes('mission-card-title focus-title')
                         with ui.row().classes('w-full justify-between items-center wrap'):
                             ui.label(f"MODE • PAPER-FIRST / {loop_status}").classes('mission-card-meta')
@@ -364,6 +364,10 @@ def run():
                 font-size: 0.74rem;
                 margin-top: 0.18rem;
             }
+            .stream-center-header { flex: 0 0 10%; }
+            .stream-active-block { flex: 0 0 18%; }
+            .stream-focus-block { flex: 0 0 56%; }
+            .stream-context-block { flex: 0 0 8%; }
             .chart-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
             .mini-candle-shell {
                 width: 100%;
