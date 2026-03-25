@@ -241,7 +241,8 @@ def operator_view():
                     last_success = _format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–'
                     with ui.row().classes('w-full telemetry-row'):
                         ui.label(str(item['label'])).classes('font-semibold')
-                        ui.label(state_text).classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"BLOCKED", "DEGRADED"} else "info")}')
+                        ui.label(str(item.get('owned_by') or 'manual').upper()).classes('signal-meta')
+                        ui.label(state_text).classes(f'status-pill {_status_class("healthy" if state_text in {"RUNNING", "ACTIVE"} else "warning" if state_text in {"WAITING", "BLOCKED", "DEGRADED"} else "info")}')
                         ui.label(deps_text).classes('signal-meta')
                         ui.label(last_success).classes('signal-meta')
                         ui.label(str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')).classes('signal-meta')
@@ -293,6 +294,7 @@ def operator_view():
                         with ui.card().classes('glass-panel w-full p-3'):
                             with ui.row().classes('w-full operator-header-row'):
                                 ui.label('Name')
+                                ui.label('Owner')
                                 ui.label('Status')
                                 ui.label('Reason')
                                 ui.label('Last')
@@ -504,13 +506,13 @@ def apply_theme() -> None:
             }
             .operator-table .telemetry-row {
                 display: grid;
-                grid-template-columns: minmax(130px, 1.15fr) minmax(88px, 0.65fr) minmax(130px, 1fr) minmax(72px, 0.55fr) minmax(180px, 1.25fr) auto;
+                grid-template-columns: minmax(120px, 1.05fr) minmax(84px, 0.6fr) minmax(84px, 0.6fr) minmax(120px, 0.95fr) minmax(72px, 0.55fr) minmax(180px, 1.25fr) auto;
                 align-items: center;
-                column-gap: 0.55rem;
+                column-gap: 0.5rem;
             }
             .operator-header-row {
                 display: grid;
-                grid-template-columns: minmax(130px, 1.15fr) minmax(88px, 0.65fr) minmax(130px, 1fr) minmax(72px, 0.55fr) minmax(180px, 1.25fr) auto;
+                grid-template-columns: minmax(120px, 1.05fr) minmax(84px, 0.6fr) minmax(84px, 0.6fr) minmax(120px, 0.95fr) minmax(72px, 0.55fr) minmax(180px, 1.25fr) auto;
                 column-gap: 0.55rem;
                 opacity: 0.72;
                 font-size: 0.72rem;

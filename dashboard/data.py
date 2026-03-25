@@ -363,7 +363,7 @@ def _canonical_display_state(entry: dict[str, Any]) -> str:
     if desired in {'enabled', 'disabled'}:
         return state.upper() if state else desired.upper()
     if entry.get('dependency_health') == 'blocked':
-        return 'BLOCKED'
+        return 'WAITING' if entry.get('owned_by') == 'automation' else 'BLOCKED'
     if 'degraded' in state or 'stale' in state:
         return 'DEGRADED'
     return 'IDLE'
@@ -461,6 +461,7 @@ def read_runtime_controls() -> dict[str, dict[str, Any]]:
         entry['category'] = comp.category
         entry['kind'] = comp.kind
         entry['dependencies'] = comp.dependencies
+        entry['owned_by'] = 'automation' if comp.id in {'coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop'} else 'manual'
         entry['notes'] = comp.notes
         entry['start_script'] = comp.start_script
         entry['inspect_target'] = str(comp.inspect_target) if comp.inspect_target else None
