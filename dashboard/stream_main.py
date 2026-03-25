@@ -111,6 +111,14 @@ def stream_view():
     last_manual_flatten = _fmt_meta_ts((v2_audit or {}).get('last_manual_flatten_at'))
     log_outputs_status = 'RUNNING' if runtime.get('market_broadcaster', {}).get('running') else 'IDLE'
     log_outputs_time = _fmt_meta_ts((runtime.get('market_broadcaster') or {}).get('log_meta', {}).get('updated_at'))
+    trader_mode = str(v2_audit.get('mode', 'watch')).upper()
+    active_slot_count = int(v2_audit.get('active_slot_count', len(open_positions_v2)) or 0)
+    closed_trade_count = int(v2_audit.get('closed_trade_count', 0) or 0)
+    win_count = int(v2_audit.get('win_count', 0) or 0)
+    loss_count = int(v2_audit.get('loss_count', 0) or 0)
+    high_quality_signals = int(metrics.get('high_quality_signals', 0) or 0)
+    total_signals = int(metrics.get('total_signals', 0) or 0)
+    trader_runtime_state = str(runtime.get('paper_trader_v2', {}).get('display_state', trader_status)).upper()
 
     with ui.column().classes('stream-stage w-full h-screen gap-2 p-3'):
         with ui.card().classes('top-bar w-full stream-hero stage-top'):
@@ -185,9 +193,9 @@ def stream_view():
                                         ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-healthy')
                                     else:
                                         ui.label(f'SLOT {idx + 1}').classes('signal-symbol')
-                                        ui.label('No active position').classes('signal-meta')
+                                        ui.label('Waiting for qualified entry').classes('signal-meta')
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
-                                        ui.label('EMPTY').classes('status-pill status-info')
+                                        ui.label('STANDBY').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-focus-block'):
                         ui.label('TRADER FOCUS').classes('mission-card-title focus-title')
@@ -199,26 +207,36 @@ def stream_view():
                                 with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
                                     if opp:
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
+                                        ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('status', 'watch')).upper()}").classes('signal-meta')
                                         ui.label(f"mom {fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
                                         ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
-                                        ui.label('WATCH').classes('status-pill status-info')
+                                        ui.label(str(opp.get('status', 'WATCH')).upper()).classes('status-pill status-info')
                                     else:
                                         ui.label(f'LEAD SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('No qualified lead').classes('signal-meta')
+                                        ui.label('Scanner awaiting stronger setup').classes('signal-meta')
                                         ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-warning')
 
                     with ui.card().classes('mission-overlay-card w-full center-tight-panel stream-context-block'):
                         ui.label('TRADER CONTEXT').classes('mission-card-title focus-title')
-                        with ui.row().classes('w-full justify-between items-center wrap'):
-                            ui.label(f"MODE • PAPER-FIRST / {loop_status}").classes('mission-card-meta')
-                            ui.label(f"OPEN POSITIONS • {len(active_slots)}").classes('mission-card-meta')
-                            ui.label(f"OPEN SLOTS • {max(0, 4 - len(active_slots))}").classes('mission-card-meta')
-                            ui.label('TRIGGER • MOMENTUM + PERSISTENCE + VOLUME').classes('mission-card-meta')
+                        with ui.column().classes('w-full gap-1'):
+                            with ui.row().classes('w-full justify-between items-center wrap'):
+                                ui.label(f"MODE • {trader_mode}").classes('mission-card-meta')
+                                ui.label(f"TRADER • {trader_runtime_state}").classes('mission-card-meta')
+                                ui.label(f"LOOP • {loop_status}").classes('mission-card-meta')
+                            with ui.row().classes('w-full justify-between items-center wrap'):
+                                ui.label(f"ACTIVE SLOTS • {active_slot_count}/3").classes('mission-card-meta')
+                                ui.label(f"HQ SIGNALS • {high_quality_signals}/{total_signals}").classes('mission-card-meta')
+                                ui.label(f"CLOSED • {closed_trade_count}").classes('mission-card-meta')
+                            with ui.row().classes('w-full justify-between items-center wrap'):
+                                ui.label(f"W/L • {win_count}-{loss_count}").classes('mission-card-meta')
+                                ui.label('TRIGGER • MOMENTUM + PERSISTENCE').classes('mission-card-meta')
+                                ui.label(f"LEADS • {len(focus_items)}").classes('mission-card-meta')
 
                     with ui.row().classes('w-full justify-between items-center chart-footer'):
-                        ui.label('trader-centered stream interface • pass 1 skeleton').classes('panel-subtitle')
-                        ui.label(f"captured {metrics.get('total_signals', 0)} • active slots {len(active_slots)} • closed {v2_audit.get('closed_trade_count', 0)}").classes('panel-subtitle')
+                        ui.label(f"{trader_mode} mode • {active_slot_count} active slots • {len(focus_items)} leads in watch").classes('panel-subtitle')
+                        ui.label(f"scanner {total_signals} • high-quality {high_quality_signals} • closed {closed_trade_count}").classes('panel-subtitle')
 
 
             with ui.column().classes('stream-right gap-2 compact-right-rail'):
