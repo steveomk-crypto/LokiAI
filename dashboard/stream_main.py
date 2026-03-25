@@ -222,14 +222,14 @@ def stream_view():
                                         ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
                                         ui.label('STANDBY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-focus-block'):
+                    with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-focus-block focus-shell'):
                         ui.label('TRADER FOCUS').classes('mission-card-title focus-title')
-                        with ui.row().classes('w-full gap-2 wrap'):
+                        with ui.row().classes('w-full gap-2 wrap focus-row'):
                             for idx in range(3):
                                 opp = focus_items[idx] if idx < len(focus_items) else None
                                 chart = (opp or {}).get('candles') or _candidate_candles(btc_candles, idx + 1.5)
                                 shell_cls = 'mini-candle-shell compact-slot' if opp else 'mini-candle-shell compact-slot ghost-shell'
-                                with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
+                                with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem] focus-card-fit'):
                                     if opp:
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('source', opp.get('status', 'watch'))).upper()}").classes('signal-meta')
@@ -425,6 +425,22 @@ def run():
             .stream-center-header { flex: 0 0 auto; }
             .stream-active-block { flex: 0 0 auto; }
             .stream-focus-block { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+            .focus-shell {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+            }
+            .focus-row {
+                flex: 1 1 auto;
+                min-height: 0;
+                align-items: stretch;
+            }
+            .focus-card-fit {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                overflow: hidden;
+            }
             .stream-context-block { flex: 0 0 auto; }
             .chart-footer { flex: 0 0 auto; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
             .mini-candle-shell {
