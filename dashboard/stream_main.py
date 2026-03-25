@@ -194,18 +194,18 @@ def stream_view():
                         featured = focus_items[0] if focus_items else None
                         supporting = focus_items[1:4]
 
-                        with ui.card().classes('glass-panel w-full p-[0.24rem] mb-1'):
+                        with ui.card().classes('glass-panel w-full p-[0.12rem] mb-[0.18rem]'):
                             if featured:
                                 chart = _candidate_candles(btc_candles, 1.5)
                                 ui.label(str(featured.get('token', '?'))).classes('signal-symbol text-sm')
                                 ui.label(f"{fmt_num(featured.get('momentum'), 1)}% • p{featured.get('persistence', 0)} • {featured.get('trend', '–')}").classes('signal-meta text-xs')
-                                ui.html(f'<div class="mini-candle-shell compact-focus">{_candles_svg(chart, width=250, height=70)}</div>').classes('w-full')
+                                ui.html(f'<div class="mini-candle-shell compact-focus lead-focus">{_candles_svg(chart, width=250, height=48)}</div>').classes('w-full')
                                 ui.label('READY').classes('status-pill status-healthy text-[10px]')
                             else:
                                 ghost = _candidate_candles(btc_candles, 1.5)
                                 ui.label('NO LEAD CANDIDATE').classes('signal-symbol text-sm')
                                 ui.label('Waiting for a qualified setup').classes('signal-meta text-xs')
-                                ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(ghost, width=250, height=70)}</div>').classes('w-full')
+                                ui.html(f'<div class="mini-candle-shell compact-focus lead-focus ghost-shell">{_candles_svg(ghost, width=250, height=48)}</div>').classes('w-full')
                                 ui.label('IDLE').classes('status-pill status-info text-[10px]')
 
                         with ui.column().classes('w-full gap-[0.2rem]'):
@@ -406,6 +406,9 @@ def run():
             }
             .compact-focus {
                 min-height: 34px;
+            }
+            .lead-focus {
+                min-height: 42px;
             }
             .focus-panel {
                 padding: 0.5rem !important;
