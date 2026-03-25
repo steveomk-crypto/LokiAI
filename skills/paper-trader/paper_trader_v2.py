@@ -101,39 +101,45 @@ def _load_trader_state() -> dict:
     return state
 
 
-def _candidate_tier(candidate: dict, ticker: dict) -> str:
+def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str]:
     score = float(candidate.get('score') or 0.0)
     freshness = ticker.get('freshness_seconds')
     freshness = float(freshness) if freshness is not None else None
     drift = float(ticker.get('drift_300s') or 0.0)
+    drift_900s = float(ticker.get('drift_900s') or 0.0)
     trend = (candidate.get('trend') or candidate.get('status') or '').lower()
     momentum = float(candidate.get('momentum') or 0.0)
     persistence = int(candidate.get('persistence') or 0)
 
     if freshness is None or freshness > FRESHNESS_LIMIT_SECONDS:
-        return ''
+        return '', 'stale_freshness'
     if trend in {'isolated spike', 'fading', 'stalling'}:
-        return ''
-    if drift < -0.12:
-        return ''
+        return '', f'trend_block:{trend}'
+    if drift < -0.20:
+        return '', 'drift_300_too_negative'
+    if drift_900s < -0.10:
+        return '', 'drift_900_too_negative'
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
-        return ''
-
+        return '', 'fake_pump_guard'
+    if persistence < TIER_B_MIN_PERSISTENCE:
+        return '', 'insufficient_persistence'
     if persistence == 4 and score < 0.56:
-        return ''
+        return '', 'borderline_score_at_p4'
 
     strong_setup = score >= TIER_A_MIN_SCORE and persistence >= TIER_A_MIN_PERSISTENCE
     valid_setup = score >= TIER_B_MIN_SCORE and persistence >= TIER_B_MIN_PERSISTENCE
 
     if strong_setup and drift >= TIER_A_MIN_DRIFT_300S:
-        return 'A'
-    if strong_setup and drift >= 0:
-        return 'B'
+        return 'A', 'tier_a_full_confirmation'
+    if strong_setup and drift >= -0.02 and drift_900s >= 0:
+        return 'A', 'tier_a_persistent_recovery'
+    if strong_setup and drift >= -0.05 and drift_900s >= 0.10:
+        return 'B', 'tier_b_from_higher_tf_support'
     if valid_setup and drift >= TIER_B_MIN_DRIFT_300S:
-        return 'B'
-    if valid_setup and drift >= -0.02:
-        return 'B'
-    return ''
+        return 'B', 'tier_b_full_confirmation'
+    if valid_setup and drift >= -0.02 and drift_900s >= 0:
+        return 'B', 'tier_b_flat_but_supported'
+    return '', 'tier_filter_failed'
 
 
 def _cooldown_blocked(symbol: str, state: dict) -> bool:
@@ -212,18 +218,19 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
                 'reason': 'cooldown',
             })
             continue
-        tier = _candidate_tier(item, ticker)
+        tier, tier_reason = _candidate_tier(item, ticker)
         if not tier:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
-                'reason': 'tier_filter_failed',
+                'reason': tier_reason,
             })
             continue
         accepted_payload = {
             **candidate_payload,
             'decision': 'accept',
             'tier_candidate': tier,
+            'tier_reason': tier_reason,
             'entry_reason': 'scanner_rank_plus_websocket_confirmation',
         }
         _append_jsonl(V2_CANDIDATE_EVALS_PATH, accepted_payload)
