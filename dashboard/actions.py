@@ -83,15 +83,34 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
 
     if component_id == 'main_loop':
         if action == 'start':
-            return run_background_command(
+            ok1, msg1 = run_background_command(
                 './scripts/market_cycle_daemon.sh',
                 str(root / 'system_logs' / 'market_cycle_daemon.pid'),
                 str(root / 'system_logs' / 'market_loop_cron.log'),
             )
+            ok2, msg2 = run_background_command(
+                './scripts/output_cycle_daemon.sh',
+                str(root / 'system_logs' / 'output_cycle.pid'),
+                str(root / 'system_logs' / 'output_cycle.log'),
+            )
+            ok3, msg3 = run_background_command(
+                './scripts/telegram_summary_daemon.sh',
+                str(root / 'system_logs' / 'telegram_summary.pid'),
+                str(root / 'system_logs' / 'telegram_summary.log'),
+            )
+            return (ok1 and ok2 and ok3), f"core: {msg1} | outputs: {msg2} | telegram: {msg3}"
         if action == 'run_cycle':
-            return run_script('run_market_cycle.sh')
-        if action == 'stop' and runtime.get(component_id, {}).get('pid_file'):
-            return stop_pid(str(runtime[component_id]['pid_file']))
+            return run_script('run_core_cycle.sh')
+        if action == 'stop':
+            msgs = []
+            ok = True
+            for cid in ['main_loop', 'output_cycle', 'telegram_summary_cycle']:
+                pid_file = runtime.get(cid, {}).get('pid_file')
+                if pid_file:
+                    stopped, msg = stop_pid(str(pid_file))
+                    ok = ok and stopped
+                    msgs.append(f"{cid}: {msg}")
+            return ok, ' | '.join(msgs) if msgs else 'No automation daemons found'
         return open_path(comp.inspect_target or root / 'system_logs' / 'market_loop_cron.log')
 
     if component_id == 'paper_trader_v2' and action == 'flatten':
