@@ -189,43 +189,24 @@ def stream_view():
                                         ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('EMPTY').classes('status-pill status-info')
 
-                    with ui.card().classes('mission-overlay-card w-full focus-panel ultra-compact-focus-panel extreme-focus-panel center-tight-panel stream-focus-block'):
-                        ui.label('TRADER FOCUS').classes('mission-card-title focus-title text-[10px]')
-                        featured = focus_items[0] if focus_items else None
-                        supporting = focus_items[1:4]
-
-                        with ui.card().classes('glass-panel w-full p-[0.12rem] mb-[0.18rem]'):
-                            if featured:
-                                chart = _candidate_candles(btc_candles, 1.5)
-                                ui.label(str(featured.get('token', '?'))).classes('signal-symbol text-sm')
-                                ui.label(f"{fmt_num(featured.get('momentum'), 1)}% • p{featured.get('persistence', 0)} • {featured.get('trend', '–')}").classes('signal-meta text-xs')
-                                ui.html(f'<div class="mini-candle-shell compact-focus lead-focus">{_candles_svg(chart, width=250, height=48)}</div>').classes('w-full')
-                                ui.label('READY').classes('status-pill status-healthy text-[10px]')
-                            else:
-                                ghost = _candidate_candles(btc_candles, 1.5)
-                                ui.label('NO LEAD CANDIDATE').classes('signal-symbol text-sm')
-                                ui.label('Waiting for a qualified setup').classes('signal-meta text-xs')
-                                ui.html(f'<div class="mini-candle-shell compact-focus lead-focus ghost-shell">{_candles_svg(ghost, width=250, height=48)}</div>').classes('w-full')
-                                ui.label('IDLE').classes('status-pill status-info text-[10px]')
-
-                        with ui.column().classes('w-full gap-[0.2rem]'):
+                    with ui.card().classes('mission-overlay-card w-full compact-active-panel stream-focus-block'):
+                        ui.label('TRADER FOCUS').classes('mission-card-title focus-title')
+                        with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
-                                opp = supporting[idx] if idx < len(supporting) else None
-                                with ui.card().classes('glass-panel w-full p-[0.18rem]'):
-                                    with ui.row().classes('w-full items-center justify-between gap-2 no-wrap'):
-                                        with ui.column().classes('gap-0 min-w-[90px]'):
-                                            if opp:
-                                                ui.label(str(opp.get('token', '?'))).classes('signal-symbol text-xs')
-                                                ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)}").classes('signal-meta text-[10px]')
-                                            else:
-                                                ui.label(f'OPEN SLOT {idx + 2}').classes('signal-symbol text-xs')
-                                                ui.label('Awaiting candidate').classes('signal-meta text-[10px]')
-                                        with ui.row().classes('items-center gap-2 flex-1 justify-end'):
-                                            chart = _candidate_candles(btc_candles, idx + 2.4)
-                                            ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(chart, width=150, height=44)}</div>').classes('w-[150px]')
-                                            status = 'WATCH' if opp else 'IDLE'
-                                            badge_cls = 'status-info' if status == 'WATCH' else 'status-warning'
-                                            ui.label(status).classes(f'status-pill {badge_cls} text-[10px]')
+                                opp = focus_items[idx] if idx < len(focus_items) else None
+                                chart = _candidate_candles(btc_candles, idx + 1.5)
+                                shell_cls = 'mini-candle-shell compact-slot' if opp else 'mini-candle-shell compact-slot ghost-shell'
+                                with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
+                                    if opp:
+                                        ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
+                                        ui.label(f"mom {fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.label('WATCH').classes('status-pill status-info')
+                                    else:
+                                        ui.label(f'LEAD SLOT {idx + 1}').classes('signal-symbol')
+                                        ui.label('No qualified lead').classes('signal-meta')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.label('IDLE').classes('status-pill status-warning')
 
                     with ui.card().classes('mission-overlay-card w-full center-tight-panel stream-context-block'):
                         ui.label('TRADER CONTEXT').classes('mission-card-title focus-title')
