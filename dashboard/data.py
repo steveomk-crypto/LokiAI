@@ -486,13 +486,19 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
     if 'market_scanner' in runtime and market_state.get('computed_at') and _is_recent(market_state.get('computed_at'), 300):
         runtime['market_scanner']['state'] = 'recently completed'
         runtime['market_scanner']['last_success_at'] = market_state.get('computed_at')
+    paper_trader_v2_audit = load_paper_trader_v2_audit() if 'paper_trader_v2' in runtime else {}
+    paper_trader_v2_ts = paper_trader_v2_audit.get('timestamp')
+    if 'paper_trader_v2' in runtime and paper_trader_v2_ts and _is_recent(paper_trader_v2_ts, 180):
+        trader_mode = str(paper_trader_v2_audit.get('mode') or 'watch').lower()
+        runtime['paper_trader_v2']['state'] = f'v2 {trader_mode}'
+        runtime['paper_trader_v2']['last_success_at'] = paper_trader_v2_ts
+        runtime['paper_trader_v2']['last_result'] = f"{int(paper_trader_v2_audit.get('active_slot_count', 0) or 0)} active slot(s)"
     if 'main_loop' in runtime and _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
         runtime['main_loop']['state'] = 'active recently'
     if 'main_loop' in runtime and loop_info.get('last_error'):
         runtime['main_loop']['last_error'] = loop_info.get('last_error')
     automation_stage_map = {
         'market_scanner': 'market_scanner',
-        'paper_trader_v2': 'paper_trader',
         'position_manager': 'position_manager',
     }
     for component_id, task_name in automation_stage_map.items():
