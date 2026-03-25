@@ -18,6 +18,7 @@ V2_CANDIDATE_EVALS_PATH = TRADES_DIR / 'v2_candidate_evaluations.jsonl'
 V2_POSITION_SNAPSHOTS_PATH = TRADES_DIR / 'v2_position_snapshots.jsonl'
 V2_EXIT_EVENTS_PATH = TRADES_DIR / 'v2_exit_events.jsonl'
 V2_AUDIT_SUMMARY_PATH = TRADES_DIR / 'paper_trader_v2_audit_summary.json'
+V2_FUNNEL_SUMMARY_PATH = TRADES_DIR / 'v2_entry_funnel_summary.json'
 
 MAX_SLOTS = 3
 TIER_A_MIN_SCORE = 0.52
@@ -531,6 +532,28 @@ def _log_position_snapshots(open_positions: list[dict]) -> None:
         })
 
 
+def _build_funnel_summary(market_state: dict, eval_lines: list[dict], shortlist: list[dict], new_positions: list[dict], ws_state: dict) -> dict:
+    reject_reasons: dict[str, int] = {}
+    for row in eval_lines:
+        if row.get('decision') == 'reject':
+            reason = str(row.get('reason') or 'unknown')
+            reject_reasons[reason] = reject_reasons.get(reason, 0) + 1
+    return {
+        'timestamp': _now_iso(),
+        'websocket_connected': bool(ws_state.get('connected')),
+        'scanner_signal_count': len(market_state.get('top_opportunities', []) or []),
+        'scanner_tokens': [str(item.get('token') or '').upper() for item in (market_state.get('top_opportunities') or [])],
+        'candidate_eval_count': len(eval_lines),
+        'accepted_candidate_count': sum(1 for row in eval_lines if row.get('decision') == 'accept'),
+        'rejected_candidate_count': sum(1 for row in eval_lines if row.get('decision') == 'reject'),
+        'reject_reasons': reject_reasons,
+        'shortlist_count': len(shortlist),
+        'shortlist_tokens': [c.get('symbol') for c in shortlist],
+        'new_positions_count': len(new_positions),
+        'new_position_tokens': [p.get('token') for p in new_positions],
+    }
+
+
 def _build_audit_summary(open_positions: list[dict], trades_log: list[dict], summary: dict) -> dict:
     closed_count = len(trades_log)
     wins = [t for t in trades_log if float(t.get('pnl_percent') or 0.0) > 0]
@@ -556,6 +579,12 @@ def paper_trader_v2() -> dict:
     state = _load_trader_state()
     open_positions = _normalize_open_positions(_load_json(V2_OPEN_POSITIONS_PATH, []))
     trades_log = _load_json(V2_TRADES_LOG_PATH, [])
+    prior_eval_lines = 0
+    if V2_CANDIDATE_EVALS_PATH.exists():
+        try:
+            prior_eval_lines = len(V2_CANDIDATE_EVALS_PATH.read_text(encoding='utf-8').splitlines())
+        except Exception:
+            prior_eval_lines = 0
 
     refreshed_positions, closed_positions = _refresh_positions(open_positions, tickers)
     if closed_positions:
@@ -579,11 +608,20 @@ def paper_trader_v2() -> dict:
 
     _log_position_snapshots(updated_positions)
     audit_summary = _build_audit_summary(updated_positions, trades_log, summary)
+    eval_lines = []
+    if V2_CANDIDATE_EVALS_PATH.exists():
+        try:
+            all_lines = V2_CANDIDATE_EVALS_PATH.read_text(encoding='utf-8').splitlines()
+            eval_lines = [json.loads(line) for line in all_lines[prior_eval_lines:] if line.strip()]
+        except Exception:
+            eval_lines = []
+    funnel_summary = _build_funnel_summary(market_state, eval_lines, shortlist, new_positions, ws_state)
 
     _write_json(V2_OPEN_POSITIONS_PATH, updated_positions)
     _write_json(V2_TRADES_LOG_PATH, trades_log)
     _write_json(V2_STATE_PATH, state)
     _write_json(V2_AUDIT_SUMMARY_PATH, audit_summary)
+    _write_json(V2_FUNNEL_SUMMARY_PATH, funnel_summary)
 
     return {
         'summary': summary,
@@ -595,6 +633,7 @@ def paper_trader_v2() -> dict:
         'closed_positions': closed_positions,
         'new_positions': new_positions,
         'audit_summary': audit_summary,
+        'funnel_summary': funnel_summary,
     }
 
 
