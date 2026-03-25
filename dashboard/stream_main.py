@@ -235,13 +235,13 @@ def stream_view():
                                         ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('source', opp.get('status', 'watch'))).upper()}").classes('signal-meta')
                                         ui.label(f"mom {fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
                                         ui.label(f"{str(opp.get('product_id', '–'))} • drift {fmt_num((opp.get('drift_300s') or 0), 3)}% • fresh {fmt_num(opp.get('freshness_seconds'), 1)}s").classes('signal-meta')
-                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=228, height=72)}</div>').classes('w-full')
                                         ui.label(str(opp.get('status', opp.get('source', 'WATCH'))).upper()).classes('status-pill status-info')
                                     else:
                                         ui.label(f'LEAD SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('No qualified lead').classes('signal-meta')
                                         ui.label('Scanner awaiting stronger setup').classes('signal-meta')
-                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=240, height=82)}</div>').classes('w-full')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=228, height=72)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-warning')
 
                     with ui.card().classes('mission-overlay-card w-full center-tight-panel stream-context-block'):
@@ -440,6 +440,7 @@ def run():
                 flex-direction: column;
                 min-height: 0;
                 overflow: hidden;
+                gap: 0.08rem;
             }
             .stream-context-block { flex: 0 0 auto; }
             .chart-footer { flex: 0 0 auto; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
