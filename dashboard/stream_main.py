@@ -185,17 +185,20 @@ def stream_view():
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
                                 slot = active_slots[idx] if idx < len(active_slots) else None
-                                chart = _candidate_candles(btc_candles, idx + 1)
+                                chart = load_product_candles(str(slot.get('product_id')), limit=24).get('candles', []) if slot and slot.get('product_id') else _candidate_candles(btc_candles, idx + 1)
+                                shell_cls = 'mini-candle-shell compact-slot' if slot else 'mini-candle-shell compact-slot ghost-shell'
                                 with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
                                     if slot:
                                         ui.label(str(slot.get('token', '?'))).classes('signal-symbol')
-                                        ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • pnl {fmt_num(slot.get('pnl_percent'), 2)}%").classes('signal-meta')
-                                        ui.html(f'<div class="mini-candle-shell compact-slot">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.label(f"entry {fmt_num(slot.get('entry_price'), 4)} • live {fmt_num(slot.get('current_price'), 4)}").classes('signal-meta')
+                                        ui.label(f"pnl {fmt_num(slot.get('pnl_percent'), 2)}% • {int(slot.get('time_in_trade_minutes', 0) or 0)}m • {str(slot.get('product_id', '–'))}").classes('signal-meta')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label(str(slot.get('trade_state', 'ACTIVE')).upper()).classes('status-pill status-healthy')
                                     else:
                                         ui.label(f'SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('Waiting for qualified entry').classes('signal-meta')
-                                        ui.html(f'<div class="mini-candle-shell compact-slot ghost-shell">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
+                                        ui.label('No live position in this slot').classes('signal-meta')
+                                        ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
                                         ui.label('STANDBY').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full compact-active-panel center-tight-panel stream-focus-block'):
