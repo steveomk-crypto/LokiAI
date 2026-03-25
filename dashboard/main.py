@@ -122,6 +122,11 @@ def operator_view():
     alert_count = len(state['status_flags'])
     runtime = read_runtime_controls()
 
+    loop_recent = bool(loop_info.get('last_cycle_started_at'))
+    scanner_recent = bool(loop_info.get('task_completed_at', {}).get('market_scanner'))
+    trader_recent = bool(loop_info.get('task_completed_at', {}).get('paper_trader'))
+    automation_active = bool(runtime['main_loop']['running']) or loop_recent or scanner_recent or trader_recent
+
     with ui.column().classes('w-full gap-4'):
         with ui.card().classes('top-bar w-full'):
             with ui.row().classes('w-full justify-between items-center'):
@@ -143,7 +148,7 @@ def operator_view():
 
         with ui.grid(columns=3).classes('w-full gap-4'):
             with _panel('Live Machine State', 'What matters right now'):
-                _telemetry_row('Automation', 'running' if runtime['main_loop']['running'] else 'stopped', 'status-healthy' if runtime['main_loop']['running'] else 'status-danger')
+                _telemetry_row('Automation', 'running' if automation_active else 'stopped', 'status-healthy' if automation_active else 'status-danger')
                 _telemetry_row('Scanner freshness', scanner_text, scanner_class)
                 _telemetry_row('Websocket', 'online' if ws_state.get('connected') else 'offline', 'status-healthy' if ws_state.get('connected') else 'status-danger')
                 _telemetry_row('Last cycle start', loop_info.get('last_cycle_started_at') or '–', 'status-healthy' if loop_info.get('last_cycle_started_at') else 'status-warning')
