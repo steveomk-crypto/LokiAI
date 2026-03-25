@@ -241,7 +241,12 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
         return run_script('flatten_paper_trader.sh')
 
     if component_id == 'position_manager' and action == 'start':
-        return run_script('run_market_cycle.sh')
+        root = run_root()
+        result = subprocess.run(['python3', 'autonomous_market_loop.py', '--task', 'position_manager'], cwd=root, capture_output=True, text=True)
+        if result.returncode != 0:
+            return False, (result.stderr or result.stdout or 'Failed to run position_manager').strip()
+        output = (result.stdout or '').strip()
+        return True, output.splitlines()[0].strip() if output else 'Ran position_manager'
 
     if component_id == 'x_autoposter' and action == 'draft':
         result = generate_draft('build_in_public')
