@@ -189,7 +189,7 @@ def stream_view():
                     ui.label('Posting → controlled').classes('text-sm panel-row')
 
             with ui.column().classes('stream-center gap-2'):
-                with ui.card().classes('glass-panel cockpit-hero w-full h-full'):
+                with ui.card().classes('glass-panel cockpit-hero w-full h-full watchboard-shell'):
                     active_slots = open_positions_v2[:3]
                     focus_items = focus_leads[:3]
 
@@ -417,11 +417,16 @@ def run():
                 font-size: 0.74rem;
                 margin-top: 0.18rem;
             }
+            .watchboard-shell {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+            }
             .stream-center-header { flex: 0 0 auto; }
-            .stream-active-block { flex: 0 0 18%; }
-            .stream-focus-block { flex: 0 0 auto; }
-            .stream-context-block { flex: 1 1 auto; }
-            .chart-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
+            .stream-active-block { flex: 0 0 auto; }
+            .stream-focus-block { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+            .stream-context-block { flex: 0 0 auto; }
+            .chart-footer { flex: 0 0 auto; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.25rem; }
             .mini-candle-shell {
                 width: 100%;
                 min-height: 100px;
