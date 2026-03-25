@@ -218,29 +218,92 @@ def build_coinbase_live_movers(tickers: dict[str, dict[str, Any]], limit: int = 
     return rows[:limit]
 
 
-def build_focus_leads(market_state: dict[str, Any], products: list[dict[str, Any]], tickers: dict[str, dict[str, Any]], limit: int = 3) -> list[dict[str, Any]]:
+def build_focus_leads(market_state: dict[str, Any], products: list[dict[str, Any]], tickers: dict[str, dict[str, Any]], scanner_entries: list[dict[str, Any]] | None = None, limit: int = 3) -> list[dict[str, Any]]:
     top_opps = market_state.get('top_opportunities', []) or []
     valid_products = {str(row.get('product_id') or row.get('id') or '').upper() for row in products if row.get('product_id') or row.get('id')}
     leads: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    scanner_entries = scanner_entries or []
 
-    for opp in top_opps:
-        token = str(opp.get('token') or '').upper().strip()
+    def add_lead(raw: dict[str, Any], source: str) -> bool:
+        token = str(raw.get('token') or raw.get('base_currency') or '').upper().strip()
         if not token:
-            continue
-        product_id = f'{token}-USD'
+            return False
+        product_id = str(raw.get('product_id') or f'{token}-USD').upper()
         if valid_products and product_id not in valid_products:
-            continue
+            return False
+        if product_id in seen:
+            return False
 
         ticker = tickers.get(product_id, {}) if isinstance(tickers, dict) else {}
-        lead = dict(opp)
+        lead = dict(raw)
+        lead['token'] = token
         lead['product_id'] = product_id
         lead['ticker'] = ticker
         lead['candles'] = load_product_candles(product_id, limit=24).get('candles', [])
-        lead['freshness_seconds'] = ticker.get('freshness_seconds')
-        lead['drift_300s'] = ticker.get('drift_300s')
+        lead['freshness_seconds'] = ticker.get('freshness_seconds', raw.get('freshness_seconds'))
+        lead['drift_300s'] = ticker.get('drift_300s', raw.get('drift_300s'))
+        lead['volume'] = raw.get('volume', ticker.get('volume_24h'))
+        lead['trend'] = raw.get('trend', raw.get('momentum_trend', 'steady'))
+        lead['status'] = raw.get('status', source)
+        lead['source'] = source
         leads.append(lead)
-        if len(leads) >= limit:
-            break
+        seen.add(product_id)
+        return True
+
+    for opp in top_opps:
+        if add_lead(opp, 'scanner') and len(leads) >= limit:
+            return leads
+
+    live_candidates = [
+        row for row in (tickers.values() if isinstance(tickers, dict) else [])
+        if row.get('price') is not None and row.get('freshness_seconds') is not None and float(row.get('freshness_seconds') or 10**9) <= 180
+    ]
+    live_candidates.sort(
+        key=lambda row: (
+            abs(float(row.get('drift_300s') or 0.0)),
+            float(row.get('volume_24h') or 0.0),
+            -float(row.get('freshness_seconds') or 10**9),
+        ),
+        reverse=True,
+    )
+    for row in live_candidates:
+        candidate = {
+            'token': row.get('base_currency'),
+            'product_id': row.get('product_id'),
+            'score': abs(float(row.get('drift_300s') or 0.0)),
+            'momentum': float(row.get('drift_900s') or row.get('drift_300s') or 0.0),
+            'persistence': 1,
+            'status': 'live mover',
+            'trend': 'accelerating' if float(row.get('drift_300s') or 0.0) > 0 else 'fading' if float(row.get('drift_300s') or 0.0) < 0 else 'steady',
+            'volume': row.get('volume_24h'),
+            'freshness_seconds': row.get('freshness_seconds'),
+            'drift_300s': row.get('drift_300s'),
+        }
+        if add_lead(candidate, 'live_mover') and len(leads) >= limit:
+            return leads
+
+    latest_by_token: dict[str, dict[str, Any]] = {}
+    for row in scanner_entries:
+        token = str(row.get('token') or '').upper().strip()
+        if not token or not row.get('coinbase_actionable', True):
+            continue
+        previous = latest_by_token.get(token)
+        if not previous or str(row.get('timestamp') or '') >= str(previous.get('timestamp') or ''):
+            latest_by_token[token] = row
+
+    persistence_candidates = sorted(
+        latest_by_token.values(),
+        key=lambda row: (
+            float(row.get('persistence') or 0.0),
+            float(row.get('score') or 0.0),
+            float(row.get('momentum') or 0.0),
+        ),
+        reverse=True,
+    )
+    for row in persistence_candidates:
+        if add_lead(row, 'persistence') and len(leads) >= limit:
+            return leads
 
     return leads
 
@@ -559,7 +622,7 @@ def compute_dashboard_state() -> dict[str, Any]:
         'scanner_history': build_scanner_run_history(scanner_entries),
         'persistence_summary': build_persistence_summary(scanner_entries),
         'live_movers': build_coinbase_live_movers(tickers),
-        'focus_leads': build_focus_leads(market_state, products, tickers),
+        'focus_leads': build_focus_leads(market_state, products, tickers, scanner_entries=scanner_entries),
         'universe_health': build_coinbase_universe_health(products, tickers, ws_state),
         'main_loop_status': build_main_loop_status(SYSTEM_LOG_DIR / 'market_loop_cron.log'),
         'status_flags': build_status_flags(market_state, ws_state),

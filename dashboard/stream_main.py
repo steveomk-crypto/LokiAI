@@ -208,11 +208,11 @@ def stream_view():
                                 with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
                                     if opp:
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
-                                        ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('status', 'watch')).upper()}").classes('signal-meta')
+                                        ui.label(f"score {fmt_num(opp.get('score'), 3)} • {str(opp.get('source', opp.get('status', 'watch'))).upper()}").classes('signal-meta')
                                         ui.label(f"mom {fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
-                                        ui.label(f"{str(opp.get('product_id', '–'))} • drift {fmt_num((opp.get('drift_300s') or 0), 3)}%").classes('signal-meta')
+                                        ui.label(f"{str(opp.get('product_id', '–'))} • drift {fmt_num((opp.get('drift_300s') or 0), 3)}% • fresh {fmt_num(opp.get('freshness_seconds'), 1)}s").classes('signal-meta')
                                         ui.html(f'<div class="{shell_cls}">{_candles_svg(chart, width=260, height=92)}</div>').classes('w-full')
-                                        ui.label(str(opp.get('status', 'WATCH')).upper()).classes('status-pill status-info')
+                                        ui.label(str(opp.get('status', opp.get('source', 'WATCH'))).upper()).classes('status-pill status-info')
                                     else:
                                         ui.label(f'LEAD SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('No qualified lead').classes('signal-meta')
