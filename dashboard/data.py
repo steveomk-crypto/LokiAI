@@ -25,7 +25,7 @@ MARKET_STATE_PATH = CACHE_DIR / 'market_state.json'
 COINBASE_WS_STATE_PATH = CACHE_DIR / 'coinbase_ws_state.json'
 COINBASE_PRODUCTS_PATH = CACHE_DIR / 'coinbase_products.json'
 COINBASE_TICKERS_PATH = CACHE_DIR / 'coinbase_tickers.json'
-BTC_CANDLES_CACHE_PATH = CACHE_DIR / 'btc_usd_candles_5m.json'
+BTC_CANDLES_CACHE_PATH = CACHE_DIR / 'btc_usd_candles_1m.json'
 OPEN_POSITIONS_PATH = WORKDIR / 'paper_trades' / 'open_positions.json'
 OPEN_POSITIONS_V2_PATH = WORKDIR / 'paper_trades' / 'open_positions_v2.json'
 PAPER_TRADER_V2_AUDIT_PATH = WORKDIR / 'paper_trades' / 'paper_trader_v2_audit_summary.json'
@@ -104,10 +104,11 @@ def load_coinbase_tickers() -> dict[str, dict[str, Any]]:
     return _load_json(COINBASE_TICKERS_PATH, {})
 
 
-def load_product_candles(product_id: str, limit: int = 48) -> dict[str, Any]:
+def load_product_candles(product_id: str, limit: int = 48, granularity: int = 60) -> dict[str, Any]:
     safe_name = product_id.lower().replace('-', '_')
-    cache_path = CACHE_DIR / f'{safe_name}_candles_5m.json'
-    url = f'https://api.exchange.coinbase.com/products/{product_id}/candles?granularity=300'
+    granularity_label = f'{int(granularity // 60)}m' if granularity % 60 == 0 else f'{granularity}s'
+    cache_path = CACHE_DIR / f'{safe_name}_candles_{granularity_label}.json'
+    url = f'https://api.exchange.coinbase.com/products/{product_id}/candles?granularity={granularity}'
     try:
         response = requests.get(url, timeout=20)
         response.raise_for_status()
@@ -125,15 +126,15 @@ def load_product_candles(product_id: str, limit: int = 48) -> dict[str, Any]:
                     'volume': volume,
                 }
             )
-        payload = {'pair': product_id, 'granularity': 300, 'candles': candles}
+        payload = {'pair': product_id, 'granularity': granularity, 'candles': candles}
         _atomic_json_write(cache_path, payload)
         return payload
     except Exception:
-        return _load_json(cache_path, {'pair': product_id, 'granularity': 300, 'candles': []})
+        return _load_json(cache_path, {'pair': product_id, 'granularity': granularity, 'candles': []})
 
 
 def load_btc_candles(limit: int = 48) -> dict[str, Any]:
-    return load_product_candles('BTC-USD', limit=limit)
+    return load_product_candles('BTC-USD', limit=limit, granularity=60)
 
 
 def load_open_positions() -> list[dict[str, Any]]:
@@ -240,7 +241,7 @@ def build_focus_leads(market_state: dict[str, Any], products: list[dict[str, Any
         lead['token'] = token
         lead['product_id'] = product_id
         lead['ticker'] = ticker
-        lead['candles'] = load_product_candles(product_id, limit=24).get('candles', [])
+        lead['candles'] = load_product_candles(product_id, limit=24, granularity=60).get('candles', [])
         lead['freshness_seconds'] = ticker.get('freshness_seconds', raw.get('freshness_seconds'))
         lead['drift_300s'] = ticker.get('drift_300s', raw.get('drift_300s'))
         lead['volume'] = raw.get('volume', ticker.get('volume_24h'))

@@ -185,7 +185,7 @@ def stream_view():
                         with ui.row().classes('w-full gap-2 wrap'):
                             for idx in range(3):
                                 slot = active_slots[idx] if idx < len(active_slots) else None
-                                chart = load_product_candles(str(slot.get('product_id')), limit=24).get('candles', []) if slot and slot.get('product_id') else _candidate_candles(btc_candles, idx + 1)
+                                chart = load_product_candles(str(slot.get('product_id')), limit=24, granularity=60).get('candles', []) if slot and slot.get('product_id') else _candidate_candles(btc_candles, idx + 1)
                                 shell_cls = 'mini-candle-shell compact-slot' if slot else 'mini-candle-shell compact-slot ghost-shell'
                                 with ui.card().classes('glass-panel flex-1 min-w-[150px] p-[0.28rem]'):
                                     if slot:
