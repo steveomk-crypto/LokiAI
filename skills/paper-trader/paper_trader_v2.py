@@ -143,12 +143,33 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str]:
     return '', 'tier_filter_failed'
 
 
-def _cooldown_blocked(symbol: str, state: dict) -> bool:
+def _cooldown_blocked(symbol: str, state: dict, candidate: dict | None = None, ticker: dict | None = None) -> bool:
     last_entries = state.get('last_entries', {})
     dt = _iso_to_dt(last_entries.get(symbol))
     if not dt:
         return False
-    return (datetime.now(timezone.utc) - dt).total_seconds() < COOLDOWN_MINUTES * 60
+    elapsed_seconds = (datetime.now(timezone.utc) - dt).total_seconds()
+    if elapsed_seconds >= COOLDOWN_MINUTES * 60:
+        return False
+
+    candidate = candidate or {}
+    ticker = ticker or {}
+    score = float(candidate.get('score') or 0.0)
+    persistence = int(candidate.get('persistence') or 0)
+    drift_300s = float(ticker.get('drift_300s') or 0.0)
+    drift_900s = float(ticker.get('drift_900s') or 0.0)
+    freshness = float(ticker.get('freshness_seconds') or 9999.0)
+
+    materially_requalified = (
+        score >= 0.75 and
+        persistence >= 5 and
+        freshness <= FRESHNESS_LIMIT_SECONDS and
+        drift_300s >= 0.0 and
+        drift_900s >= 0.0
+    )
+    if materially_requalified and elapsed_seconds >= 12 * 60:
+        return False
+    return True
 
 
 def _normalized_guardrails(tier: str) -> dict:
@@ -212,7 +233,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'drift_300s': float(ticker.get('drift_300s') or 0.0),
             'freshness_seconds': float(ticker.get('freshness_seconds') or 0.0),
         }
-        if _cooldown_blocked(symbol, state):
+        if _cooldown_blocked(symbol, state, item, ticker):
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
