@@ -495,9 +495,21 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
         runtime['paper_trader_v2']['state'] = f'v2 {trader_mode}'
         runtime['paper_trader_v2']['last_success_at'] = paper_trader_v2_ts
         runtime['paper_trader_v2']['last_result'] = f"{int(paper_trader_v2_audit.get('active_slot_count', 0) or 0)} active slot(s)"
-    if 'main_loop' in runtime and _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
-        runtime['main_loop']['state'] = 'active recently'
-    if 'main_loop' in runtime and loop_info.get('last_error'):
+    if 'main_loop' in runtime:
+        heartbeat = _load_json(SYSTEM_LOG_DIR / 'market_cycle_heartbeat.json', {})
+        hb_state = str(heartbeat.get('state') or '').lower()
+        hb_ts = heartbeat.get('timestamp')
+        if hb_state in {'started', 'running_cycle', 'sleeping'} and _is_recent(hb_ts, 120):
+            runtime['main_loop']['state'] = 'running'
+            runtime['main_loop']['running'] = True
+            runtime['main_loop']['last_success_at'] = hb_ts
+        elif hb_state == 'stopping' and _is_recent(hb_ts, 120):
+            runtime['main_loop']['state'] = 'stopped'
+            runtime['main_loop']['running'] = False
+            runtime['main_loop']['last_success_at'] = hb_ts
+        elif _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
+            runtime['main_loop']['state'] = 'active recently'
+    if 'main_loop' in runtime and loop_info.get('last_error') and str(runtime['main_loop'].get('state') or '').lower() not in {'running', 'sleeping'}:
         runtime['main_loop']['last_error'] = loop_info.get('last_error')
     automation_stage_map = {
         'market_scanner': 'market_scanner',
@@ -553,6 +565,15 @@ def _apply_dependency_health(runtime: dict[str, dict[str, Any]]) -> None:
             entry['dependency_health'] = 'blocked' if blockers else 'clear'
             entry['dependency_blockers'] = blockers
 
+        entry['controls_blocked'] = entry['dependency_health'] == 'blocked' and entry.get('kind') in {'service', 'job'}
+        entry['blocked_reason'] = ', '.join(entry.get('dependency_blockers') or []) if entry['controls_blocked'] else None
+        desired_state = str(entry.get('desired_state') or 'unknown')
+        if entry.get('component_id') == 'main_loop' and 'paper_trader_v2' in (entry.get('dependency_blockers') or []):
+            dep = runtime.get('paper_trader_v2') or {}
+            dep_state = str(dep.get('state') or '').lower()
+            if dep.get('last_success_at') and any(term in dep_state for term in ('v2 ', 'recently completed', 'active recently')):
+                entry['dependency_health'] = 'clear'
+                entry['dependency_blockers'] = []
         entry['controls_blocked'] = entry['dependency_health'] == 'blocked' and entry.get('kind') in {'service', 'job'}
         entry['blocked_reason'] = ', '.join(entry.get('dependency_blockers') or []) if entry['controls_blocked'] else None
         desired_state = str(entry.get('desired_state') or 'unknown')
