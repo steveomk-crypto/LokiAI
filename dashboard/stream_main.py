@@ -198,17 +198,17 @@ def stream_view():
                                     if opp:
                                         chart = _candidate_candles(btc_candles, idx + 1.5)
                                         status = 'READY' if idx == 0 else 'WATCH' if idx < 3 else 'FADING'
-                                        ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
-                                        ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
+                                        ui.label(str(opp.get('token', '?'))).classes('signal-symbol text-sm')
+                                        ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta text-xs')
                                         ui.html(f'<div class="mini-candle-shell compact-focus">{_candles_svg(chart, width=250, height=80)}</div>').classes('w-full')
                                         badge_cls = 'status-healthy' if status == 'READY' else 'status-info' if status == 'WATCH' else 'status-warning'
-                                        ui.label(status).classes(f'status-pill {badge_cls}')
+                                        ui.label(status).classes(f'status-pill {badge_cls} text-[10px]')
                                     else:
                                         ghost = _candidate_candles(btc_candles, idx + 2.2)
-                                        ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
-                                        ui.label('Waiting for a qualified setup').classes('signal-meta')
+                                        ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol text-sm')
+                                        ui.label('Waiting for a qualified setup').classes('signal-meta text-xs')
                                         ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(ghost, width=250, height=80)}</div>').classes('w-full')
-                                        ui.label('IDLE').classes('status-pill status-info')
+                                        ui.label('IDLE').classes('status-pill status-info text-[10px]')
 
                     with ui.card().classes('mission-overlay-card w-full'):
                         ui.label('TRADER CONTEXT').classes('mission-card-title')
