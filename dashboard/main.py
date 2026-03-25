@@ -270,64 +270,81 @@ def operator_view():
 
             with ui.column().classes('w-full gap-3'):
                 ui.label('System Controls').classes('panel-title')
-                with ui.row().classes('w-full items-center gap-2 wrap'):
-                    start_auto = ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[150px]')
-                    if runtime_map.get('main_loop', {}).get('running'):
-                        start_auto.disable()
-                    start_auto.on('click', lambda: _control_action('main_loop', 'start'))
-                    ui.button('Run Cycle').props('color=positive outline').classes('min-w-[130px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
-                    stop_auto = ui.button('Stop Automation').props('color=negative outline').classes('min-w-[150px]')
-                    if not runtime_map.get('main_loop', {}).get('running'):
-                        stop_auto.disable()
-                    stop_auto.on('click', lambda: _control_action('main_loop', 'stop'))
-                    ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[130px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
-                    ui.button('Run Reports').props('color=secondary outline').classes('min-w-[130px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
-                    ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
+                with ui.card().classes('glass-panel w-full p-3'):
+                    with ui.row().classes('w-full items-center justify-between gap-2 wrap'):
+                        start_auto = ui.button('Start Automation').props('color=positive unelevated').classes('min-w-[150px]')
+                        if runtime_map.get('main_loop', {}).get('running'):
+                            start_auto.disable()
+                        start_auto.on('click', lambda: _control_action('main_loop', 'start'))
+                        ui.button('Run Cycle').props('color=positive outline').classes('min-w-[130px]').on('click', lambda: _control_action('main_loop', 'run_cycle'))
+                        stop_auto = ui.button('Stop Automation').props('color=negative outline').classes('min-w-[150px]')
+                        if not runtime_map.get('main_loop', {}).get('running'):
+                            stop_auto.disable()
+                        stop_auto.on('click', lambda: _control_action('main_loop', 'stop'))
+                        ui.button('Flatten V2').props('color=warning unelevated').classes('min-w-[130px]').on('click', lambda: _control_action('paper_trader_v2', 'flatten'))
+                        ui.button('Run Reports').props('color=secondary outline').classes('min-w-[130px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
+                        ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
                 with ui.row().classes('w-full gap-4 items-start no-wrap'):
                     with ui.column().classes('w-1/2 gap-2 operator-table'):
                         ui.label('Core Systems').classes('panel-title')
-                        for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
-                            compact_row(component_id)
+                        with ui.card().classes('glass-panel w-full p-3'):
+                            with ui.row().classes('w-full operator-header-row'):
+                                ui.label('Name')
+                                ui.label('Status')
+                                ui.label('Reason')
+                                ui.label('Last')
+                                ui.label('Result')
+                                ui.label('Actions')
+                            for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
+                                compact_row(component_id)
 
                     with ui.column().classes('w-1/2 gap-2 operator-table'):
                         ui.label('Outputs & Automation').classes('panel-title')
-                        for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
-                            item = runtime_map.get(component_id)
-                            if not item:
-                                continue
-                            with ui.row().classes('w-full telemetry-row'):
-                                ui.label(str(item['label'])).classes('font-semibold')
-                                ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
-                                state_value = str(item.get('display_state') or item.get('state') or 'IDLE').upper()
-                                if item['group'] == 'x_autoposter':
-                                    state_value = f"{state_value} / {str(item.get('state') or 'draft_only').upper()}"
-                                ui.label(state_value).classes('signal-meta')
-                                ui.label(_format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–').classes('signal-meta')
-                                last_result = str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')
-                                ui.label(last_result).classes('signal-meta')
-                                with ui.row().classes('operator-actions'):
-                                    enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
-                                    if str(item.get('desired_state')) == 'enabled':
-                                        enable_btn.disable()
-                                    enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
-                                    disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[78px]')
-                                    if str(item.get('desired_state')) == 'disabled':
-                                        disable_btn.disable()
-                                    disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
+                        with ui.card().classes('glass-panel w-full p-3'):
+                            with ui.row().classes('w-full operator-header-row'):
+                                ui.label('Name')
+                                ui.label('Mode')
+                                ui.label('State')
+                                ui.label('Last')
+                                ui.label('Result')
+                                ui.label('Actions')
+                            for component_id in ['market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer']:
+                                item = runtime_map.get(component_id)
+                                if not item:
+                                    continue
+                                with ui.row().classes('w-full telemetry-row'):
+                                    ui.label(str(item['label'])).classes('font-semibold')
+                                    ui.label(str(item.get('desired_state') or 'unknown').upper()).classes('status-pill status-info')
+                                    state_value = str(item.get('display_state') or item.get('state') or 'IDLE').upper()
                                     if item['group'] == 'x_autoposter':
-                                        ui.button('Draft').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'draft'))
-                                        ui.button('Queue').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'queue'))
-                                        ui.button('Post').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'post_now'))
-                                    elif item['group'] == 'telegram_sender':
-                                        ui.button('Test').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'test_lanes'))
-                                        ui.button('Social').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'run_social'))
-                                        ui.button('Run').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                    else:
-                                        run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
-                                        run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
-                                    inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
-                                    inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
+                                        state_value = f"{state_value} / {str(item.get('state') or 'draft_only').upper()}"
+                                    ui.label(state_value).classes('signal-meta')
+                                    ui.label(_format_meta_time(item.get('last_success_at')) if item.get('last_success_at') else '–').classes('signal-meta')
+                                    last_result = str(item.get('last_result') or COMPONENT_ACTION_RESULTS.get(item['group']) or '–')
+                                    ui.label(last_result).classes('signal-meta')
+                                    with ui.row().classes('operator-actions'):
+                                        enable_btn = ui.button('Enable').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                        if str(item.get('desired_state')) == 'enabled':
+                                            enable_btn.disable()
+                                        enable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'enable'))
+                                        disable_btn = ui.button('Disable').props('size=sm color=negative outline').classes('min-w-[78px]')
+                                        if str(item.get('desired_state')) == 'disabled':
+                                            disable_btn.disable()
+                                        disable_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'disable'))
+                                        if item['group'] == 'x_autoposter':
+                                            ui.button('Draft').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'draft'))
+                                            ui.button('Queue').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'queue'))
+                                            ui.button('Post').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'post_now'))
+                                        elif item['group'] == 'telegram_sender':
+                                            ui.button('Test').props('size=sm color=positive outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'test_lanes'))
+                                            ui.button('Social').props('size=sm color=secondary outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'run_social'))
+                                            ui.button('Run').props('size=sm color=warning outline').classes('min-w-[78px]').on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                        else:
+                                            run_btn = ui.button('Run').props('size=sm color=positive outline').classes('min-w-[78px]')
+                                            run_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'start'))
+                                        inspect_btn = ui.button('Inspect').props('size=sm color=secondary outline').classes('min-w-[78px]')
+                                        inspect_btn.on('click', lambda e=None, group=item['group']: _control_action(group, 'inspect'))
 
                 with ui.expansion('Advanced Components').classes('w-full'):
                     with ui.column().classes('w-full gap-2 mt-2'):
@@ -485,9 +502,21 @@ def apply_theme() -> None:
             }
             .operator-table .telemetry-row {
                 display: grid;
-                grid-template-columns: minmax(130px, 1.2fr) minmax(88px, 0.7fr) minmax(130px, 1fr) minmax(72px, 0.55fr) minmax(160px, 1.2fr) auto;
+                grid-template-columns: minmax(130px, 1.15fr) minmax(88px, 0.65fr) minmax(130px, 1fr) minmax(72px, 0.55fr) minmax(180px, 1.25fr) auto;
                 align-items: center;
                 column-gap: 0.55rem;
+            }
+            .operator-header-row {
+                display: grid;
+                grid-template-columns: minmax(130px, 1.15fr) minmax(88px, 0.65fr) minmax(130px, 1fr) minmax(72px, 0.55fr) minmax(180px, 1.25fr) auto;
+                column-gap: 0.55rem;
+                opacity: 0.72;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                padding-bottom: 0.35rem;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+                margin-bottom: 0.25rem;
             }
             .operator-actions {
                 display: flex;
