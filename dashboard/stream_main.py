@@ -194,20 +194,20 @@ def stream_view():
                         with ui.grid(columns=2).classes('w-full gap-3 mt-2'):
                             for idx in range(4):
                                 opp = focus_items[idx] if idx < len(focus_items) else None
-                                with ui.card().classes('glass-panel w-full p-2'):
+                                with ui.card().classes('glass-panel w-full p-[0.4rem]'):
                                     if opp:
                                         chart = _candidate_candles(btc_candles, idx + 1.5)
                                         status = 'READY' if idx == 0 else 'WATCH' if idx < 3 else 'FADING'
                                         ui.label(str(opp.get('token', '?'))).classes('signal-symbol')
                                         ui.label(f"{fmt_num(opp.get('momentum'), 1)}% • p{opp.get('persistence', 0)} • {opp.get('trend', '–')}").classes('signal-meta')
-                                        ui.html(f'<div class="mini-candle-shell compact-focus">{_candles_svg(chart, width=260, height=96)}</div>').classes('w-full')
+                                        ui.html(f'<div class="mini-candle-shell compact-focus">{_candles_svg(chart, width=250, height=80)}</div>').classes('w-full')
                                         badge_cls = 'status-healthy' if status == 'READY' else 'status-info' if status == 'WATCH' else 'status-warning'
                                         ui.label(status).classes(f'status-pill {badge_cls}')
                                     else:
                                         ghost = _candidate_candles(btc_candles, idx + 2.2)
                                         ui.label(f'OPEN SLOT {idx + 1}').classes('signal-symbol')
                                         ui.label('Waiting for a qualified setup').classes('signal-meta')
-                                        ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(ghost, width=260, height=96)}</div>').classes('w-full')
+                                        ui.html(f'<div class="mini-candle-shell compact-focus ghost-shell">{_candles_svg(ghost, width=250, height=80)}</div>').classes('w-full')
                                         ui.label('IDLE').classes('status-pill status-info')
 
                     with ui.card().classes('mission-overlay-card w-full'):
@@ -382,7 +382,7 @@ def run():
                 min-height: 88px;
             }
             .compact-focus {
-                min-height: 90px;
+                min-height: 76px;
             }
             .empty-mini {
                 color: rgba(210, 225, 255, 0.6);
