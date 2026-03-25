@@ -285,8 +285,8 @@ def operator_view():
                         ui.button('Run Reports').props('color=secondary outline').classes('min-w-[130px]').on('click', lambda: _control_action('performance_analyzer', 'run_outputs'))
                         ui.button('Loop Log').props('color=secondary outline').classes('min-w-[110px]').on('click', lambda: _control_action('main_loop', 'inspect'))
 
-                with ui.row().classes('w-full gap-4 items-start no-wrap'):
-                    with ui.column().classes('w-1/2 gap-2 operator-table'):
+                with ui.column().classes('w-full gap-4'):
+                    with ui.column().classes('w-full gap-2 operator-table'):
                         ui.label('Core Systems').classes('panel-title')
                         with ui.card().classes('glass-panel w-full p-3'):
                             with ui.row().classes('w-full operator-header-row'):
@@ -299,7 +299,7 @@ def operator_view():
                             for component_id in ['coinbase_feed', 'market_scanner', 'paper_trader_v2', 'position_manager', 'main_loop']:
                                 compact_row(component_id)
 
-                    with ui.column().classes('w-1/2 gap-2 operator-table'):
+                    with ui.column().classes('w-full gap-2 operator-table'):
                         ui.label('Outputs & Automation').classes('panel-title')
                         with ui.card().classes('glass-panel w-full p-3'):
                             with ui.row().classes('w-full operator-header-row'):
