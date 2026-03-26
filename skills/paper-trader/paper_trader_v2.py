@@ -50,7 +50,8 @@ FAILED_CONTINUATION_PEAK_PCT = 0.35
 FAILED_CONTINUATION_RETAIN_PCT = 0.08
 STRUCTURE_MIN_DRIFT_900S = 0.0
 STRUCTURE_MAX_DRIFT_300S = 0.75
-PULLBACK_RECLAIM_MIN_DRIFT_300S = 0.10
+FULL_CONTINUATION_MIN_DRIFT_300S = 0.10
+EARLY_RECLAIM_MIN_DRIFT_300S = 0.03
 PULLBACK_RECLAIM_MIN_SCORE = 0.52
 
 
@@ -198,7 +199,7 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     return False, 'cooldown'
 
 
-def _structure_context(candidate: dict, ticker: dict) -> tuple[bool, str, float]:
+def _structure_context(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     score = float(candidate.get('score') or 0.0)
     persistence = int(candidate.get('persistence') or 0)
     trend = (candidate.get('trend') or candidate.get('status') or '').lower()
@@ -208,13 +209,13 @@ def _structure_context(candidate: dict, ticker: dict) -> tuple[bool, str, float]
     freshness = float(ticker.get('freshness_seconds') or 9999.0)
 
     if freshness > FRESHNESS_LIMIT_SECONDS:
-        return False, 'stale_freshness', 0.0
+        return 'reject', 'stale_freshness', 0.0
     if drift_900s < STRUCTURE_MIN_DRIFT_900S:
-        return False, 'structure_downtrend', 0.0
+        return 'reject', 'structure_downtrend', 0.0
     if trend in {'isolated spike', 'fading'}:
-        return False, f'structure_trend_block:{trend}', 0.0
+        return 'reject', f'structure_trend_block:{trend}', 0.0
     if persistence < TIER_B_MIN_PERSISTENCE:
-        return False, 'insufficient_persistence', 0.0
+        return 'reject', 'insufficient_persistence', 0.0
 
     structure_score = 0.0
     if drift_900s >= 0.12:
@@ -240,15 +241,17 @@ def _structure_context(candidate: dict, ticker: dict) -> tuple[bool, str, float]
         structure_score += 0.2
 
     if drift_300s < -0.20:
-        return False, 'drift_300_too_negative', structure_score
+        return 'reject', 'drift_300_too_negative', structure_score
     if drift_300s > STRUCTURE_MAX_DRIFT_300S and momentum < 12.0:
-        return False, 'too_extended_for_entry', structure_score
+        return 'reject', 'too_extended_for_entry', structure_score
 
-    if drift_300s >= PULLBACK_RECLAIM_MIN_DRIFT_300S:
-        return True, 'trend_supported_continuation', structure_score
-    if -0.02 <= drift_300s < PULLBACK_RECLAIM_MIN_DRIFT_300S and drift_900s >= 0.05 and score >= PULLBACK_RECLAIM_MIN_SCORE:
-        return True, 'pullback_reclaim_setup', structure_score
-    return False, 'structure_not_reclaimed', structure_score
+    if drift_300s >= FULL_CONTINUATION_MIN_DRIFT_300S:
+        return 'full', 'trend_supported_continuation', structure_score
+    if drift_300s >= EARLY_RECLAIM_MIN_DRIFT_300S and drift_900s >= 0.0 and score >= PULLBACK_RECLAIM_MIN_SCORE:
+        return 'early', 'early_reclaim_setup', structure_score
+    if -0.02 <= drift_300s < EARLY_RECLAIM_MIN_DRIFT_300S and drift_900s >= 0.05 and score >= max(0.56, PULLBACK_RECLAIM_MIN_SCORE):
+        return 'early', 'pullback_reclaim_setup', structure_score
+    return 'reject', 'structure_not_reclaimed', structure_score
 
 
 def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
@@ -258,8 +261,8 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     momentum = float(candidate.get('momentum') or 0.0)
     persistence = int(candidate.get('persistence') or 0)
 
-    structure_ok, structure_reason, structure_score = _structure_context(candidate, ticker)
-    if not structure_ok:
+    structure_state, structure_reason, structure_score = _structure_context(candidate, ticker)
+    if structure_state == 'reject':
         return '', structure_reason, structure_score
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
         return '', 'fake_pump_guard', structure_score
@@ -269,16 +272,24 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     strong_setup = score >= TIER_A_MIN_SCORE and persistence >= TIER_A_MIN_PERSISTENCE
     valid_setup = score >= TIER_B_MIN_SCORE and persistence >= TIER_B_MIN_PERSISTENCE
 
-    if strong_setup and drift >= TIER_A_MIN_DRIFT_300S and drift_900s >= 0.02:
-        return 'A', f'{structure_reason}:tier_a_full_confirmation', structure_score
-    if strong_setup and drift >= -0.02 and drift_900s >= 0.08:
-        return 'A', f'{structure_reason}:tier_a_persistent_recovery', structure_score
-    if strong_setup and drift >= -0.05 and drift_900s >= 0.12:
-        return 'B', f'{structure_reason}:tier_b_from_higher_tf_support', structure_score
-    if valid_setup and drift >= TIER_B_MIN_DRIFT_300S and drift_900s >= 0.0:
-        return 'B', f'{structure_reason}:tier_b_full_confirmation', structure_score
-    if valid_setup and drift >= -0.02 and drift_900s >= 0.05:
-        return 'B', f'{structure_reason}:tier_b_flat_but_supported', structure_score
+    if structure_state == 'full':
+        if strong_setup and drift >= TIER_A_MIN_DRIFT_300S and drift_900s >= 0.02:
+            return 'A', f'{structure_reason}:tier_a_full_confirmation', structure_score
+        if strong_setup and drift >= -0.02 and drift_900s >= 0.08:
+            return 'A', f'{structure_reason}:tier_a_persistent_recovery', structure_score
+        if strong_setup and drift >= -0.05 and drift_900s >= 0.12:
+            return 'B', f'{structure_reason}:tier_b_from_higher_tf_support', structure_score
+        if valid_setup and drift >= TIER_B_MIN_DRIFT_300S and drift_900s >= 0.0:
+            return 'B', f'{structure_reason}:tier_b_full_confirmation', structure_score
+        if valid_setup and drift >= -0.02 and drift_900s >= 0.05:
+            return 'B', f'{structure_reason}:tier_b_flat_but_supported', structure_score
+
+    if structure_state == 'early':
+        if strong_setup and persistence >= 5:
+            return 'B', f'{structure_reason}:tier_b_early_reclaim', structure_score
+        if valid_setup and persistence >= 5 and score >= 0.50:
+            return 'B', f'{structure_reason}:tier_b_early_reclaim_support', structure_score
+
     return '', 'tier_filter_failed', structure_score
 
 
