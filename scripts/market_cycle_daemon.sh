@@ -48,7 +48,13 @@ write_heartbeat "started"
 while true; do
   echo "$(date -Iseconds) - invoking run_market_cycle.sh"
   write_heartbeat "running_cycle"
-  bash "${RUNNER}"
+  if ! bash "${RUNNER}"; then
+    status=$?
+    echo "$(date -Iseconds) - run_core_cycle.sh exited with status ${status}; keeping daemon alive and retrying after ${SLEEP_SECONDS}s"
+    write_heartbeat "cycle_error"
+    sleep "${SLEEP_SECONDS}"
+    continue
+  fi
   echo "$(date -Iseconds) - cycle finished, sleeping ${SLEEP_SECONDS}s"
   write_heartbeat "sleeping"
   sleep "${SLEEP_SECONDS}"
