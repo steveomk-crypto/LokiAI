@@ -337,6 +337,11 @@ def _collect_replay_snapshot(task: str, details: Dict) -> Dict:
     tickers = _load_json_file(CACHE_DIR / 'coinbase_tickers.json', {})
     open_positions = _load_json_file(Path(WORKSPACE) / 'paper_trades' / 'open_positions_v2.json', [])
     active_symbols = sorted({(p.get('token') or '').upper() for p in open_positions if (p.get('token') or '').upper()})
+    leadership_symbols = []
+    for item in (market_state.get('leadership_board') or []):
+        sym = (item.get('token') or '').upper()
+        if sym and sym not in leadership_symbols:
+            leadership_symbols.append(sym)
     bench_symbols = []
     for item in (market_state.get('ranked_bench') or []):
         sym = (item.get('token') or '').upper()
@@ -348,7 +353,7 @@ def _collect_replay_snapshot(task: str, details: Dict) -> Dict:
         if sym and sym not in top_symbols:
             top_symbols.append(sym)
     relevant_symbols = []
-    for sym in active_symbols + bench_symbols[:12] + top_symbols[:5]:
+    for sym in active_symbols + leadership_symbols[:24] + bench_symbols[:12] + top_symbols[:5]:
         if sym and sym not in relevant_symbols:
             relevant_symbols.append(sym)
     ticker_snapshot = {}
@@ -373,6 +378,7 @@ def _collect_replay_snapshot(task: str, details: Dict) -> Dict:
             'computed_at': market_state.get('computed_at'),
             'metrics': market_state.get('metrics'),
             'top_opportunities': market_state.get('top_opportunities') or [],
+            'leadership_board': market_state.get('leadership_board') or [],
             'ranked_bench': market_state.get('ranked_bench') or [],
         },
         'open_positions': open_positions,

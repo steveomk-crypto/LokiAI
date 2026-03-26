@@ -1,25 +1,25 @@
 {
-  "timestamp": "2026-03-26T09:57",
+  "timestamp": "2026-03-26T10:09",
   "task": "market_scanner",
   "summary": {
-    "timestamp": "2026-03-26T09:57",
+    "timestamp": "2026-03-26T10:09",
     "top_opportunities": [
       {
         "token": "REZ",
-        "score": 0.85,
+        "score": 0.850097,
         "momentum": 3.560831,
-        "volume": 8480003.465391,
+        "volume": 8552305.078433,
         "persistence": 5,
-        "status": "strengthening",
+        "status": "persistent",
         "trend": "steady"
       }
     ]
   },
   "market_state": {
     "mode": "baseline",
-    "computed_at": "2026-03-26T09:57",
+    "computed_at": "2026-03-26T10:09",
     "metrics": {
-      "avg_top_score": 0.85,
+      "avg_top_score": 0.850097,
       "high_quality_signals": 0,
       "breadth_positive": 0,
       "total_signals": 1
@@ -27,27 +27,27 @@
     "top_opportunities": [
       {
         "token": "REZ",
-        "score": 0.85,
+        "score": 0.850097,
         "momentum": 3.560831,
-        "volume": 8480003.465391,
+        "volume": 8552305.078433,
         "persistence": 5,
-        "status": "strengthening",
+        "status": "persistent",
         "trend": "steady"
       }
     ],
     "ranked_bench": [
       {
-        "timestamp": "2026-03-26T09:57",
+        "timestamp": "2026-03-26T10:09",
         "token": "REZ",
-        "volume": 8480003.465391,
+        "volume": 8552305.078433,
         "momentum": 3.560831,
-        "status": "strengthening",
+        "status": "persistent",
         "persistence": 5,
         "coinbase_actionable": true,
-        "liquidity_change_ratio": 1.0,
-        "volume_acceleration_ratio": 0.0,
+        "liquidity_change_ratio": 1.003234,
+        "volume_acceleration_ratio": -0.0,
         "buy_pressure_proxy": -0.0,
-        "liquidity_health": 0.5,
+        "liquidity_health": 0.500647,
         "momentum_5m": null,
         "momentum_15m": null,
         "momentum_60m": null,
@@ -56,9 +56,9 @@
         "momentum_score": 1.0,
         "volume_score": 1.0,
         "persistence_score": 1.0,
-        "liquidity_score": 0.5,
+        "liquidity_score": 0.500647,
         "alignment_score": 0.5,
-        "score": 0.85
+        "score": 0.850097
       }
     ]
   },
@@ -67,23 +67,23 @@
       "slot_id": 1,
       "token": "REZ",
       "product_id": "REZ-USD",
-      "confidence": "standard",
+      "confidence": "high",
       "status": "open",
       "trade_state": "AT_RISK",
       "move_character": "stale",
-      "entry_time": "2026-03-26T16:51:33+00:00",
-      "last_update": "2026-03-26T16:57:21+00:00",
+      "entry_time": "2026-03-26T17:04:52+00:00",
+      "last_update": "2026-03-26T17:09:29+00:00",
       "entry_price": 0.00349,
       "current_price": 0.00349,
       "pnl_percent": 0.0,
-      "time_in_trade_minutes": 5,
-      "scanner_score": 0.85,
+      "time_in_trade_minutes": 4,
+      "scanner_score": 0.852494,
       "momentum": 3.560831,
       "persistence": 5,
       "trend": "strengthening",
       "entry_reason": "scanner_rank_plus_websocket_confirmation",
       "websocket_drift_300s": 0.0,
-      "websocket_freshness_seconds": 506.5,
+      "websocket_freshness_seconds": 286.11,
       "guardrails": {
         "stop_loss_pct": -3.0,
         "profit_levels_pct": [
@@ -94,7 +94,7 @@
         "timeout_minutes": 45,
         "trail_after_first_pct": 0.2,
         "trail_after_second_pct": 0.48,
-        "confidence": "standard"
+        "confidence": "high"
       },
       "highest_pnl_percent": 0.0,
       "trim_step": 0,
@@ -107,25 +107,25 @@
   "ticker_snapshot": {
     "REZ-USD": {
       "price": 0.00349,
-      "drift_300s": null,
-      "drift_900s": 0.0,
-      "freshness_seconds": 564.12,
-      "volume_24h": 159402327.0
+      "drift_300s": 0.0,
+      "drift_900s": 0.5764,
+      "freshness_seconds": 286.11,
+      "volume_24h": 161337796.0
     }
   },
   "details": {
     "signals": 1,
     "filtered_signal_count": 1,
     "summary": {
-      "timestamp": "2026-03-26T09:57",
+      "timestamp": "2026-03-26T10:09",
       "top_opportunities": [
         {
           "token": "REZ",
-          "score": 0.85,
+          "score": 0.850097,
           "momentum": 3.560831,
-          "volume": 8480003.465391,
+          "volume": 8552305.078433,
           "persistence": 5,
-          "status": "strengthening",
+          "status": "persistent",
           "trend": "steady"
         }
       ]

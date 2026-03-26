@@ -528,6 +528,7 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
         len(high_quality) >= 2 and
         breadth_positive >= breadth_threshold
     ) else 'baseline'
+    leadership_board = ranked_entries[:24]
     ranked_bench = ranked_entries[:12]
     return {
         'mode': mode,
@@ -536,9 +537,12 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
             'avg_top_score': avg_top_score,
             'high_quality_signals': len(high_quality),
             'breadth_positive': breadth_positive,
-            'total_signals': total_signals
+            'total_signals': total_signals,
+            'leadership_board_count': len(leadership_board),
+            'ranked_bench_count': len(ranked_bench),
         },
         'top_opportunities': summary.get('top_opportunities', []),
+        'leadership_board': leadership_board,
         'ranked_bench': ranked_bench,
     }
 
