@@ -1,7 +1,8 @@
 #!/bin/bash
 set -u
 
-WORKDIR="/data/.openclaw/workspace"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+WORKDIR="${ROOT}"
 LOG="$WORKDIR/system_logs/manual_loop_$(date -u +%Y%m%dT%H%M%SZ).log"
 END_TIME=$(($(date +%s) + 7200))  # two hours
 CYCLE=1

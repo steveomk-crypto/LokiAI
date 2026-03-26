@@ -314,15 +314,32 @@ def run_market_scanner():
     results = module.market_scanner(tokens, volume_data, momentum_data)
 
     summary = None
+    dex_summary = None
+    filtered_entries = []
     if results:
-        first = results[0]
-        if isinstance(first, str) and first.startswith('SUMMARY:'):
-            try:
-                summary = json.loads(first.replace('SUMMARY:', '', 1))
-            except json.JSONDecodeError:
-                summary = {'error': 'Failed to parse summary'}
+        for idx, line in enumerate(results):
+            if not isinstance(line, str):
+                continue
+            if idx == 0 and line.startswith('SUMMARY:'):
+                try:
+                    summary = json.loads(line.replace('SUMMARY:', '', 1))
+                except json.JSONDecodeError:
+                    summary = {'error': 'Failed to parse summary'}
+                continue
+            if line.startswith('DEX_SUMMARY:'):
+                try:
+                    dex_summary = json.loads(line.replace('DEX_SUMMARY:', '', 1))
+                except json.JSONDecodeError:
+                    dex_summary = {'error': 'Failed to parse dex summary'}
+                continue
+            if line.startswith('{'):
+                try:
+                    filtered_entries.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
 
-    signals = len(results) - 1 if summary else len(results)
+    ranked_signals = len(summary.get('top_opportunities') or []) if isinstance(summary, dict) else 0
+    filtered_signal_count = len(filtered_entries)
     top_lines = []
     if summary and summary.get('top_opportunities'):
         for item in summary['top_opportunities'][:3]:
@@ -331,9 +348,14 @@ def run_market_scanner():
             volume = item.get('volume', 0.0)
             trend = item.get('trend') or item.get('status', 'steady')
             top_lines.append(f"• {token}: {momentum:+.1f}% | ${volume:,.0f} vol | {trend}")
-    header = f"📊 Scanner {summary.get('timestamp') if summary else ''}: {signals} signals"
+    header = f"📊 Scanner {summary.get('timestamp') if summary else ''}: {ranked_signals} ranked signals"
     message = "\n".join([header] + top_lines) if top_lines else header
-    details = {'signals': signals, 'summary': summary}
+    details = {
+        'signals': ranked_signals,
+        'filtered_signal_count': filtered_signal_count,
+        'summary': summary,
+        'dex_summary': dex_summary,
+    }
     return message.strip(), details
 
 
