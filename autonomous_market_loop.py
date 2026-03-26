@@ -258,53 +258,54 @@ def _fetch_coinpaprika_metrics():
 
 
 def _prepare_scanner_payload(data: List[Dict]):
+    coinbase_metrics = _fetch_coinbase_metrics()
+    coinbase_symbols = set(coinbase_metrics.keys())
+    if not coinbase_symbols:
+        coinbase_symbols = {
+            (item.get('base_currency') or '').upper()
+            for item in _load_json_file(CACHE_DIR / 'coinbase_products.json', [])
+            if (item.get('quote_currency') or '').upper() in {'USD', 'USDC', 'USDT'}
+            and not item.get('cancel_only')
+            and not item.get('trading_disabled')
+        }
+
     tokens = []
     volume_data = {}
     momentum_data = {}
+
+    for symbol in sorted(coinbase_symbols):
+        if symbol:
+            tokens.append(symbol)
+            volume_data[symbol] = 0.0
+            momentum_data[symbol] = 0.0
+
+    coingecko_lookup = {}
     for coin in data:
         symbol = (coin.get('symbol') or '').upper()
-        if not symbol:
-            continue
-        if symbol not in volume_data:
-            tokens.append(symbol)
-        volume_data[symbol] = coin.get('total_volume') or 0
-        momentum_data[symbol] = coin.get('price_change_percentage_24h') or 0
+        if symbol and symbol in coinbase_symbols:
+            coingecko_lookup[symbol] = coin
 
-    binance_metrics = _fetch_binance_metrics()
-    for symbol, stats in binance_metrics.items():
-        if symbol not in volume_data:
-            tokens.append(symbol)
-        existing_volume = float(volume_data.get(symbol, 0) or 0)
-        if stats['volume'] > existing_volume:
-            volume_data[symbol] = stats['volume']
-        momentum_data.setdefault(symbol, stats['momentum'])
+    for symbol in coinbase_symbols:
+        coin = coingecko_lookup.get(symbol) or {}
+        if coin:
+            volume_data[symbol] = float(coin.get('total_volume') or 0.0)
+            momentum_data[symbol] = float(coin.get('price_change_percentage_24h') or 0.0)
 
-    okx_metrics = _fetch_okx_metrics()
-    for symbol, stats in okx_metrics.items():
-        if symbol not in volume_data:
-            tokens.append(symbol)
-        existing_volume = float(volume_data.get(symbol, 0) or 0)
-        if stats['volume'] > existing_volume:
-            volume_data[symbol] = stats['volume']
-        momentum_data.setdefault(symbol, stats['momentum'])
-
-    coinbase_metrics = _fetch_coinbase_metrics()
-    for symbol, stats in coinbase_metrics.items():
-        if symbol not in volume_data:
-            tokens.append(symbol)
-        existing_volume = float(volume_data.get(symbol, 0) or 0)
-        if stats['volume'] > existing_volume:
-            volume_data[symbol] = stats['volume']
-        momentum_data.setdefault(symbol, stats['momentum'])
-
-    coinpaprika_metrics = _fetch_coinpaprika_metrics()
-    for symbol, stats in coinpaprika_metrics.items():
-        if symbol not in volume_data:
-            tokens.append(symbol)
-        existing_volume = float(volume_data.get(symbol, 0) or 0)
-        if stats['volume'] > existing_volume:
-            volume_data[symbol] = stats['volume']
-        momentum_data.setdefault(symbol, stats['momentum'])
+    enrichment_sets = [
+        _fetch_binance_metrics(),
+        _fetch_okx_metrics(),
+        coinbase_metrics,
+        _fetch_coinpaprika_metrics(),
+    ]
+    for metrics in enrichment_sets:
+        for symbol, stats in metrics.items():
+            if symbol not in coinbase_symbols:
+                continue
+            existing_volume = float(volume_data.get(symbol, 0) or 0)
+            if float(stats.get('volume') or 0.0) > existing_volume:
+                volume_data[symbol] = float(stats.get('volume') or 0.0)
+            if not momentum_data.get(symbol):
+                momentum_data[symbol] = float(stats.get('momentum') or 0.0)
 
     return tokens, volume_data, momentum_data
 

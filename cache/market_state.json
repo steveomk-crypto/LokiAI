@@ -1,6 +1,6 @@
 {
   "mode": "baseline",
-  "computed_at": "2026-03-26T10:26",
+  "computed_at": "2026-03-26T10:32",
   "metrics": {
     "avg_top_score": 0.85,
     "high_quality_signals": 0,
@@ -13,8 +13,8 @@
     {
       "token": "REZ",
       "score": 0.85,
-      "momentum": 3.264095,
-      "volume": 8574333.185687,
+      "momentum": 3.560831,
+      "volume": 8565006.924374,
       "persistence": 5,
       "status": "persistent",
       "trend": "steady"
@@ -22,10 +22,10 @@
   ],
   "leadership_board": [
     {
-      "timestamp": "2026-03-26T10:26",
+      "timestamp": "2026-03-26T10:32",
       "token": "REZ",
-      "volume": 8574333.185687,
-      "momentum": 3.264095,
+      "volume": 8565006.924374,
+      "momentum": 3.560831,
       "status": "persistent",
       "persistence": 5,
       "coinbase_actionable": true,
@@ -33,7 +33,7 @@
       "volume_acceleration_ratio": -0.0,
       "buy_pressure_proxy": -0.0,
       "liquidity_health": 0.5,
-      "momentum_5m": -0.0,
+      "momentum_5m": null,
       "momentum_15m": null,
       "momentum_60m": null,
       "momentum_alignment_score": 0.5,
@@ -48,10 +48,10 @@
   ],
   "ranked_bench": [
     {
-      "timestamp": "2026-03-26T10:26",
+      "timestamp": "2026-03-26T10:32",
       "token": "REZ",
-      "volume": 8574333.185687,
-      "momentum": 3.264095,
+      "volume": 8565006.924374,
+      "momentum": 3.560831,
       "status": "persistent",
       "persistence": 5,
       "coinbase_actionable": true,
@@ -59,7 +59,7 @@
       "volume_acceleration_ratio": -0.0,
       "buy_pressure_proxy": -0.0,
       "liquidity_health": 0.5,
-      "momentum_5m": -0.0,
+      "momentum_5m": null,
       "momentum_15m": null,
       "momentum_60m": null,
       "momentum_alignment_score": 0.5,
