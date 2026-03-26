@@ -171,6 +171,7 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     drift_900s = float(ticker.get('drift_900s') or 0.0)
     freshness = float(ticker.get('freshness_seconds') or 9999.0)
     momentum = float(candidate.get('momentum') or 0.0)
+    last_exit_reason = entry.get('last_exit_reason')
 
     has_reset = drift_300s <= -0.05 or drift_900s <= -0.02 or freshness > 90
     strong_reclaim = (
@@ -188,18 +189,30 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
         drift_300s >= 0.20 and
         drift_900s >= 0.05
     )
+    no_move_reclaim = (
+        last_exit_reason in {'no_move', 'timeout'} and
+        score >= 0.82 and
+        persistence >= 5 and
+        freshness <= 60 and
+        drift_300s >= 0.20 and
+        drift_900s >= 0.08 and
+        momentum >= 3.2
+    )
+
+    if last_exit_reason in {'no_move', 'timeout'} and (freshness > 120 or drift_300s <= 0.0 or drift_900s <= 0.0):
+        return False, 'stale_reentry_after_no_move'
 
     if blocked_until:
         if now >= blocked_until:
             entry['reentry_blocked_until'] = None
             blocked_until = None
         else:
-            if exceptional_reclaim:
+            if no_move_reclaim or exceptional_reclaim:
                 return True, 'reclaimed_strength'
             if has_reset and strong_reclaim:
                 return True, 'reset_and_reclaim'
             return False, 'cooldown'
-    if exceptional_reclaim:
+    if no_move_reclaim or exceptional_reclaim:
         return True, 'reclaimed_strength'
     if has_reset and strong_reclaim:
         return True, 'reset_and_reclaim'
