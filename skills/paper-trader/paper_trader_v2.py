@@ -294,32 +294,48 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
 
 
 def _cooldown_blocked(symbol: str, state: dict, candidate: dict | None = None, ticker: dict | None = None) -> bool:
-    last_entries = state.get('last_entries', {})
-    dt = _iso_to_dt(last_entries.get(symbol))
-    if not dt:
-        return False
-    elapsed_seconds = (datetime.now(timezone.utc) - dt).total_seconds()
-    if elapsed_seconds >= COOLDOWN_MINUTES * 60:
-        return False
+    entry = _get_symbol_state(state, symbol)
+    blocked_until = _iso_to_dt(entry.get('reentry_blocked_until'))
+    lifecycle = entry.get('lifecycle') or 'idle'
+    now = datetime.now(timezone.utc)
 
-    candidate = candidate or {}
-    ticker = ticker or {}
-    score = float(candidate.get('score') or 0.0)
-    persistence = int(candidate.get('persistence') or 0)
-    drift_300s = float(ticker.get('drift_300s') or 0.0)
-    drift_900s = float(ticker.get('drift_900s') or 0.0)
-    freshness = float(ticker.get('freshness_seconds') or 9999.0)
+    if blocked_until:
+        if now >= blocked_until:
+            entry['reentry_blocked_until'] = None
+            blocked_until = None
+        else:
+            return True
 
-    materially_requalified = (
-        score >= 0.75 and
-        persistence >= 5 and
-        freshness <= FRESHNESS_LIMIT_SECONDS and
-        drift_300s >= 0.0 and
-        drift_900s >= 0.0
-    )
-    if materially_requalified and elapsed_seconds >= 12 * 60:
-        return False
-    return True
+    if lifecycle == 'active':
+        return True
+    if lifecycle in {'needs_reset', 'choppy', 'exhausted'}:
+        last_entries = state.get('last_entries', {})
+        dt = _iso_to_dt(last_entries.get(symbol))
+        if not dt:
+            return False
+        elapsed_seconds = (now - dt).total_seconds()
+        if elapsed_seconds >= COOLDOWN_MINUTES * 60:
+            return False
+
+        candidate = candidate or {}
+        ticker = ticker or {}
+        score = float(candidate.get('score') or 0.0)
+        persistence = int(candidate.get('persistence') or 0)
+        drift_300s = float(ticker.get('drift_300s') or 0.0)
+        drift_900s = float(ticker.get('drift_900s') or 0.0)
+        freshness = float(ticker.get('freshness_seconds') or 9999.0)
+
+        materially_requalified = (
+            score >= 0.75 and
+            persistence >= 5 and
+            freshness <= FRESHNESS_LIMIT_SECONDS and
+            drift_300s >= 0.0 and
+            drift_900s >= 0.0
+        )
+        if materially_requalified and elapsed_seconds >= 12 * 60:
+            return False
+        return True
+    return False
 
 
 def _normalized_guardrails(confidence: str | None = None) -> dict:
