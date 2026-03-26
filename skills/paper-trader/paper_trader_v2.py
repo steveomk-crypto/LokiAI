@@ -157,6 +157,9 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     entry = _get_symbol_state(state, symbol)
     blocked_until = _iso_to_dt(entry.get('reentry_blocked_until'))
     now = datetime.now(timezone.utc)
+    lifecycle = entry.get('lifecycle') or 'idle'
+    if lifecycle == 'idle' and not blocked_until:
+        return True, None
     if not dt and not blocked_until:
         return True, None
 
@@ -193,12 +196,13 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     if has_reset and strong_reclaim:
         return True, 'reset_and_reclaim'
 
-    lifecycle = entry.get('lifecycle') or 'idle'
     if lifecycle in {'choppy', 'exhausted'}:
         return False, 'leader_exhausted'
     if lifecycle == 'needs_reset':
         return False, 'needs_reset'
-    return False, 'cooldown'
+    if lifecycle == 'active':
+        return False, 'cooldown'
+    return True, None
 
 
 def _structure_context(candidate: dict, ticker: dict) -> tuple[str, str, float]:
