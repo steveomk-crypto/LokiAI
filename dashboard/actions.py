@@ -165,8 +165,8 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
                 except Exception:
                     pass
 
-            ok1, msg1 = run_background_command(
-                './scripts/market_cycle_daemon.sh',
+            ok1, msg1 = run_detached_process(
+                ['bash', './scripts/market_cycle_daemon.sh'],
                 str(pid_file),
                 str(log_file),
             )
