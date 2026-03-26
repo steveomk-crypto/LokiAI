@@ -49,17 +49,17 @@ TIER_A_REGIME_MIN_VOLUME = 5_000_000
 TIER_A_REGIME_MIN_MOMENTUM = 5.0
 TIER_A_RULES = {
     'persistence': 4,
-    'liquidity_score': 0.50,
-    'liquidity_change_ratio': 1.0,
+    'liquidity_score': 0.49,
+    'liquidity_change_ratio': 0.995,
     'alignment': 0.30,
-    'buy_pressure': -0.01
+    'buy_pressure': -0.03
 }
 TIER_B_RULES = {
     'persistence': 5,
     'liquidity_score': 0.45,
-    'liquidity_change_ratio': 1.0,
+    'liquidity_change_ratio': 0.995,
     'alignment': 0.2,
-    'buy_pressure': -0.01
+    'buy_pressure': -0.03
 }
 
 TIER_B_MIN_SCORE = 0.5
@@ -67,16 +67,22 @@ TIER_B_MIN_SCORE = 0.5
 MARKET_STATE_PATH = '/home/lokiai/.openclaw/workspace/cache/market_state.json'
 TRADE_PROFILES = {
     'baseline': {
-        'tier_a_size': TIER_A_POSITION_SIZE,
-        'tier_b_size': TIER_B_POSITION_SIZE,
-        'tier_a_max_positions': 2,
-        'tier_b_max_positions': TIER_B_MAX_OPEN_POSITIONS
+        'tier_a_size': 60.0,
+        'tier_b_size': 15.0,
+        'tier_a_max_positions': 1,
+        'tier_b_max_positions': 2,
+        'take_profit_pct': 3.0,
+        'tier_b_time_stop_hours': 0.5,
+        'tier_b_no_move_pct': 0.1
     },
     'high_opportunity': {
         'tier_a_size': 120.0,
         'tier_b_size': 40.0,
         'tier_a_max_positions': 3,
-        'tier_b_max_positions': TIER_B_MAX_OPEN_POSITIONS + 1
+        'tier_b_max_positions': TIER_B_MAX_OPEN_POSITIONS + 1,
+        'take_profit_pct': TAKE_PROFIT_PCT,
+        'tier_b_time_stop_hours': TIER_B_TIME_STOP_HOURS,
+        'tier_b_no_move_pct': TIER_B_NO_MOVE_PCT
     }
 }
 
@@ -789,6 +795,9 @@ def _open_new_positions(open_positions: List[Dict], ranked: List[Dict], prices: 
             continue
         entry_time = ranking_ts if ranking_ts.endswith('Z') else f"{ranking_ts}Z"
         stop_pct = TIER_B_STOP_LOSS_PCT if tier == 'B' else STOP_LOSS_PCT
+        take_profit_pct = float(profile.get('take_profit_pct', TAKE_PROFIT_PCT))
+        tier_b_time_stop_hours = float(profile.get('tier_b_time_stop_hours', TIER_B_TIME_STOP_HOURS))
+        tier_b_no_move_pct = float(profile.get('tier_b_no_move_pct', TIER_B_NO_MOVE_PCT))
         position = {
             'token': token,
             'tier': tier,
@@ -799,9 +808,9 @@ def _open_new_positions(open_positions: List[Dict], ranked: List[Dict], prices: 
             'current_price': round(price, 6),
             'position_size_usd': position_size,
             'units': round(position_size / price, 6),
-            'target_price': round(price * (1 + TAKE_PROFIT_PCT / 100), 6),
+            'target_price': round(price * (1 + take_profit_pct / 100), 6),
             'stop_price': round(price * (1 + stop_pct / 100), 6),
-            'take_profit_pct': TAKE_PROFIT_PCT,
+            'take_profit_pct': take_profit_pct,
             'stop_loss_pct': STOP_LOSS_PCT,
             'persistence': entry.get('persistence'),
             'score': entry.get('score'),
@@ -832,8 +841,8 @@ def _open_new_positions(open_positions: List[Dict], ranked: List[Dict], prices: 
                 'atr_source': atr_info['source']
             })
         if tier == 'B':
-            position['custom_time_stop_hours'] = TIER_B_TIME_STOP_HOURS
-            position['custom_no_movement_pct'] = TIER_B_NO_MOVE_PCT
+            position['custom_time_stop_hours'] = tier_b_time_stop_hours
+            position['custom_no_movement_pct'] = tier_b_no_move_pct
         created.append(position)
         open_tokens.add(token)
         if tier == 'B':
