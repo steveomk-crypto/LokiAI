@@ -189,8 +189,16 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
         drift_900s >= 0.05
     )
 
-    if blocked_until and now >= blocked_until:
-        return True, None
+    if blocked_until:
+        if now >= blocked_until:
+            entry['reentry_blocked_until'] = None
+            blocked_until = None
+        else:
+            if exceptional_reclaim:
+                return True, 'reclaimed_strength'
+            if has_reset and strong_reclaim:
+                return True, 'reset_and_reclaim'
+            return False, 'cooldown'
     if exceptional_reclaim:
         return True, 'reclaimed_strength'
     if has_reset and strong_reclaim:
@@ -200,7 +208,7 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
         return False, 'leader_exhausted'
     if lifecycle == 'needs_reset':
         return False, 'needs_reset'
-    if lifecycle == 'active':
+    if lifecycle in {'active', 'leader_active'}:
         return False, 'cooldown'
     return True, None
 
@@ -372,7 +380,12 @@ def _normalize_open_positions(open_positions: list[dict]) -> list[dict]:
         position.setdefault('trail_distance_pct', 0.0)
         position.setdefault('remaining_size_pct', 100.0)
         position.setdefault('de_risked_fake_pump', False)
-        position['guardrails'] = _normalized_guardrails(confidence)
+        guardrails = position.get('guardrails') if isinstance(position.get('guardrails'), dict) else {}
+        position['guardrails'] = {
+            **_normalized_guardrails(confidence),
+            **guardrails,
+            'confidence': confidence,
+        }
         normalized.append(position)
     return normalized
 
@@ -541,7 +554,7 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict], sta
                     'move_character': move_character,
                 })
 
-        if move_character == 'spike' and drift_300s >= FAKE_PUMP_DRIFT_THRESHOLD and not de_risked:
+        if move_character in {'spike', 'fake_pump'} and drift_300s >= FAKE_PUMP_DRIFT_THRESHOLD and not de_risked:
             de_risked = True
             trade_state = 'DE_RISKED'
             remaining_size_pct = min(remaining_size_pct, 100.0 - FAKE_PUMP_DE_RISK_PCT)
@@ -553,6 +566,7 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict], sta
                 'pnl_percent': round(pnl_percent, 4),
                 'remaining_size_pct': remaining_size_pct,
                 'drift_300s': drift_300s,
+                'move_character': move_character,
             })
 
         active_trail = 0.0
@@ -846,10 +860,11 @@ def paper_trader_v2() -> dict:
     shortlist = _build_shortlist(market_state, tickers, state)
     updated_positions, new_positions = _open_slots(shortlist, refreshed_positions, state)
 
+    all_active_positions = updated_positions
     summary = {
         'timestamp': _now_iso(),
-        'mode': 'watch' if not updated_positions else 'engaged',
-        'active_slot_count': len(updated_positions),
+        'mode': 'watch' if not all_active_positions else 'engaged',
+        'active_slot_count': len(all_active_positions),
         'shortlist_count': len(shortlist),
         'new_positions_count': len(new_positions),
         'closed_positions_count': len(closed_positions),
@@ -859,8 +874,8 @@ def paper_trader_v2() -> dict:
         'top_candidates': shortlist[:5],
     }
 
-    _log_position_snapshots(updated_positions)
-    audit_summary = _build_audit_summary(updated_positions, trades_log, summary)
+    _log_position_snapshots(all_active_positions)
+    audit_summary = _build_audit_summary(all_active_positions, trades_log, summary)
     eval_lines = []
     if V2_CANDIDATE_EVALS_PATH.exists():
         try:
