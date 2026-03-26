@@ -6,17 +6,17 @@ from typing import Dict, List, Optional
 
 from strategy_config import get_strategy_value
 
-OPEN_POSITIONS_PATH = Path("/data/.openclaw/workspace/paper_trades/open_positions.json")
-TRADES_LOG_PATH = Path("/data/.openclaw/workspace/paper_trades/trades_log.json")
-RISK_LOG_PATH = Path("/data/.openclaw/workspace/risk_logs/risk_decisions.json")
+OPEN_POSITIONS_PATH = Path("/home/lokiai/.openclaw/workspace/paper_trades/open_positions.json")
+TRADES_LOG_PATH = Path("/home/lokiai/.openclaw/workspace/paper_trades/trades_log.json")
+RISK_LOG_PATH = Path("/home/lokiai/.openclaw/workspace/risk_logs/risk_decisions.json")
 
 MAX_OPEN_POSITIONS = 15
 MAX_RISK_PERCENT = 1.0  # 1% per trade baseline
 MAX_CONSECUTIVE_LOSSES = 3
 DAILY_DRAWDOWN_LIMIT = -5.0  # percent
 MIN_CONFIDENCE = 0.3
-MIN_LIQUIDITY_SCORE = 0.5
-MIN_LIQUIDITY_CHANGE_RATIO = 1.02
+MIN_LIQUIDITY_SCORE = 0.45
+MIN_LIQUIDITY_CHANGE_RATIO = 1.0
 MIN_VOLUME_USD = 100000.0
 DEFAULT_ACCOUNT_SIZE = 10000.0
 DEFAULT_POSITION_RISK_USD = 100.0
