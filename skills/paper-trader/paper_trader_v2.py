@@ -908,6 +908,9 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'persistence': candidate['persistence'],
             'trend': candidate['trend'],
             'entry_reason': candidate['entry_reason'],
+            'entry_drift_300s': candidate['drift_300s'],
+            'entry_drift_900s': candidate['drift_900s'],
+            'entry_freshness_seconds': candidate['freshness_seconds'],
             'websocket_drift_300s': candidate['drift_300s'],
             'websocket_freshness_seconds': candidate['freshness_seconds'],
             'guardrails': _normalized_guardrails(candidate['confidence']),
@@ -917,6 +920,10 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'trail_distance_pct': 0.0,
             'remaining_size_pct': 100.0,
             'de_risked_fake_pump': False,
+            'reflex_flags': [],
+            'reflex_last_action': None,
+            'reflex_last_reason': None,
+            'reflex_last_timestamp': None,
         }
         new_positions.append(position)
         _mark_symbol_entry(state, candidate['symbol'])

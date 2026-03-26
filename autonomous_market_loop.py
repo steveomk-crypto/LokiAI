@@ -41,6 +41,7 @@ SKILL_PATHS = {
     'market_broadcaster': os.path.join(WORKSPACE, 'skills', 'market-broadcaster', 'market_broadcaster.py'),
     'performance_analyzer': os.path.join(WORKSPACE, 'skills', 'performance-analyzer', 'performance_analyzer.py'),
     'position_manager': os.path.join(WORKSPACE, 'skills', 'position-manager', 'position_manager.py'),
+    'position_reflex': os.path.join(WORKSPACE, 'skills', 'position-manager', 'position_reflex_runner.py'),
     'sol_paper_trader': os.path.join(WORKSPACE, 'skills', 'sol-paper-trader', 'sol_paper_trader.py'),
     'telegram_sender': os.path.join(WORKSPACE, 'skills', 'telegram_sender', 'telegram_sender.py'),
     'x_autoposter': os.path.join(WORKSPACE, 'skills', 'x-autoposter', 'x_autoposter.py'),
@@ -553,6 +554,14 @@ def run_position_manager():
     return message, details
 
 
+def run_position_reflex():
+    module = _load_module('position_reflex')
+    result = module.position_reflex_runner()
+    message = f"Position reflex actions: {len(result)} trade(s) flagged."
+    details = {'actions': result}
+    return message, details
+
+
 def run_sol_paper_trader():
     module = _load_module('sol_paper_trader')
     result = module.sol_paper_trader()
@@ -599,6 +608,8 @@ def main(task: str):
                 message, details = run_performance_analyzer()
             elif task == 'position_manager':
                 message, details = run_position_manager()
+            elif task == 'position_reflex':
+                message, details = run_position_reflex()
             elif task == 'sol_paper_trader':
                 message, details = run_sol_paper_trader()
             else:
@@ -627,7 +638,7 @@ def main(task: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Autonomous Market Loop runner')
     parser.add_argument('--task', choices=[
-        'market_scanner', 'paper_trader', 'market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer', 'position_manager', 'sol_paper_trader'
+        'market_scanner', 'paper_trader', 'market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer', 'position_manager', 'position_reflex', 'sol_paper_trader'
     ], help='Specific task to execute once')
     parser.add_argument('--lint', action='store_true', help='Verify that every skill exposes the required entrypoint and exit')
     args = parser.parse_args()
