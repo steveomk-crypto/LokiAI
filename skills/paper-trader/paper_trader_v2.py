@@ -48,9 +48,9 @@ MODEST_CONTINUATION_PEAK_PCT = 0.20
 MODEST_CONTINUATION_LOSS_PCT = -0.25
 STRUCTURE_MIN_DRIFT_900S = -0.30
 STRUCTURE_MAX_DRIFT_300S = 0.75
-FULL_CONTINUATION_MIN_DRIFT_300S = 0.04
-EARLY_RECLAIM_MIN_DRIFT_300S = -0.03
-PULLBACK_RECLAIM_MIN_SCORE = 0.48
+FULL_CONTINUATION_MIN_DRIFT_300S = 0.06
+EARLY_RECLAIM_MIN_DRIFT_300S = -0.01
+PULLBACK_RECLAIM_MIN_SCORE = 0.50
 
 
 def _load_json(path: Path, default: Any):
@@ -280,28 +280,28 @@ def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
         return '', structure_reason, structure_score
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
         return '', 'fake_pump_guard', structure_score
-    if persistence == 4 and score < 0.54:
+    if persistence == 4 and score < 0.56:
         return '', 'borderline_score_at_p4', structure_score
 
     high_confidence = score >= HIGH_CONFIDENCE_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
     valid_setup = score >= ENTRY_MIN_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
 
     if structure_state == 'full':
-        if high_confidence and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.01:
+        if high_confidence and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.02:
             return 'high', f'{structure_reason}:high_confidence_continuation', structure_score
-        if high_confidence and drift >= -0.03 and drift_900s >= 0.05:
+        if high_confidence and drift >= -0.02 and drift_900s >= 0.08:
             return 'high', f'{structure_reason}:high_confidence_recovery', structure_score
-        if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= -0.01:
+        if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= 0.0:
             return 'standard', f'{structure_reason}:standard_continuation', structure_score
-        if valid_setup and drift >= -0.03 and drift_900s >= 0.03:
+        if valid_setup and drift >= -0.02 and drift_900s >= 0.05:
             return 'standard', f'{structure_reason}:supported_flat_reclaim', structure_score
 
     if structure_state == 'early':
         if high_confidence and persistence >= 5:
             return 'standard', f'{structure_reason}:early_reclaim_high_confidence', structure_score
-        if valid_setup and persistence >= 4 and score >= 0.48:
+        if valid_setup and persistence >= 5 and score >= 0.50:
             return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
-        if valid_setup and persistence >= 4 and drift >= -0.03 and drift_900s >= -0.30:
+        if valid_setup and persistence >= 5 and drift >= -0.01 and drift_900s >= -0.30:
             return 'standard', f'{structure_reason}:weak_regime_flat_reclaim', structure_score
 
     return '', 'confidence_filter_failed', structure_score
