@@ -1,5 +1,164 @@
 {
-  "last_entries": {},
+  "last_entries": {
+    "REZ": "2026-03-26T19:18:45+00:00",
+    "DOGE": "2026-03-26T19:39:32+00:00",
+    "SUI": "2026-03-26T19:39:32+00:00",
+    "NEAR": "2026-03-26T19:40:33+00:00"
+  },
   "session_reset_at": "2026-03-26T19:04:14+00:00",
-  "symbol_state": {}
+  "symbol_state": {
+    "REZ": {
+      "lifecycle": "choppy",
+      "last_exit_reason": "early_profit_giveback",
+      "last_exit_pnl_percent": 0.0,
+      "last_peak_pnl_percent": 0.2915,
+      "last_entry_at": "2026-03-26T19:18:45+00:00",
+      "last_exit_at": "2026-03-26T19:30:57+00:00",
+      "reentry_blocked_until": "2026-03-26T20:00:57+00:00"
+    },
+    "BONK": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "ANKR": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "XRP": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "AERO": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "LINK": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "SUI": {
+      "lifecycle": "exhausted",
+      "last_exit_reason": "fake_pump_confirmed",
+      "last_exit_pnl_percent": 0.0874,
+      "last_peak_pnl_percent": 0.1093,
+      "last_entry_at": "2026-03-26T19:39:32+00:00",
+      "last_exit_at": "2026-03-26T19:45:37+00:00",
+      "reentry_blocked_until": "2026-03-26T20:30:37+00:00"
+    },
+    "DOGE": {
+      "lifecycle": "active",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": "2026-03-26T19:39:32+00:00",
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "SEI": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "AKT": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "ONDO": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "ARB": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "NEAR": {
+      "lifecycle": "active",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": "2026-03-26T19:40:33+00:00",
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "PEPE": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "FET": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "ADA": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "TRIA": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    }
+  }
 }

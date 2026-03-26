@@ -1,12 +1,15 @@
 {
-  "timestamp": "2026-03-26T19:04:14+00:00",
-  "websocket_connected": false,
+  "timestamp": "2026-03-26T19:45:37+00:00",
+  "websocket_connected": true,
   "scanner_signal_count": 0,
   "scanner_tokens": [],
-  "candidate_eval_count": 0,
+  "candidate_eval_count": 3,
   "accepted_candidate_count": 0,
-  "rejected_candidate_count": 0,
-  "reject_reasons": {},
+  "rejected_candidate_count": 3,
+  "reject_reasons": {
+    "fake_pump_guard": 2,
+    "structure_downtrend": 1
+  },
   "shortlist_count": 0,
   "shortlist_tokens": [],
   "new_positions_count": 0,
