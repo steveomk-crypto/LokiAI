@@ -21,6 +21,7 @@ V2_AUDIT_SUMMARY_PATH = TRADES_DIR / 'paper_trader_v2_audit_summary.json'
 V2_FUNNEL_SUMMARY_PATH = TRADES_DIR / 'v2_entry_funnel_summary.json'
 
 MAX_SLOTS = 3
+CANDIDATE_BENCH_LIMIT = 8
 TIER_A_MIN_SCORE = 0.52
 TIER_B_MIN_SCORE = 0.40
 FRESHNESS_LIMIT_SECONDS = 180
@@ -356,7 +357,8 @@ def _normalize_open_positions(open_positions: list[dict]) -> list[dict]:
 
 def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dict]:
     candidates = []
-    for item in market_state.get('top_opportunities', []):
+    source_candidates = market_state.get('ranked_bench') or market_state.get('top_opportunities', [])
+    for item in source_candidates[:CANDIDATE_BENCH_LIMIT]:
         symbol = (item.get('token') or '').upper()
         if not symbol:
             continue

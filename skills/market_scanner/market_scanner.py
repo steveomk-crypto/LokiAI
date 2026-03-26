@@ -526,6 +526,7 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
         len(high_quality) >= 2 and
         breadth_positive >= breadth_threshold
     ) else 'baseline'
+    ranked_bench = ranked_entries[:12]
     return {
         'mode': mode,
         'computed_at': timestamp,
@@ -535,7 +536,8 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
             'breadth_positive': breadth_positive,
             'total_signals': total_signals
         },
-        'top_opportunities': summary.get('top_opportunities', [])
+        'top_opportunities': summary.get('top_opportunities', []),
+        'ranked_bench': ranked_bench,
     }
 
 
