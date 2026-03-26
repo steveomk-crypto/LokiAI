@@ -104,7 +104,94 @@ def _load_trader_state() -> dict:
     if not isinstance(state, dict):
         state = {}
     state.setdefault('last_entries', {})
+    state.setdefault('symbol_state', {})
     return state
+
+
+def _get_symbol_state(state: dict, symbol: str) -> dict:
+    symbol_state = state.setdefault('symbol_state', {})
+    entry = symbol_state.get(symbol)
+    if not isinstance(entry, dict):
+        entry = {}
+    entry.setdefault('lifecycle', 'idle')
+    entry.setdefault('last_exit_reason', None)
+    entry.setdefault('last_exit_pnl_percent', None)
+    entry.setdefault('last_peak_pnl_percent', None)
+    entry.setdefault('last_entry_at', state.get('last_entries', {}).get(symbol))
+    entry.setdefault('last_exit_at', None)
+    entry.setdefault('reentry_blocked_until', None)
+    symbol_state[symbol] = entry
+    return entry
+
+
+def _set_symbol_reentry_state(state: dict, symbol: str, *, lifecycle: str, exit_reason: str | None = None, pnl_percent: float | None = None, highest_pnl: float | None = None, blocked_minutes: int = COOLDOWN_MINUTES) -> None:
+    entry = _get_symbol_state(state, symbol)
+    now = datetime.now(timezone.utc)
+    entry['lifecycle'] = lifecycle
+    entry['last_exit_reason'] = exit_reason
+    entry['last_exit_pnl_percent'] = pnl_percent
+    entry['last_peak_pnl_percent'] = highest_pnl
+    entry['last_exit_at'] = now.replace(microsecond=0).isoformat()
+    entry['reentry_blocked_until'] = (now + timedelta(minutes=blocked_minutes)).replace(microsecond=0).isoformat()
+
+
+def _mark_symbol_entry(state: dict, symbol: str) -> None:
+    now_iso = _now_iso()
+    state.setdefault('last_entries', {})[symbol] = now_iso
+    entry = _get_symbol_state(state, symbol)
+    entry['lifecycle'] = 'active'
+    entry['last_entry_at'] = now_iso
+    entry['reentry_blocked_until'] = None
+
+
+def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, ticker: dict | None = None) -> tuple[bool, str | None]:
+    last_entries = state.get('last_entries', {})
+    dt = _iso_to_dt(last_entries.get(symbol))
+    entry = _get_symbol_state(state, symbol)
+    blocked_until = _iso_to_dt(entry.get('reentry_blocked_until'))
+    now = datetime.now(timezone.utc)
+    if not dt and not blocked_until:
+        return True, None
+
+    candidate = candidate or {}
+    ticker = ticker or {}
+    score = float(candidate.get('score') or 0.0)
+    persistence = int(candidate.get('persistence') or 0)
+    drift_300s = float(ticker.get('drift_300s') or 0.0)
+    drift_900s = float(ticker.get('drift_900s') or 0.0)
+    freshness = float(ticker.get('freshness_seconds') or 9999.0)
+    momentum = float(candidate.get('momentum') or 0.0)
+
+    has_reset = drift_300s <= -0.05 or drift_900s <= -0.02 or freshness > 90
+    strong_reclaim = (
+        score >= 0.72 and
+        persistence >= 5 and
+        freshness <= FRESHNESS_LIMIT_SECONDS and
+        drift_300s >= 0.12 and
+        drift_900s >= 0.0 and
+        momentum >= 3.0
+    )
+    exceptional_reclaim = (
+        score >= 0.82 and
+        persistence >= 5 and
+        freshness <= 45 and
+        drift_300s >= 0.20 and
+        drift_900s >= 0.05
+    )
+
+    if blocked_until and now >= blocked_until:
+        return True, None
+    if exceptional_reclaim:
+        return True, 'reclaimed_strength'
+    if has_reset and strong_reclaim:
+        return True, 'reset_and_reclaim'
+
+    lifecycle = entry.get('lifecycle') or 'idle'
+    if lifecycle in {'choppy', 'exhausted'}:
+        return False, 'leader_exhausted'
+    if lifecycle == 'needs_reset':
+        return False, 'needs_reset'
+    return False, 'cooldown'
 
 
 def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str]:
@@ -238,11 +325,12 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'drift_300s': float(ticker.get('drift_300s') or 0.0),
             'freshness_seconds': float(ticker.get('freshness_seconds') or 0.0),
         }
-        if _cooldown_blocked(symbol, state, item, ticker):
+        eligible, reentry_reason = _reentry_decision(symbol, state, item, ticker)
+        if not eligible:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
-                'reason': 'cooldown',
+                'reason': reentry_reason or 'cooldown',
             })
             continue
         tier, tier_reason = _candidate_tier(item, ticker)
@@ -448,6 +536,32 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
                 'exit_category': exit_category,
             })
             closed.append(closed_position)
+            lifecycle = 'leader_active'
+            blocked_minutes = COOLDOWN_MINUTES
+            if exit_reason in {'no_move', 'timeout'}:
+                lifecycle = 'needs_reset'
+                blocked_minutes = max(COOLDOWN_MINUTES, 35)
+            elif exit_reason in {'failed_continuation', 'early_profit_giveback'}:
+                lifecycle = 'choppy'
+                blocked_minutes = max(COOLDOWN_MINUTES, 25)
+            elif exit_reason in {'fake_pump_confirmed'}:
+                lifecycle = 'exhausted'
+                blocked_minutes = max(COOLDOWN_MINUTES, 45)
+            elif exit_reason in {'trailing_exit'}:
+                lifecycle = 'leader_active'
+                blocked_minutes = 12
+            elif exit_reason in {'stop_loss'}:
+                lifecycle = 'needs_reset'
+                blocked_minutes = max(COOLDOWN_MINUTES, 45)
+            _set_symbol_reentry_state(
+                state,
+                position.get('token'),
+                lifecycle=lifecycle,
+                exit_reason=exit_reason,
+                pnl_percent=round(pnl_percent, 4),
+                highest_pnl=round(highest_pnl, 4),
+                blocked_minutes=blocked_minutes,
+            )
             exit_event = {
                 'timestamp': _now_iso(),
                 'action': 'close_position',
@@ -520,7 +634,7 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'de_risked_fake_pump': False,
         }
         new_positions.append(position)
-        state.setdefault('last_entries', {})[candidate['symbol']] = now_iso
+        _mark_symbol_entry(state, candidate['symbol'])
         _append_jsonl(V2_DECISIONS_PATH, {
             'timestamp': now_iso,
             'action': 'open_position',
