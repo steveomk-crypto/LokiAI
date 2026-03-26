@@ -48,6 +48,10 @@ EARLY_PROTECT_GIVEBACK_PCT = 0.30
 FAILED_CONTINUATION_MINUTES = 12
 FAILED_CONTINUATION_PEAK_PCT = 0.35
 FAILED_CONTINUATION_RETAIN_PCT = 0.08
+STRUCTURE_MIN_DRIFT_900S = 0.0
+STRUCTURE_MAX_DRIFT_300S = 0.75
+PULLBACK_RECLAIM_MIN_DRIFT_300S = 0.10
+PULLBACK_RECLAIM_MIN_SCORE = 0.52
 
 
 def _load_json(path: Path, default: Any):
@@ -194,45 +198,88 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     return False, 'cooldown'
 
 
-def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str]:
+def _structure_context(candidate: dict, ticker: dict) -> tuple[bool, str, float]:
     score = float(candidate.get('score') or 0.0)
-    freshness = ticker.get('freshness_seconds')
-    freshness = float(freshness) if freshness is not None else None
+    persistence = int(candidate.get('persistence') or 0)
+    trend = (candidate.get('trend') or candidate.get('status') or '').lower()
+    momentum = float(candidate.get('momentum') or 0.0)
+    drift_300s = float(ticker.get('drift_300s') or 0.0)
+    drift_900s = float(ticker.get('drift_900s') or 0.0)
+    freshness = float(ticker.get('freshness_seconds') or 9999.0)
+
+    if freshness > FRESHNESS_LIMIT_SECONDS:
+        return False, 'stale_freshness', 0.0
+    if drift_900s < STRUCTURE_MIN_DRIFT_900S:
+        return False, 'structure_downtrend', 0.0
+    if trend in {'isolated spike', 'fading'}:
+        return False, f'structure_trend_block:{trend}', 0.0
+    if persistence < TIER_B_MIN_PERSISTENCE:
+        return False, 'insufficient_persistence', 0.0
+
+    structure_score = 0.0
+    if drift_900s >= 0.12:
+        structure_score += 1.0
+    elif drift_900s >= 0.04:
+        structure_score += 0.7
+    else:
+        structure_score += 0.35
+
+    if persistence >= 5:
+        structure_score += 0.7
+    else:
+        structure_score += 0.35
+
+    if score >= 0.75:
+        structure_score += 0.7
+    elif score >= PULLBACK_RECLAIM_MIN_SCORE:
+        structure_score += 0.4
+
+    if momentum >= 4.0:
+        structure_score += 0.4
+    elif momentum >= 2.0:
+        structure_score += 0.2
+
+    if drift_300s < -0.20:
+        return False, 'drift_300_too_negative', structure_score
+    if drift_300s > STRUCTURE_MAX_DRIFT_300S and momentum < 12.0:
+        return False, 'too_extended_for_entry', structure_score
+
+    if drift_300s >= PULLBACK_RECLAIM_MIN_DRIFT_300S:
+        return True, 'trend_supported_continuation', structure_score
+    if -0.02 <= drift_300s < PULLBACK_RECLAIM_MIN_DRIFT_300S and drift_900s >= 0.05 and score >= PULLBACK_RECLAIM_MIN_SCORE:
+        return True, 'pullback_reclaim_setup', structure_score
+    return False, 'structure_not_reclaimed', structure_score
+
+
+def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
+    score = float(candidate.get('score') or 0.0)
     drift = float(ticker.get('drift_300s') or 0.0)
     drift_900s = float(ticker.get('drift_900s') or 0.0)
-    trend = (candidate.get('trend') or candidate.get('status') or '').lower()
     momentum = float(candidate.get('momentum') or 0.0)
     persistence = int(candidate.get('persistence') or 0)
 
-    if freshness is None or freshness > FRESHNESS_LIMIT_SECONDS:
-        return '', 'stale_freshness'
-    if trend in {'isolated spike', 'fading', 'stalling'}:
-        return '', f'trend_block:{trend}'
-    if drift < -0.20:
-        return '', 'drift_300_too_negative'
-    if drift_900s < -0.10:
-        return '', 'drift_900_too_negative'
+    structure_ok, structure_reason, structure_score = _structure_context(candidate, ticker)
+    if not structure_ok:
+        return '', structure_reason, structure_score
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
-        return '', 'fake_pump_guard'
-    if persistence < TIER_B_MIN_PERSISTENCE:
-        return '', 'insufficient_persistence'
+        return '', 'fake_pump_guard', structure_score
     if persistence == 4 and score < 0.56:
-        return '', 'borderline_score_at_p4'
+        return '', 'borderline_score_at_p4', structure_score
 
     strong_setup = score >= TIER_A_MIN_SCORE and persistence >= TIER_A_MIN_PERSISTENCE
     valid_setup = score >= TIER_B_MIN_SCORE and persistence >= TIER_B_MIN_PERSISTENCE
 
-    if strong_setup and drift >= TIER_A_MIN_DRIFT_300S:
-        return 'A', 'tier_a_full_confirmation'
-    if strong_setup and drift >= -0.02 and drift_900s >= 0:
-        return 'A', 'tier_a_persistent_recovery'
-    if strong_setup and drift >= -0.05 and drift_900s >= 0.10:
-        return 'B', 'tier_b_from_higher_tf_support'
-    if valid_setup and drift >= TIER_B_MIN_DRIFT_300S:
-        return 'B', 'tier_b_full_confirmation'
-    if valid_setup and drift >= -0.02 and drift_900s >= 0:
-        return 'B', 'tier_b_flat_but_supported'
-    return '', 'tier_filter_failed'
+    if strong_setup and drift >= TIER_A_MIN_DRIFT_300S and drift_900s >= 0.02:
+        return 'A', f'{structure_reason}:tier_a_full_confirmation', structure_score
+    if strong_setup and drift >= -0.02 and drift_900s >= 0.08:
+        return 'A', f'{structure_reason}:tier_a_persistent_recovery', structure_score
+    if strong_setup and drift >= -0.05 and drift_900s >= 0.12:
+        return 'B', f'{structure_reason}:tier_b_from_higher_tf_support', structure_score
+    if valid_setup and drift >= TIER_B_MIN_DRIFT_300S and drift_900s >= 0.0:
+        return 'B', f'{structure_reason}:tier_b_full_confirmation', structure_score
+    if valid_setup and drift >= -0.02 and drift_900s >= 0.05:
+        return 'B', f'{structure_reason}:tier_b_flat_but_supported', structure_score
+    return '', 'tier_filter_failed', structure_score
 
 
 def _cooldown_blocked(symbol: str, state: dict, candidate: dict | None = None, ticker: dict | None = None) -> bool:
@@ -323,6 +370,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'trend': item.get('trend') or item.get('status') or 'unknown',
             'price': float(ticker.get('price')),
             'drift_300s': float(ticker.get('drift_300s') or 0.0),
+            'drift_900s': float(ticker.get('drift_900s') or 0.0),
             'freshness_seconds': float(ticker.get('freshness_seconds') or 0.0),
         }
         eligible, reentry_reason = _reentry_decision(symbol, state, item, ticker)
@@ -333,12 +381,13 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
                 'reason': reentry_reason or 'cooldown',
             })
             continue
-        tier, tier_reason = _candidate_tier(item, ticker)
+        tier, tier_reason, structure_score = _candidate_tier(item, ticker)
         if not tier:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
                 'reason': tier_reason,
+                'structure_score': round(structure_score, 3),
             })
             continue
         accepted_payload = {
@@ -346,6 +395,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'decision': 'accept',
             'tier_candidate': tier,
             'tier_reason': tier_reason,
+            'structure_score': round(structure_score, 3),
             'entry_reason': 'scanner_rank_plus_websocket_confirmation',
         }
         _append_jsonl(V2_CANDIDATE_EVALS_PATH, accepted_payload)
@@ -354,15 +404,17 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'product_id': product_id,
             'tier': tier,
             'score': accepted_payload['score'],
+            'structure_score': accepted_payload['structure_score'],
             'momentum': accepted_payload['momentum'],
             'persistence': accepted_payload['persistence'],
             'trend': accepted_payload['trend'],
             'price': accepted_payload['price'],
             'drift_300s': accepted_payload['drift_300s'],
+            'drift_900s': accepted_payload['drift_900s'],
             'freshness_seconds': accepted_payload['freshness_seconds'],
             'entry_reason': accepted_payload['entry_reason'],
         })
-    candidates.sort(key=lambda x: (x['tier'] == 'A', x['score'], abs(x['drift_300s'])), reverse=True)
+    candidates.sort(key=lambda x: (x['tier'] == 'A', x.get('structure_score', 0.0), x['score'], abs(x['drift_300s'])), reverse=True)
     return candidates
 
 
