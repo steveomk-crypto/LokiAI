@@ -184,16 +184,23 @@ def stream_view():
                                 ui.label(f"{fmt_num(mover.get('freshness_seconds'), 1)}s").classes('signal-meta')
 
                 with panel('Scanner Highlights', 'Names the system currently rates highest', 'left-panel-compact'):
-                    if not top_opps:
-                        ui.label('No scanner highlights yet').classes('text-gray-400')
-                    for opp in top_opps[:4]:
-                        with ui.row().classes('w-full justify-between items-center signal-row'):
-                            with ui.column().classes('gap-0'):
-                                ui.label(opp.get('token', '?')).classes('signal-symbol')
-                                ui.label(f"trend • {opp.get('trend', '–')}").classes('signal-meta')
-                            with ui.column().classes('items-end gap-0'):
-                                ui.label(f"{fmt_num(opp.get('momentum'), 1)}%").classes('signal-momentum')
-                                ui.label(f"persistence {opp.get('persistence', 0)}").classes('signal-meta')
+                    with ui.row().classes('w-full no-wrap gap-4 items-start'):
+                        with ui.column().classes('gap-0 flex-1'):
+                            if not top_opps:
+                                ui.label('No scanner highlights yet').classes('text-gray-400')
+                            for opp in top_opps[:4]:
+                                with ui.row().classes('w-full justify-between items-center signal-row'):
+                                    with ui.column().classes('gap-0'):
+                                        ui.label(opp.get('token', '?')).classes('signal-symbol')
+                                        ui.label(f"trend • {opp.get('trend', '–')}").classes('signal-meta')
+                                    with ui.column().classes('items-end gap-0'):
+                                        ui.label(f"{fmt_num(opp.get('momentum'), 1)}%").classes('signal-momentum')
+                                        ui.label(f"persistence {opp.get('persistence', 0)}").classes('signal-meta')
+                        with ui.column().classes('gap-1 flex-1'):
+                            ui.label('SUPPORT THE BUILD').classes('signal-symbol')
+                            ui.label('Help fund LokiAI + the OpenClaw market engine').classes('signal-meta')
+                            ui.label('PayPal: paypal.me/steveomk30').classes('text-sm panel-row')
+                            ui.label('Cash App: $lokimk16').classes('text-sm panel-row')
 
                 with panel('Distribution', 'Current outward-facing surfaces', 'left-panel-compact'):
                     ui.label('Brief → lokiai.substack.com').classes('text-sm panel-row')
