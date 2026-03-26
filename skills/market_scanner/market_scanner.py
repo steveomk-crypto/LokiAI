@@ -715,6 +715,27 @@ def market_scanner(tokens, volume_data, momentum_data):
         )
     ]
 
+    leadership_board = [
+        entry for entry in sorted_entries
+        if (
+            (
+                entry['score'] >= max(SECONDARY_SCORE_FLOOR, 0.38)
+                and entry['persistence'] >= 2
+                and entry['volume'] >= 2_000_000
+                and entry.get('momentum_trend') not in {'isolated spike'}
+            )
+            or (
+                entry['score'] >= BENCH_SCORE_FLOOR
+                and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
+                and entry['volume'] >= BENCH_VOLUME_FLOOR
+            )
+        )
+        and not (
+            entry.get('momentum_trend') == 'fading'
+            and entry['score'] < 0.52
+        )
+    ]
+
     top_three = ranked[:3]
     summary = {
         'timestamp': timestamp,
@@ -732,7 +753,7 @@ def market_scanner(tokens, volume_data, momentum_data):
         ]
     }
 
-    market_state = _evaluate_market_state(ranked_bench, summary, timestamp)
+    market_state = _evaluate_market_state(leadership_board, summary, timestamp)
     _write_market_state(market_state)
 
     with open(log_path, 'a') as f:
