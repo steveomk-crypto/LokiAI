@@ -259,6 +259,7 @@ def _fetch_coinpaprika_metrics():
 
 def _prepare_scanner_payload(data: List[Dict]):
     coinbase_metrics = _fetch_coinbase_metrics()
+    coinbase_tickers = _load_json_file(CACHE_DIR / 'coinbase_tickers.json', {})
     coinbase_symbols = set(coinbase_metrics.keys())
     if not coinbase_symbols:
         coinbase_symbols = {
@@ -306,6 +307,46 @@ def _prepare_scanner_payload(data: List[Dict]):
                 volume_data[symbol] = float(stats.get('volume') or 0.0)
             if not momentum_data.get(symbol):
                 momentum_data[symbol] = float(stats.get('momentum') or 0.0)
+
+    # Live-momentum seeding path: if a tracked Coinbase symbol is moving now but lacks
+    # external snapshot momentum context, seed scanner momentum from websocket drift.
+    live_seeded_symbols = set()
+    for product_id, ticker in coinbase_tickers.items():
+        if not isinstance(ticker, dict):
+            continue
+        symbol = (ticker.get('base_currency') or str(product_id).split('-')[0]).upper()
+        if symbol not in coinbase_symbols:
+            continue
+        existing_momentum = float(momentum_data.get(symbol, 0) or 0.0)
+        drift_300s = float(ticker.get('drift_300s') or 0.0)
+        drift_900s = float(ticker.get('drift_900s') or 0.0)
+        freshness_seconds = float(ticker.get('freshness_seconds') or 9999.0)
+        live_volume = float(ticker.get('volume_24h') or 0.0)
+        if existing_momentum > 0:
+            continue
+        if freshness_seconds > 90:
+            continue
+        if drift_300s < 0.03 and drift_900s < 0.12:
+            continue
+        if live_volume < 1_500_000:
+            continue
+
+        # Map short-term live drift into the scanner's momentum regime conservatively.
+        seeded_momentum = max(drift_300s * 18.0, drift_900s * 6.0)
+        if seeded_momentum <= 0:
+            continue
+        momentum_data[symbol] = round(seeded_momentum, 6)
+        if live_volume > float(volume_data.get(symbol, 0) or 0.0):
+            volume_data[symbol] = live_volume
+        live_seeded_symbols.add(symbol)
+
+    if live_seeded_symbols:
+        seed_path = CACHE_DIR / 'scanner_live_seeded_symbols.json'
+        seed_path.write_text(json.dumps(sorted(live_seeded_symbols), indent=2))
+    else:
+        seed_path = CACHE_DIR / 'scanner_live_seeded_symbols.json'
+        if seed_path.exists():
+            seed_path.unlink()
 
     return tokens, volume_data, momentum_data
 

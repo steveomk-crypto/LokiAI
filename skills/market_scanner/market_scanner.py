@@ -41,6 +41,7 @@ DEX_API_URL = 'https://api.dexscreener.com/latest/dex/pairs'
 CANDIDATE_PATH = '/home/lokiai/.openclaw/workspace/market_scanner/candidates.json'
 MARKET_STATE_PATH = '/home/lokiai/.openclaw/workspace/cache/market_state.json'
 COINBASE_PRODUCTS_PATH = '/home/lokiai/.openclaw/workspace/cache/coinbase_products.json'
+LIVE_SEEDED_SYMBOLS_PATH = '/home/lokiai/.openclaw/workspace/cache/scanner_live_seeded_symbols.json'
 HELIUS_SECRET_PATH = '/home/lokiai/.openclaw/workspace/secrets/helius_api_credentials.env'
 
 
@@ -124,6 +125,16 @@ def _normalize(value, max_value):
     if not max_value:
         return 0
     return value / max_value
+
+
+def _load_live_seeded_symbols() -> set[str]:
+    if not os.path.exists(LIVE_SEEDED_SYMBOLS_PATH):
+        return set()
+    try:
+        data = json.load(open(LIVE_SEEDED_SYMBOLS_PATH, 'r'))
+        return {str(item).upper() for item in data if str(item).strip()}
+    except Exception:
+        return set()
 
 
 def _load_trade_decay_map() -> dict:
@@ -707,6 +718,7 @@ def market_scanner(tokens, volume_data, momentum_data):
     recent_runs = _load_recent_runs(log_path, RUN_LOOKBACK)
     history = _build_history(recent_runs)
     coinbase_bases = _load_coinbase_bases()
+    live_seeded_symbols = _load_live_seeded_symbols()
     trade_decay_map = _load_trade_decay_map()
 
     candidates = []
@@ -728,6 +740,7 @@ def market_scanner(tokens, volume_data, momentum_data):
                 'volume': volume,
                 'momentum': momentum,
                 'coinbase_actionable': token in coinbase_bases,
+                'live_seeded': token in live_seeded_symbols,
             })
 
     filtered_entries = []
@@ -787,6 +800,7 @@ def market_scanner(tokens, volume_data, momentum_data):
             'status': status,
             'persistence': persistence,
             'coinbase_actionable': candidate.get('coinbase_actionable', False),
+            'live_seeded': bool(candidate.get('live_seeded')),
             'liquidity_change_ratio': None if liquidity_change_ratio is None else round(liquidity_change_ratio, 6),
             'volume_acceleration_ratio': None if volume_accel_ratio is None else round(volume_accel_ratio, 6),
             'buy_pressure_proxy': None if buy_pressure_proxy is None else round(buy_pressure_proxy, 6),
