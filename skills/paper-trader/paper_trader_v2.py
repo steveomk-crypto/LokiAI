@@ -293,6 +293,8 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
             return 'standard', f'{structure_reason}:early_reclaim_high_confidence', structure_score
         if valid_setup and persistence >= 5 and score >= 0.50:
             return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
+        if valid_setup and persistence >= 5 and drift >= -0.01 and drift_900s >= -0.30:
+            return 'standard', f'{structure_reason}:weak_regime_flat_reclaim', structure_score
 
     return '', 'tier_filter_failed', structure_score
 
