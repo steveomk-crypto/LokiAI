@@ -48,9 +48,9 @@ MODEST_CONTINUATION_PEAK_PCT = 0.20
 MODEST_CONTINUATION_LOSS_PCT = -0.25
 STRUCTURE_MIN_DRIFT_900S = -0.30
 STRUCTURE_MAX_DRIFT_300S = 0.75
-FULL_CONTINUATION_MIN_DRIFT_300S = 0.06
-EARLY_RECLAIM_MIN_DRIFT_300S = -0.01
-PULLBACK_RECLAIM_MIN_SCORE = 0.50
+FULL_CONTINUATION_MIN_DRIFT_300S = 0.04
+EARLY_RECLAIM_MIN_DRIFT_300S = -0.03
+PULLBACK_RECLAIM_MIN_SCORE = 0.48
 
 
 def _load_json(path: Path, default: Any):
@@ -268,7 +268,7 @@ def _structure_context(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     return 'reject', 'structure_not_reclaimed', structure_score
 
 
-def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
+def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     score = float(candidate.get('score') or 0.0)
     drift = float(ticker.get('drift_300s') or 0.0)
     drift_900s = float(ticker.get('drift_900s') or 0.0)
@@ -280,31 +280,31 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
         return '', structure_reason, structure_score
     if drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 12.0:
         return '', 'fake_pump_guard', structure_score
-    if persistence == 4 and score < 0.56:
+    if persistence == 4 and score < 0.54:
         return '', 'borderline_score_at_p4', structure_score
 
     high_confidence = score >= HIGH_CONFIDENCE_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
     valid_setup = score >= ENTRY_MIN_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
 
     if structure_state == 'full':
-        if high_confidence and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.02:
+        if high_confidence and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.01:
             return 'high', f'{structure_reason}:high_confidence_continuation', structure_score
-        if high_confidence and drift >= -0.02 and drift_900s >= 0.08:
+        if high_confidence and drift >= -0.03 and drift_900s >= 0.05:
             return 'high', f'{structure_reason}:high_confidence_recovery', structure_score
-        if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= 0.0:
+        if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= -0.01:
             return 'standard', f'{structure_reason}:standard_continuation', structure_score
-        if valid_setup and drift >= -0.02 and drift_900s >= 0.05:
+        if valid_setup and drift >= -0.03 and drift_900s >= 0.03:
             return 'standard', f'{structure_reason}:supported_flat_reclaim', structure_score
 
     if structure_state == 'early':
         if high_confidence and persistence >= 5:
             return 'standard', f'{structure_reason}:early_reclaim_high_confidence', structure_score
-        if valid_setup and persistence >= 5 and score >= 0.50:
+        if valid_setup and persistence >= 4 and score >= 0.48:
             return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
-        if valid_setup and persistence >= 5 and drift >= -0.01 and drift_900s >= -0.30:
+        if valid_setup and persistence >= 4 and drift >= -0.03 and drift_900s >= -0.30:
             return 'standard', f'{structure_reason}:weak_regime_flat_reclaim', structure_score
 
-    return '', 'tier_filter_failed', structure_score
+    return '', 'confidence_filter_failed', structure_score
 
 
 def _cooldown_blocked(symbol: str, state: dict, candidate: dict | None = None, ticker: dict | None = None) -> bool:
@@ -441,7 +441,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
                 'reason': reentry_reason or 'cooldown',
             })
             continue
-        confidence, confidence_reason, structure_score = _candidate_tier(item, ticker)
+        confidence, confidence_reason, structure_score = _candidate_profile(item, ticker)
         if not confidence:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
