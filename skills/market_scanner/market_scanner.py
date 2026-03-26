@@ -18,7 +18,9 @@ HIGH_MOMENTUM_LEVEL = get_strategy_value("momentum_threshold")
 RUN_LOOKBACK = 5            # Number of prior runs to compare
 MIN_PERSISTENCE_FOR_PRIORITY = 2
 STRONG_VOLUME_FLOOR = 5_000_000
+BENCH_VOLUME_FLOOR = 3_000_000
 HIGH_CONVICTION_SCORE_FLOOR = 0.45
+BENCH_SCORE_FLOOR = 0.50
 SECONDARY_MOMENTUM_FLOOR = 2.75
 SECONDARY_VOLUME_FLOOR = 8_000_000
 SECONDARY_SCORE_FLOOR = 0.40
@@ -687,13 +689,28 @@ def market_scanner(tokens, volume_data, momentum_data):
         entry['alignment_score'] = round(alignment_score, 6)
         entry['score'] = round(max(composite, 0), 6)
 
+    sorted_entries = sorted(filtered_entries, key=lambda e: e['score'], reverse=True)
+
     ranked = [
-        entry for entry in sorted(filtered_entries, key=lambda e: e['score'], reverse=True)
+        entry for entry in sorted_entries
         if entry['score'] >= HIGH_CONVICTION_SCORE_FLOOR
         and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
         and entry['volume'] >= STRONG_VOLUME_FLOOR
         and entry.get('momentum_trend') not in {'isolated spike'}
     ]
+
+    ranked_bench = [
+        entry for entry in sorted_entries
+        if entry['score'] >= BENCH_SCORE_FLOOR
+        and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
+        and entry['volume'] >= BENCH_VOLUME_FLOOR
+        and entry.get('momentum_trend') not in {'isolated spike'}
+        and not (
+            entry.get('momentum_trend') == 'fading'
+            and entry['score'] < max(BENCH_SCORE_FLOOR + 0.08, HIGH_CONVICTION_SCORE_FLOOR)
+        )
+    ]
+
     top_three = ranked[:3]
     summary = {
         'timestamp': timestamp,
@@ -711,7 +728,7 @@ def market_scanner(tokens, volume_data, momentum_data):
         ]
     }
 
-    market_state = _evaluate_market_state(ranked, summary, timestamp)
+    market_state = _evaluate_market_state(ranked_bench, summary, timestamp)
     _write_market_state(market_state)
 
     with open(log_path, 'a') as f:
