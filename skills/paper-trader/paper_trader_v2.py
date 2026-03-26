@@ -22,26 +22,20 @@ V2_FUNNEL_SUMMARY_PATH = TRADES_DIR / 'v2_entry_funnel_summary.json'
 
 MAX_SLOTS = 3
 CANDIDATE_BENCH_LIMIT = 8
-TIER_A_MIN_SCORE = 0.52
-TIER_B_MIN_SCORE = 0.40
+ENTRY_MIN_SCORE = 0.40
+HIGH_CONFIDENCE_SCORE = 0.52
 FRESHNESS_LIMIT_SECONDS = 180
-TIER_A_MIN_DRIFT_300S = 0.10
-TIER_B_MIN_DRIFT_300S = 0.09
-TIER_A_MIN_PERSISTENCE = 4
-TIER_B_MIN_PERSISTENCE = 4
+ENTRY_MIN_DRIFT_300S = 0.09
+HIGH_CONFIDENCE_MIN_DRIFT_300S = 0.10
+ENTRY_MIN_PERSISTENCE = 4
 COOLDOWN_MINUTES = 45
-TIER_A_STOP_LOSS_PCT = -4.0
-TIER_B_STOP_LOSS_PCT = -3.0
-TIER_A_TIMEOUT_MINUTES = 90
-TIER_B_TIMEOUT_MINUTES = 60
+STOP_LOSS_PCT = -3.5
+TIMEOUT_MINUTES = 75
 NO_MOVE_THRESHOLD_PCT = 0.15
 NO_MOVE_MINUTES = 12
-TIER_A_TRIM_LEVELS = [0.45, 1.25, 2.5]
-TIER_B_TRIM_LEVELS = [0.35, 0.9, 2.0]
-TIER_A_TRAIL_AFTER_FIRST = 0.22
-TIER_A_TRAIL_AFTER_SECOND = 0.55
-TIER_B_TRAIL_AFTER_FIRST = 0.18
-TIER_B_TRAIL_AFTER_SECOND = 0.4
+TRIM_LEVELS = [0.40, 1.05, 2.25]
+TRAIL_AFTER_FIRST = 0.2
+TRAIL_AFTER_SECOND = 0.48
 FAKE_PUMP_DRIFT_THRESHOLD = 0.35
 FAKE_PUMP_DE_RISK_PCT = 25
 EARLY_PROTECT_PNL_PCT = 0.28
@@ -218,7 +212,7 @@ def _structure_context(candidate: dict, ticker: dict) -> tuple[str, str, float]:
         return 'reject', 'structure_downtrend', 0.0
     if trend in {'isolated spike', 'fading'}:
         return 'reject', f'structure_trend_block:{trend}', 0.0
-    if persistence < TIER_B_MIN_PERSISTENCE:
+    if persistence < ENTRY_MIN_PERSISTENCE:
         return 'reject', 'insufficient_persistence', 0.0
 
     structure_score = 0.0
@@ -273,26 +267,24 @@ def _candidate_tier(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     if persistence == 4 and score < 0.56:
         return '', 'borderline_score_at_p4', structure_score
 
-    strong_setup = score >= TIER_A_MIN_SCORE and persistence >= TIER_A_MIN_PERSISTENCE
-    valid_setup = score >= TIER_B_MIN_SCORE and persistence >= TIER_B_MIN_PERSISTENCE
+    high_confidence = score >= HIGH_CONFIDENCE_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
+    valid_setup = score >= ENTRY_MIN_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
 
     if structure_state == 'full':
-        if strong_setup and drift >= TIER_A_MIN_DRIFT_300S and drift_900s >= 0.02:
-            return 'A', f'{structure_reason}:tier_a_full_confirmation', structure_score
-        if strong_setup and drift >= -0.02 and drift_900s >= 0.08:
-            return 'A', f'{structure_reason}:tier_a_persistent_recovery', structure_score
-        if strong_setup and drift >= -0.05 and drift_900s >= 0.12:
-            return 'B', f'{structure_reason}:tier_b_from_higher_tf_support', structure_score
-        if valid_setup and drift >= TIER_B_MIN_DRIFT_300S and drift_900s >= 0.0:
-            return 'B', f'{structure_reason}:tier_b_full_confirmation', structure_score
+        if high_confidence and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.02:
+            return 'high', f'{structure_reason}:high_confidence_continuation', structure_score
+        if high_confidence and drift >= -0.02 and drift_900s >= 0.08:
+            return 'high', f'{structure_reason}:high_confidence_recovery', structure_score
+        if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= 0.0:
+            return 'standard', f'{structure_reason}:standard_continuation', structure_score
         if valid_setup and drift >= -0.02 and drift_900s >= 0.05:
-            return 'B', f'{structure_reason}:tier_b_flat_but_supported', structure_score
+            return 'standard', f'{structure_reason}:supported_flat_reclaim', structure_score
 
     if structure_state == 'early':
-        if strong_setup and persistence >= 5:
-            return 'B', f'{structure_reason}:tier_b_early_reclaim', structure_score
+        if high_confidence and persistence >= 5:
+            return 'standard', f'{structure_reason}:early_reclaim_high_confidence', structure_score
         if valid_setup and persistence >= 5 and score >= 0.50:
-            return 'B', f'{structure_reason}:tier_b_early_reclaim_support', structure_score
+            return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
 
     return '', 'tier_filter_failed', structure_score
 
@@ -326,20 +318,21 @@ def _cooldown_blocked(symbol: str, state: dict, candidate: dict | None = None, t
     return True
 
 
-def _normalized_guardrails(tier: str) -> dict:
+def _normalized_guardrails(confidence: str | None = None) -> dict:
     return {
-        'stop_loss_pct': TIER_A_STOP_LOSS_PCT if tier == 'A' else TIER_B_STOP_LOSS_PCT,
-        'profit_levels_pct': TIER_A_TRIM_LEVELS if tier == 'A' else TIER_B_TRIM_LEVELS,
-        'timeout_minutes': TIER_A_TIMEOUT_MINUTES if tier == 'A' else TIER_B_TIMEOUT_MINUTES,
-        'trail_after_first_pct': TIER_A_TRAIL_AFTER_FIRST if tier == 'A' else TIER_B_TRAIL_AFTER_FIRST,
-        'trail_after_second_pct': TIER_A_TRAIL_AFTER_SECOND if tier == 'A' else TIER_B_TRAIL_AFTER_SECOND,
+        'stop_loss_pct': STOP_LOSS_PCT,
+        'profit_levels_pct': TRIM_LEVELS,
+        'timeout_minutes': TIMEOUT_MINUTES,
+        'trail_after_first_pct': TRAIL_AFTER_FIRST,
+        'trail_after_second_pct': TRAIL_AFTER_SECOND,
+        'confidence': confidence or 'standard',
     }
 
 
 def _normalize_open_positions(open_positions: list[dict]) -> list[dict]:
     normalized = []
     for idx, position in enumerate(open_positions, start=1):
-        tier = position.get('tier', 'B')
+        confidence = position.get('confidence', 'standard')
         position.setdefault('slot_id', idx)
         position.setdefault('status', 'open')
         position.setdefault('trade_state', 'ACTIVE')
@@ -353,7 +346,7 @@ def _normalize_open_positions(open_positions: list[dict]) -> list[dict]:
         position.setdefault('trail_distance_pct', 0.0)
         position.setdefault('remaining_size_pct', 100.0)
         position.setdefault('de_risked_fake_pump', False)
-        position['guardrails'] = _normalized_guardrails(tier)
+        position['guardrails'] = _normalized_guardrails(confidence)
         normalized.append(position)
     return normalized
 
@@ -409,7 +402,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
         accepted_payload = {
             **candidate_payload,
             'decision': 'accept',
-            'tier_candidate': tier,
+            'confidence_candidate': tier,
             'tier_reason': tier_reason,
             'structure_score': round(structure_score, 3),
             'entry_reason': 'scanner_rank_plus_websocket_confirmation',
@@ -418,7 +411,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
         candidates.append({
             'symbol': symbol,
             'product_id': product_id,
-            'tier': tier,
+            'confidence': tier,
             'score': accepted_payload['score'],
             'structure_score': accepted_payload['structure_score'],
             'momentum': accepted_payload['momentum'],
@@ -430,7 +423,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'freshness_seconds': accepted_payload['freshness_seconds'],
             'entry_reason': accepted_payload['entry_reason'],
         })
-    candidates.sort(key=lambda x: (x['tier'] == 'A', x.get('structure_score', 0.0), x['score'], abs(x['drift_300s'])), reverse=True)
+    candidates.sort(key=lambda x: (x.get('confidence') == 'high', x.get('structure_score', 0.0), x['score'], abs(x['drift_300s'])), reverse=True)
     return candidates
 
 
@@ -457,10 +450,8 @@ def _classify_move_character(position: dict, ticker: dict | None) -> str:
     return 'building'
 
 
-def _tier_profit_profile(tier: str) -> tuple[list[float], float, float]:
-    if tier == 'A':
-        return TIER_A_TRIM_LEVELS, TIER_A_TRAIL_AFTER_FIRST, TIER_A_TRAIL_AFTER_SECOND
-    return TIER_B_TRIM_LEVELS, TIER_B_TRAIL_AFTER_FIRST, TIER_B_TRAIL_AFTER_SECOND
+def _profit_profile() -> tuple[list[float], float, float]:
+    return TRIM_LEVELS, TRAIL_AFTER_FIRST, TRAIL_AFTER_SECOND
 
 
 def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> tuple[list[dict], list[dict]]:
@@ -478,7 +469,7 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
         pnl_percent = ((current_price - entry_price) / entry_price) * 100 if entry_price else 0.0
         entry_dt = _iso_to_dt(position.get('entry_time')) or now
         time_in_trade_minutes = int((now - entry_dt).total_seconds() // 60)
-        tier = position.get('tier', 'B')
+        confidence = position.get('confidence', 'standard')
         timeout_limit = TIER_A_TIMEOUT_MINUTES if tier == 'A' else TIER_B_TIMEOUT_MINUTES
         stop_loss_pct = TIER_A_STOP_LOSS_PCT if tier == 'A' else TIER_B_STOP_LOSS_PCT
         trim_levels, trail_first, trail_second = _tier_profit_profile(tier)
@@ -506,7 +497,7 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
                     'timestamp': _now_iso(),
                     'action': f'trim_{idx}',
                     'token': position.get('token'),
-                    'tier': tier,
+                    'confidence': confidence,
                     'pnl_percent': round(pnl_percent, 4),
                     'remaining_size_pct': remaining_size_pct,
                     'move_character': move_character,
@@ -520,7 +511,7 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
                 'timestamp': _now_iso(),
                 'action': 'de_risk_fake_pump',
                 'token': position.get('token'),
-                'tier': tier,
+                'confidence': confidence,
                 'pnl_percent': round(pnl_percent, 4),
                 'remaining_size_pct': remaining_size_pct,
                 'drift_300s': drift_300s,
@@ -643,7 +634,7 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
                 'action': 'close_position',
                 'token': position.get('token'),
                 'product_id': position.get('product_id'),
-                'tier': tier,
+                'confidence': confidence,
                 'entry_time': position.get('entry_time'),
                 'time_in_trade_minutes': time_in_trade_minutes,
                 'entry_price': entry_price,
@@ -684,7 +675,7 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'slot_id': len(open_positions) + len(new_positions) + 1,
             'token': candidate['symbol'],
             'product_id': candidate['product_id'],
-            'tier': candidate['tier'],
+            'confidence': candidate['confidence'],
             'status': 'open',
             'trade_state': 'ACTIVE',
             'move_character': 'building',
@@ -701,7 +692,7 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'entry_reason': candidate['entry_reason'],
             'websocket_drift_300s': candidate['drift_300s'],
             'websocket_freshness_seconds': candidate['freshness_seconds'],
-            'guardrails': _normalized_guardrails(candidate['tier']),
+            'guardrails': _normalized_guardrails(candidate['confidence']),
             'highest_pnl_percent': 0.0,
             'trim_step': 0,
             'trail_active': False,
@@ -715,7 +706,7 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'timestamp': now_iso,
             'action': 'open_position',
             'token': candidate['symbol'],
-            'tier': candidate['tier'],
+            'confidence': candidate['confidence'],
             'score': candidate['score'],
             'drift_300s': candidate['drift_300s'],
             'freshness_seconds': candidate['freshness_seconds'],
@@ -731,7 +722,7 @@ def _log_position_snapshots(open_positions: list[dict]) -> None:
             'timestamp': timestamp,
             'token': position.get('token'),
             'product_id': position.get('product_id'),
-            'tier': position.get('tier'),
+            'confidence': position.get('confidence'),
             'trade_state': position.get('trade_state'),
             'move_character': position.get('move_character'),
             'entry_time': position.get('entry_time'),
