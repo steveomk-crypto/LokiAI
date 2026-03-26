@@ -492,7 +492,7 @@ def _profit_profile() -> tuple[list[float], float, float]:
     return TRIM_LEVELS, TRAIL_AFTER_FIRST, TRAIL_AFTER_SECOND
 
 
-def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> tuple[list[dict], list[dict]]:
+def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict], state: dict) -> tuple[list[dict], list[dict]]:
     now = datetime.now(timezone.utc)
     updated = []
     closed = []
@@ -839,7 +839,7 @@ def paper_trader_v2() -> dict:
         except Exception:
             prior_eval_lines = 0
 
-    refreshed_positions, closed_positions = _refresh_positions(open_positions, tickers)
+    refreshed_positions, closed_positions = _refresh_positions(open_positions, tickers, state)
     if closed_positions:
         trades_log.extend(closed_positions)
 
