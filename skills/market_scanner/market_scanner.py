@@ -34,6 +34,9 @@ LEADERSHIP_MOMENTUM_FLOOR = 1.75
 LEADERSHIP_VOLUME_FLOOR = 2_500_000
 FRESH_OPPORTUNITY_MIN_SCORE = 0.42
 FRESH_OPPORTUNITY_WEIGHT = 0.18
+FRESH_ENTRY_BRIDGE_SCORE_FLOOR = 0.40
+FRESH_ENTRY_BRIDGE_FRESHNESS_FLOOR = 0.75
+FRESH_ENTRY_BRIDGE_VOLUME_FLOOR = 3_000_000
 timestamp_format = "%Y-%m-%dT%H:%M"
 
 LOG_DIR = '/home/lokiai/.openclaw/workspace/market_logs/'
@@ -885,10 +888,22 @@ def market_scanner(tokens, volume_data, momentum_data):
 
     ranked = [
         entry for entry in sorted_entries
-        if entry['score'] >= HIGH_CONVICTION_SCORE_FLOOR
-        and entry.get('fresh_opportunity_score', 0) >= FRESH_OPPORTUNITY_MIN_SCORE
-        and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
-        and entry['volume'] >= STRONG_VOLUME_FLOOR
+        if (
+            (
+                entry['score'] >= HIGH_CONVICTION_SCORE_FLOOR
+                and entry.get('fresh_opportunity_score', 0) >= FRESH_OPPORTUNITY_MIN_SCORE
+                and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
+                and entry['volume'] >= STRONG_VOLUME_FLOOR
+            )
+            or (
+                entry['persistence'] == 1
+                and entry.get('live_seeded')
+                and entry['score'] >= FRESH_ENTRY_BRIDGE_SCORE_FLOOR
+                and entry.get('fresh_opportunity_score', 0) >= FRESH_ENTRY_BRIDGE_FRESHNESS_FLOOR
+                and entry['volume'] >= FRESH_ENTRY_BRIDGE_VOLUME_FLOOR
+                and entry.get('status') in {'new', 'strengthening'}
+            )
+        )
         and entry.get('momentum_trend') not in {'isolated spike'}
     ]
 
