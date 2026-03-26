@@ -524,11 +524,18 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
     high_quality = [entry for entry in ranked_entries if entry.get('momentum', 0) >= 8.0 and entry.get('volume', 0) >= 75_000_000]
     breadth_positive = sum(1 for entry in ranked_entries if (entry.get('volume_acceleration_ratio') or 0) > 0)
     breadth_threshold = max(2, total_signals // 2) if total_signals else 0
+    concentration_ratio = 0.0
+    if top_slice:
+        top_score_total = sum(max(float(entry.get('score') or 0.0), 0.0) for entry in top_slice)
+        if top_score_total > 0:
+            concentration_ratio = max(float(top_slice[0].get('score') or 0.0), 0.0) / top_score_total
+    narrow_board = total_signals <= 2
     mode = 'high_opportunity' if (
         total_signals >= 3 and
         avg_top_score >= 0.5 and
         len(high_quality) >= 2 and
-        breadth_positive >= breadth_threshold
+        breadth_positive >= breadth_threshold and
+        concentration_ratio < 0.7
     ) else 'baseline'
     leadership_board = ranked_entries[:24]
     ranked_bench = ranked_entries[:12]
@@ -542,6 +549,8 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
             'total_signals': total_signals,
             'leadership_board_count': len(leadership_board),
             'ranked_bench_count': len(ranked_bench),
+            'concentration_ratio': round(concentration_ratio, 6),
+            'narrow_board': narrow_board,
         },
         'top_opportunities': summary.get('top_opportunities', []),
         'leadership_board': leadership_board,

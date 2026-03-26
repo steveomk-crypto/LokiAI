@@ -51,6 +51,16 @@ STRUCTURE_MAX_DRIFT_300S = 0.75
 FULL_CONTINUATION_MIN_DRIFT_300S = 0.06
 EARLY_RECLAIM_MIN_DRIFT_300S = -0.01
 PULLBACK_RECLAIM_MIN_SCORE = 0.50
+NARROW_BOARD_SIGNAL_LIMIT = 2
+NARROW_BOARD_BREADTH_LIMIT = 0
+NARROW_BOARD_SCORE_BONUS = 0.04
+NARROW_BOARD_RECLAIM_DRIFT_300S = 0.03
+NARROW_BOARD_RECLAIM_DRIFT_900S = 0.02
+CHURN_LOOKBACK_MINUTES = 120
+CHURN_WEAK_EXIT_WINDOW_MINUTES = 90
+CHURN_MAX_WEAK_EXITS = 2
+CHURN_RECENT_REPEAT_MINUTES = 45
+SYMBOL_EXHAUSTION_REENTRY_SCORE_BONUS = 0.06
 
 
 def _load_json(path: Path, default: Any):
@@ -415,8 +425,86 @@ def _sync_symbol_state_with_positions(state: dict, open_positions: list[dict]) -
             entry['lifecycle'] = 'idle'
 
 
-def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dict]:
+def _recent_trade_rows(symbol: str, trades_log: list[dict], *, lookback_minutes: int = CHURN_LOOKBACK_MINUTES) -> list[dict]:
+    now = datetime.now(timezone.utc)
+    rows = []
+    for row in reversed(trades_log):
+        if (row.get('token') or '').upper() != symbol.upper():
+            continue
+        exit_dt = _iso_to_dt(row.get('exit_time') or row.get('timestamp') or row.get('last_update'))
+        if not exit_dt:
+            continue
+        age_minutes = (now - exit_dt).total_seconds() / 60
+        if age_minutes > lookback_minutes:
+            continue
+        rows.append(row)
+    return rows
+
+
+def _symbol_churn_profile(symbol: str, trades_log: list[dict]) -> dict:
+    recent_rows = _recent_trade_rows(symbol, trades_log)
+    weak_exit_reasons = {'no_move', 'timeout', 'failed_continuation', 'early_profit_giveback'}
+    weak_rows = []
+    win_rows = []
+    for row in recent_rows:
+        pnl = float(row.get('pnl_percent') or 0.0)
+        exit_reason = str(row.get('exit_reason') or '').lower()
+        exit_category = str(row.get('exit_category') or '').upper()
+        if exit_reason in weak_exit_reasons or (pnl <= 0.12 and exit_category in {'NM', 'TIME', 'FC', 'EXIT'}):
+            weak_rows.append(row)
+        if pnl > 0.35 and exit_category == 'TP':
+            win_rows.append(row)
+
+    repeat_exits = len(recent_rows)
+    weak_exit_count = len(weak_rows)
+    recent_repeat_count = 0
+    now = datetime.now(timezone.utc)
+    for row in recent_rows:
+        exit_dt = _iso_to_dt(row.get('exit_time') or row.get('timestamp') or row.get('last_update'))
+        if not exit_dt:
+            continue
+        if (now - exit_dt).total_seconds() <= CHURN_RECENT_REPEAT_MINUTES * 60:
+            recent_repeat_count += 1
+
+    exhaustion_penalty = 0.0
+    if weak_exit_count >= 1:
+        exhaustion_penalty += min(0.03 * weak_exit_count, 0.09)
+    if recent_repeat_count >= 2:
+        exhaustion_penalty += min(0.02 * (recent_repeat_count - 1), 0.06)
+    if weak_exit_count >= CHURN_MAX_WEAK_EXITS and not win_rows:
+        exhaustion_penalty += 0.05
+
+    return {
+        'recent_exit_count': repeat_exits,
+        'weak_exit_count': weak_exit_count,
+        'recent_repeat_count': recent_repeat_count,
+        'recent_win_count': len(win_rows),
+        'exhaustion_penalty': round(exhaustion_penalty, 4),
+        'exhausted': weak_exit_count >= CHURN_MAX_WEAK_EXITS and recent_repeat_count >= 2 and not win_rows,
+    }
+
+
+def _market_regime_flags(market_state: dict) -> dict:
+    metrics = market_state.get('metrics') or {}
+    total_signals = int(metrics.get('total_signals') or len(market_state.get('ranked_bench') or market_state.get('top_opportunities') or []))
+    breadth_positive = int(metrics.get('breadth_positive') or 0)
+    ranked_bench_count = int(metrics.get('ranked_bench_count') or len(market_state.get('ranked_bench') or []))
+    narrow_board = total_signals <= NARROW_BOARD_SIGNAL_LIMIT or ranked_bench_count <= NARROW_BOARD_SIGNAL_LIMIT
+    weak_breadth = breadth_positive <= NARROW_BOARD_BREADTH_LIMIT
+    return {
+        'narrow_board': narrow_board,
+        'weak_breadth': weak_breadth,
+        'tight_regime': narrow_board and weak_breadth,
+        'total_signals': total_signals,
+        'breadth_positive': breadth_positive,
+        'ranked_bench_count': ranked_bench_count,
+    }
+
+
+def _build_shortlist(market_state: dict, tickers: dict, state: dict, trades_log: list[dict] | None = None) -> list[dict]:
     candidates = []
+    trades_log = trades_log or []
+    regime = _market_regime_flags(market_state)
     source_candidates = market_state.get('ranked_bench') or market_state.get('top_opportunities', [])
     for item in source_candidates[:CANDIDATE_BENCH_LIMIT]:
         symbol = (item.get('token') or '').upper()
@@ -433,6 +521,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
                 'reason': 'missing_ticker_or_price',
             })
             continue
+        churn = _symbol_churn_profile(symbol, trades_log)
         candidate_payload = {
             'timestamp': _now_iso(),
             'token': symbol,
@@ -445,21 +534,81 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'drift_300s': float(ticker.get('drift_300s') or 0.0),
             'drift_900s': float(ticker.get('drift_900s') or 0.0),
             'freshness_seconds': float(ticker.get('freshness_seconds') or 0.0),
+            'churn_weak_exit_count': churn['weak_exit_count'],
+            'churn_recent_repeat_count': churn['recent_repeat_count'],
+            'exhaustion_penalty': churn['exhaustion_penalty'],
+            'tight_regime': regime['tight_regime'],
         }
-        eligible, reentry_reason = _reentry_decision(symbol, state, item, ticker)
+        effective_score = candidate_payload['score'] - churn['exhaustion_penalty']
+        if regime['tight_regime']:
+            effective_score -= NARROW_BOARD_SCORE_BONUS
+
+        candidate_for_profile = dict(item)
+        candidate_for_profile['score'] = effective_score
+        ticker_for_profile = dict(ticker)
+        if regime['tight_regime']:
+            ticker_for_profile['drift_300s'] = max(float(ticker_for_profile.get('drift_300s') or 0.0), float(ticker.get('drift_300s') or 0.0))
+
+        eligible, reentry_reason = _reentry_decision(symbol, state, candidate_for_profile, ticker_for_profile)
         if not eligible:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
                 'reason': reentry_reason or 'cooldown',
+                'effective_score': round(effective_score, 6),
             })
             continue
-        confidence, confidence_reason, structure_score = _candidate_profile(item, ticker)
+
+        if churn['exhausted']:
+            reclaim_ok = (
+                candidate_payload['drift_300s'] >= NARROW_BOARD_RECLAIM_DRIFT_300S and
+                candidate_payload['drift_900s'] >= NARROW_BOARD_RECLAIM_DRIFT_900S and
+                effective_score >= HIGH_CONFIDENCE_SCORE + SYMBOL_EXHAUSTION_REENTRY_SCORE_BONUS and
+                candidate_payload['freshness_seconds'] <= 90
+            )
+            if not reclaim_ok:
+                _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
+                    **candidate_payload,
+                    'decision': 'reject',
+                    'reason': 'symbol_exhausted_recently',
+                    'effective_score': round(effective_score, 6),
+                })
+                continue
+
+        confidence, confidence_reason, structure_score = _candidate_profile(candidate_for_profile, ticker_for_profile)
+        required_score = ENTRY_MIN_SCORE
+        if churn['weak_exit_count'] >= 1:
+            required_score += min(0.03 * churn['weak_exit_count'], 0.06)
+        if regime['tight_regime']:
+            required_score += NARROW_BOARD_SCORE_BONUS
+
+        if effective_score < required_score:
+            _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
+                **candidate_payload,
+                'decision': 'reject',
+                'reason': 'effective_score_below_regime_threshold',
+                'effective_score': round(effective_score, 6),
+                'required_score': round(required_score, 6),
+                'structure_score': round(structure_score, 3),
+            })
+            continue
+
+        if regime['tight_regime'] and candidate_payload['drift_300s'] < NARROW_BOARD_RECLAIM_DRIFT_300S:
+            _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
+                **candidate_payload,
+                'decision': 'reject',
+                'reason': 'tight_regime_needs_stronger_reclaim',
+                'effective_score': round(effective_score, 6),
+                'structure_score': round(structure_score, 3),
+            })
+            continue
+
         if not confidence:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
                 'reason': confidence_reason,
+                'effective_score': round(effective_score, 6),
                 'structure_score': round(structure_score, 3),
             })
             continue
@@ -468,6 +617,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'decision': 'accept',
             'confidence_candidate': confidence,
             'confidence_reason': confidence_reason,
+            'effective_score': round(effective_score, 6),
             'structure_score': round(structure_score, 3),
             'entry_reason': 'scanner_rank_plus_websocket_confirmation',
         }
@@ -477,6 +627,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
             'product_id': product_id,
             'confidence': confidence,
             'score': accepted_payload['score'],
+            'effective_score': accepted_payload['effective_score'],
             'structure_score': accepted_payload['structure_score'],
             'momentum': accepted_payload['momentum'],
             'persistence': accepted_payload['persistence'],
@@ -750,7 +901,8 @@ def _open_slots(shortlist: list[dict], open_positions: list[dict], state: dict) 
             'current_price': candidate['price'],
             'pnl_percent': 0.0,
             'time_in_trade_minutes': 0,
-            'scanner_score': candidate['score'],
+            'scanner_score': candidate.get('effective_score', candidate['score']),
+            'raw_scanner_score': candidate['score'],
             'momentum': candidate['momentum'],
             'persistence': candidate['persistence'],
             'trend': candidate['trend'],
@@ -870,7 +1022,7 @@ def paper_trader_v2() -> dict:
     if closed_positions:
         trades_log.extend(closed_positions)
 
-    shortlist = _build_shortlist(market_state, tickers, state)
+    shortlist = _build_shortlist(market_state, tickers, state, trades_log)
     updated_positions, new_positions = _open_slots(shortlist, refreshed_positions, state)
 
     all_active_positions = updated_positions
