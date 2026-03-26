@@ -390,20 +390,20 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
                 'reason': reentry_reason or 'cooldown',
             })
             continue
-        tier, tier_reason, structure_score = _candidate_tier(item, ticker)
-        if not tier:
+        confidence, confidence_reason, structure_score = _candidate_tier(item, ticker)
+        if not confidence:
             _append_jsonl(V2_CANDIDATE_EVALS_PATH, {
                 **candidate_payload,
                 'decision': 'reject',
-                'reason': tier_reason,
+                'reason': confidence_reason,
                 'structure_score': round(structure_score, 3),
             })
             continue
         accepted_payload = {
             **candidate_payload,
             'decision': 'accept',
-            'confidence_candidate': tier,
-            'tier_reason': tier_reason,
+            'confidence_candidate': confidence,
+            'confidence_reason': confidence_reason,
             'structure_score': round(structure_score, 3),
             'entry_reason': 'scanner_rank_plus_websocket_confirmation',
         }
@@ -411,7 +411,7 @@ def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dic
         candidates.append({
             'symbol': symbol,
             'product_id': product_id,
-            'confidence': tier,
+            'confidence': confidence,
             'score': accepted_payload['score'],
             'structure_score': accepted_payload['structure_score'],
             'momentum': accepted_payload['momentum'],
@@ -470,9 +470,9 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
         entry_dt = _iso_to_dt(position.get('entry_time')) or now
         time_in_trade_minutes = int((now - entry_dt).total_seconds() // 60)
         confidence = position.get('confidence', 'standard')
-        timeout_limit = TIER_A_TIMEOUT_MINUTES if tier == 'A' else TIER_B_TIMEOUT_MINUTES
-        stop_loss_pct = TIER_A_STOP_LOSS_PCT if tier == 'A' else TIER_B_STOP_LOSS_PCT
-        trim_levels, trail_first, trail_second = _tier_profit_profile(tier)
+        timeout_limit = TIMEOUT_MINUTES
+        stop_loss_pct = STOP_LOSS_PCT
+        trim_levels, trail_first, trail_second = _profit_profile()
         move_character = _classify_move_character(position, ticker)
         highest_pnl = max(float(position.get('highest_pnl_percent') or 0.0), pnl_percent)
         trim_step = int(position.get('trim_step') or 0)
@@ -814,8 +814,8 @@ def paper_trader_v2() -> dict:
         'shortlist_count': len(shortlist),
         'new_positions_count': len(new_positions),
         'closed_positions_count': len(closed_positions),
-        'tier_a_candidates': sum(1 for c in shortlist if c['tier'] == 'A'),
-        'tier_b_candidates': sum(1 for c in shortlist if c['tier'] == 'B'),
+        'high_confidence_candidates': sum(1 for c in shortlist if c.get('confidence') == 'high'),
+        'standard_confidence_candidates': sum(1 for c in shortlist if c.get('confidence') == 'standard'),
         'websocket_connected': bool(ws_state.get('connected')),
         'top_candidates': shortlist[:5],
     }
