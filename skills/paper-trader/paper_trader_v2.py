@@ -49,6 +49,9 @@ EARLY_PROTECT_GIVEBACK_PCT = 0.30
 FAILED_CONTINUATION_MINUTES = 12
 FAILED_CONTINUATION_PEAK_PCT = 0.35
 FAILED_CONTINUATION_RETAIN_PCT = 0.08
+MODEST_CONTINUATION_MINUTES = 16
+MODEST_CONTINUATION_PEAK_PCT = 0.20
+MODEST_CONTINUATION_LOSS_PCT = -0.25
 STRUCTURE_MIN_DRIFT_900S = 0.0
 STRUCTURE_MAX_DRIFT_300S = 0.75
 FULL_CONTINUATION_MIN_DRIFT_300S = 0.10
@@ -581,6 +584,14 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict]) -> 
         ):
             exit_reason = 'failed_continuation'
             exit_category = 'FC'
+        elif (
+            time_in_trade_minutes >= MODEST_CONTINUATION_MINUTES
+            and highest_pnl >= MODEST_CONTINUATION_PEAK_PCT
+            and pnl_percent <= MODEST_CONTINUATION_LOSS_PCT
+            and drift_300s < -0.10
+        ):
+            exit_reason = 'modest_continuation_failure'
+            exit_category = 'MCF'
         elif time_in_trade_minutes >= timeout_limit and pnl_percent <= 0:
             exit_reason = 'timeout'
             exit_category = 'TIME'
