@@ -144,6 +144,10 @@ def _mark_symbol_entry(state: dict, symbol: str) -> None:
     entry = _get_symbol_state(state, symbol)
     entry['lifecycle'] = 'active'
     entry['last_entry_at'] = now_iso
+    entry['last_exit_reason'] = None
+    entry['last_exit_pnl_percent'] = None
+    entry['last_peak_pnl_percent'] = None
+    entry['last_exit_at'] = None
     entry['reentry_blocked_until'] = None
 
 
@@ -349,6 +353,18 @@ def _normalize_open_positions(open_positions: list[dict]) -> list[dict]:
         position['guardrails'] = _normalized_guardrails(confidence)
         normalized.append(position)
     return normalized
+
+
+def _sync_symbol_state_with_positions(state: dict, open_positions: list[dict]) -> None:
+    active_symbols = {(p.get('token') or '').upper() for p in open_positions if (p.get('token') or '').upper()}
+    symbol_state = state.setdefault('symbol_state', {})
+    for symbol, entry in symbol_state.items():
+        upper_symbol = (symbol or '').upper()
+        if upper_symbol in active_symbols:
+            entry['lifecycle'] = 'active'
+            continue
+        if entry.get('lifecycle') == 'active':
+            entry['lifecycle'] = 'idle'
 
 
 def _build_shortlist(market_state: dict, tickers: dict, state: dict) -> list[dict]:
@@ -792,6 +808,7 @@ def paper_trader_v2() -> dict:
     market_state, ws_state, tickers = _load_current_inputs()
     state = _load_trader_state()
     open_positions = _normalize_open_positions(_load_json(V2_OPEN_POSITIONS_PATH, []))
+    _sync_symbol_state_with_positions(state, open_positions)
     trades_log = _load_json(V2_TRADES_LOG_PATH, [])
     prior_eval_lines = 0
     if V2_CANDIDATE_EVALS_PATH.exists():
