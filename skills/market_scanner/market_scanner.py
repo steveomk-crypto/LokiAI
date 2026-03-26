@@ -32,6 +32,8 @@ SECONDARY_VOLUME_FLOOR = 4_000_000
 SECONDARY_SCORE_FLOOR = 0.40
 LEADERSHIP_MOMENTUM_FLOOR = 1.75
 LEADERSHIP_VOLUME_FLOOR = 2_500_000
+FRESH_OPPORTUNITY_MIN_SCORE = 0.42
+FRESH_OPPORTUNITY_WEIGHT = 0.18
 timestamp_format = "%Y-%m-%dT%H:%M"
 
 LOG_DIR = '/home/lokiai/.openclaw/workspace/market_logs/'
@@ -222,6 +224,70 @@ def _momentum_delta(prev_entries, cutoff_minutes, current_dt):
                 target = float(momentum)
                 break
     return target
+
+
+def _fresh_opportunity_profile(entry, prev_entries):
+    prev_count = len(prev_entries)
+    last_entry = prev_entries[-1] if prev_entries else {}
+    prev_momentum = _safe_float(last_entry.get('momentum')) or 0.0
+    prev_volume = _safe_float(last_entry.get('volume')) or 0.0
+    current_momentum = float(entry.get('momentum') or 0.0)
+    current_volume = float(entry.get('volume') or 0.0)
+    status = str(entry.get('status') or '').lower()
+    trend = str(entry.get('momentum_trend') or '').lower()
+    volume_accel = _safe_float(entry.get('volume_acceleration_ratio')) or 0.0
+    liquidity_change = _safe_float(entry.get('liquidity_change_ratio')) or 0.0
+    buy_pressure = _safe_float(entry.get('buy_pressure_proxy')) or 0.0
+    alignment_score = _safe_float(entry.get('momentum_alignment_score')) or 0.5
+
+    freshness = 0.0
+    if prev_count == 0:
+        freshness += 1.0
+    elif status == 'new':
+        freshness += 0.9
+    elif status == 'strengthening':
+        freshness += 0.6
+    else:
+        freshness += 0.2
+
+    if current_momentum > prev_momentum:
+        freshness += 0.3
+    if current_volume > prev_volume:
+        freshness += 0.2
+    if volume_accel > 0:
+        freshness += min(volume_accel, 1.0) * 0.25
+    if liquidity_change > 1.02:
+        freshness += min(liquidity_change - 1.0, 1.0) * 0.2
+    if buy_pressure > 0:
+        freshness += min(buy_pressure, 1.0) * 0.15
+    freshness += max(alignment_score - 0.5, 0.0) * 0.4
+
+    if trend == 'accelerating':
+        freshness += 0.2
+    elif trend == 'steady':
+        freshness += 0.05
+    elif trend == 'fading':
+        freshness -= 0.2
+    elif trend == 'isolated spike':
+        freshness -= 0.15
+
+    if prev_count >= 4 and status == 'persistent' and current_momentum <= prev_momentum and current_volume <= prev_volume:
+        freshness -= 0.35
+
+    freshness = max(min(freshness / 1.8, 1.0), 0.0)
+    freshness_bucket = 'fresh'
+    if freshness < 0.34:
+        freshness_bucket = 'stale'
+    elif freshness < 0.67:
+        freshness_bucket = 'recycling'
+
+    return {
+        'score': round(freshness, 6),
+        'bucket': freshness_bucket,
+        'prev_count': prev_count,
+        'momentum_delta': round(current_momentum - prev_momentum, 6) if prev_count else None,
+        'volume_delta_ratio': round(((current_volume - prev_volume) / prev_volume), 6) if prev_volume else None,
+    }
 
 
 def _compute_alignment(current_momentum, prev_entries, current_dt):
@@ -624,6 +690,7 @@ def _evaluate_market_state(ranked_entries, summary, timestamp, decay_map=None):
             'narrow_board': narrow_board,
             'decayed_symbol_count': len(decay_names),
             'decayed_symbols': decay_names[:8],
+            'avg_fresh_opportunity_score': round(sum((_safe_float(entry.get('fresh_opportunity_score')) or 0.0) for entry in ranked_entries[:5]) / len(ranked_entries[:5]), 6) if ranked_entries[:5] else 0.0,
         },
         'top_opportunities': summary.get('top_opportunities', []),
         'leadership_board': leadership_board,
@@ -730,6 +797,12 @@ def market_scanner(tokens, volume_data, momentum_data):
             'momentum_alignment_score': alignment['alignment'],
             'momentum_trend': alignment['trend']
         }
+        freshness = _fresh_opportunity_profile(entry, prev_entries)
+        entry['fresh_opportunity_score'] = freshness['score']
+        entry['fresh_opportunity_bucket'] = freshness['bucket']
+        entry['fresh_prev_count'] = freshness['prev_count']
+        entry['fresh_momentum_delta'] = freshness['momentum_delta']
+        entry['fresh_volume_delta_ratio'] = freshness['volume_delta_ratio']
         filtered_entries.append(entry)
 
     if not filtered_entries:
@@ -751,12 +824,14 @@ def market_scanner(tokens, volume_data, momentum_data):
         volume_score = _normalize(entry['volume'], max_volume)
         liquidity_score = entry.get('liquidity_health', 0.5)
         alignment_score = entry.get('momentum_alignment_score', 0.5)
+        fresh_opportunity_score = _safe_float(entry.get('fresh_opportunity_score')) or 0.0
         composite = (
-            momentum_score * 0.25 +
-            volume_score * 0.25 +
-            persistence_score * 0.2 +
-            liquidity_score * 0.15 +
-            alignment_score * 0.15
+            momentum_score * 0.22 +
+            volume_score * 0.22 +
+            persistence_score * 0.18 +
+            liquidity_score * 0.12 +
+            alignment_score * 0.08 +
+            fresh_opportunity_score * FRESH_OPPORTUNITY_WEIGHT
         )
 
         trend = entry.get('momentum_trend') or 'steady'
@@ -771,6 +846,10 @@ def market_scanner(tokens, volume_data, momentum_data):
             composite -= 0.08
         if entry['volume'] < STRONG_VOLUME_FLOOR:
             composite -= 0.05
+        if entry.get('fresh_opportunity_bucket') == 'stale':
+            composite -= 0.08
+        elif entry.get('fresh_opportunity_bucket') == 'fresh':
+            composite += 0.04
 
         decay = trade_decay_map.get(entry['token'], {})
         decay_penalty = float(decay.get('penalty') or 0.0)
@@ -785,6 +864,7 @@ def market_scanner(tokens, volume_data, momentum_data):
         entry['downstream_decay_penalty'] = round(decay_penalty, 6)
         entry['recent_weak_exits'] = int(decay.get('weak_exits') or 0)
         entry['recent_trade_wins'] = int(decay.get('wins') or 0)
+        entry['fresh_opportunity_score'] = round(fresh_opportunity_score, 6)
         entry['score'] = round(max(composite, 0), 6)
 
     sorted_entries = sorted(filtered_entries, key=lambda e: e['score'], reverse=True)
@@ -792,6 +872,7 @@ def market_scanner(tokens, volume_data, momentum_data):
     ranked = [
         entry for entry in sorted_entries
         if entry['score'] >= HIGH_CONVICTION_SCORE_FLOOR
+        and entry.get('fresh_opportunity_score', 0) >= FRESH_OPPORTUNITY_MIN_SCORE
         and entry['persistence'] >= MIN_PERSISTENCE_FOR_PRIORITY
         and entry['volume'] >= STRONG_VOLUME_FLOOR
         and entry.get('momentum_trend') not in {'isolated spike'}
@@ -841,7 +922,9 @@ def market_scanner(tokens, volume_data, momentum_data):
                 'volume': item['volume'],
                 'persistence': item['persistence'],
                 'status': item['status'],
-                'trend': item.get('momentum_trend')
+                'trend': item.get('momentum_trend'),
+                'fresh_opportunity_score': item.get('fresh_opportunity_score'),
+                'fresh_opportunity_bucket': item.get('fresh_opportunity_bucket')
             }
             for item in top_three
         ]
