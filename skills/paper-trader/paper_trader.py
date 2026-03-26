@@ -9,8 +9,8 @@ from urllib.request import urlopen
 from api_usage import log_api_call
 from atr_utils import get_atr_for_symbol
 
-LOG_DIR = "/data/.openclaw/workspace/market_logs"
-TRADES_DIR = "/data/.openclaw/workspace/paper_trades"
+LOG_DIR = "/home/lokiai/.openclaw/workspace/market_logs"
+TRADES_DIR = "/home/lokiai/.openclaw/workspace/paper_trades"
 OPEN_POSITIONS_PATH = os.path.join(TRADES_DIR, "open_positions.json")
 TRADES_LOG_PATH = os.path.join(TRADES_DIR, "trades_log.json")
 ENTRY_STATE_PATH = os.path.join(TRADES_DIR, "entry_queue.json")
@@ -49,22 +49,22 @@ TIER_A_REGIME_MIN_VOLUME = 5_000_000
 TIER_A_REGIME_MIN_MOMENTUM = 5.0
 TIER_A_RULES = {
     'persistence': 4,
-    'liquidity_score': 0.55,
-    'liquidity_change_ratio': 1.1,
-    'alignment': 0.35,
-    'buy_pressure': 0.10
+    'liquidity_score': 0.50,
+    'liquidity_change_ratio': 1.0,
+    'alignment': 0.30,
+    'buy_pressure': -0.01
 }
 TIER_B_RULES = {
     'persistence': 5,
     'liquidity_score': 0.45,
     'liquidity_change_ratio': 1.0,
     'alignment': 0.2,
-    'buy_pressure': 0.05
+    'buy_pressure': -0.01
 }
 
 TIER_B_MIN_SCORE = 0.5
 
-MARKET_STATE_PATH = '/data/.openclaw/workspace/cache/market_state.json'
+MARKET_STATE_PATH = '/home/lokiai/.openclaw/workspace/cache/market_state.json'
 TRADE_PROFILES = {
     'baseline': {
         'tier_a_size': TIER_A_POSITION_SIZE,
@@ -83,18 +83,18 @@ TRADE_PROFILES = {
 SESSION_GUARD_MAX_DRAWDOWN_PCT = -0.06
 SESSION_GUARD_HEAT_DRAWDOWN_PCT = -0.08
 SESSION_GUARD_COOLDOWN_CYCLES = 3
-SESSION_GUARD_PATH = '/data/.openclaw/workspace/cache/session_guard.json'
+SESSION_GUARD_PATH = '/home/lokiai/.openclaw/workspace/cache/session_guard.json'
 MICROCAP_VOLUME_THRESHOLD = 50_000_000
 MICROCAP_TAKE_PROFIT_PCT = 5.0
-GOVERNOR_STATE_PATH = '/data/.openclaw/workspace/cache/governor_state.json'
+GOVERNOR_STATE_PATH = '/home/lokiai/.openclaw/workspace/cache/governor_state.json'
 TOKEN_COOLDOWN_EXTRA_MINUTES = 0
 
 COINGECKO_MARKETS_URL = (
     "https://api.coingecko.com/api/v3/coins/markets"
     "?vs_currency=usd&order=volume_desc&per_page=250&page=1&price_change_percentage=1h"
 )
-RISK_MANAGER_PATH = "/data/.openclaw/workspace/skills/risk-manager/risk_manager.py"
-CACHE_PATH = '/data/.openclaw/workspace/cache/coingecko_snapshot.json'
+RISK_MANAGER_PATH = "/home/lokiai/.openclaw/workspace/skills/risk-manager/risk_manager.py"
+CACHE_PATH = '/home/lokiai/.openclaw/workspace/cache/coingecko_snapshot.json'
 CACHE_TTL_SECONDS = 300
 RISK_MANAGER = SourceFileLoader('risk_manager', RISK_MANAGER_PATH).load_module()
 
