@@ -19,6 +19,7 @@ V2_POSITION_SNAPSHOTS_PATH = TRADES_DIR / 'v2_position_snapshots.jsonl'
 V2_EXIT_EVENTS_PATH = TRADES_DIR / 'v2_exit_events.jsonl'
 V2_AUDIT_SUMMARY_PATH = TRADES_DIR / 'paper_trader_v2_audit_summary.json'
 V2_FUNNEL_SUMMARY_PATH = TRADES_DIR / 'v2_entry_funnel_summary.json'
+V2_FUNNEL_REPORT_PATH = TRADES_DIR / 'v2_entry_funnel_report.json'
 
 MAX_SLOTS = 3
 CANDIDATE_BENCH_LIMIT = 12
@@ -1005,6 +1006,43 @@ def _build_audit_summary(open_positions: list[dict], trades_log: list[dict], sum
     }
 
 
+def _build_funnel_report(market_state: dict, summary: dict, funnel_summary: dict, audit_summary: dict, trades_log: list[dict], state: dict) -> dict:
+    latest_top = market_state.get('top_opportunities') or []
+    dominant_tokens = []
+    for item in latest_top[:5]:
+        token = str(item.get('token') or '').upper()
+        if token and token not in dominant_tokens:
+            dominant_tokens.append(token)
+
+    return {
+        'generated_at': _now_iso(),
+        'scanner': {
+            'runs': 1,
+            'nonzero_signal_runs': 1 if funnel_summary.get('scanner_signal_count') else 0,
+            'zero_signal_runs': 0 if funnel_summary.get('scanner_signal_count') else 1,
+            'top_surfaced_tokens': {token: 1 for token in dominant_tokens},
+        },
+        'trader': {
+            'runs': 1,
+            'watch_runs': 1 if summary.get('mode') == 'watch' else 0,
+            'engaged_runs': 1 if summary.get('mode') == 'engaged' else 0,
+            'shortlist_nonzero_runs': 1 if summary.get('shortlist_count') else 0,
+            'shortlist_zero_runs': 0 if summary.get('shortlist_count') else 1,
+            'new_positions_total': len(summary.get('top_candidates') or []),
+            'closed_positions_total': len(trades_log),
+        },
+        'candidate_flow': {
+            'eval_count': int(funnel_summary.get('candidate_eval_count') or 0),
+            'accepted_count': int(funnel_summary.get('accepted_candidate_count') or 0),
+            'rejected_count': int(funnel_summary.get('rejected_candidate_count') or 0),
+            'top_reject_reasons': funnel_summary.get('reject_reasons') or {},
+        },
+        'dominant_tokens': dominant_tokens,
+        'latest_audit': audit_summary,
+        'session_reset_at': state.get('session_reset_at'),
+    }
+
+
 def paper_trader_v2() -> dict:
     market_state, ws_state, tickers = _load_current_inputs()
     state = _load_trader_state()
@@ -1049,12 +1087,14 @@ def paper_trader_v2() -> dict:
         except Exception:
             eval_lines = []
     funnel_summary = _build_funnel_summary(market_state, eval_lines, shortlist, new_positions, ws_state)
+    funnel_report = _build_funnel_report(market_state, summary, funnel_summary, audit_summary, trades_log, state)
 
     _write_json(V2_OPEN_POSITIONS_PATH, updated_positions)
     _write_json(V2_TRADES_LOG_PATH, trades_log)
     _write_json(V2_STATE_PATH, state)
     _write_json(V2_AUDIT_SUMMARY_PATH, audit_summary)
     _write_json(V2_FUNNEL_SUMMARY_PATH, funnel_summary)
+    _write_json(V2_FUNNEL_REPORT_PATH, funnel_report)
 
     return {
         'summary': summary,
@@ -1067,6 +1107,8 @@ def paper_trader_v2() -> dict:
         'new_positions': new_positions,
         'audit_summary': audit_summary,
         'funnel_summary': funnel_summary,
+        'funnel_report_path': str(V2_FUNNEL_REPORT_PATH),
+        'funnel_report': funnel_report,
     }
 
 

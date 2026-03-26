@@ -7,6 +7,12 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+WORKSPACE = Path('/home/lokiai/.openclaw/workspace')
+TRADES_LOG_V2_PATH = WORKSPACE / 'paper_trades' / 'trades_log_v2.json'
+V2_EXIT_EVENTS_PATH = WORKSPACE / 'paper_trades' / 'v2_exit_events.jsonl'
+SCANNER_DECAY_LOOKBACK_HOURS = 6
+SCANNER_WEAK_EXIT_REASONS = {'no_move', 'timeout', 'failed_continuation', 'early_profit_giveback'}
+
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -116,6 +122,69 @@ def _normalize(value, max_value):
     if not max_value:
         return 0
     return value / max_value
+
+
+def _load_trade_decay_map() -> dict:
+    recent_rows = []
+    now = datetime.utcnow()
+
+    if TRADES_LOG_V2_PATH.exists():
+        try:
+            data = json.load(open(TRADES_LOG_V2_PATH, 'r'))
+            if isinstance(data, list):
+                recent_rows.extend(data)
+        except Exception:
+            pass
+
+    if V2_EXIT_EVENTS_PATH.exists():
+        try:
+            with open(V2_EXIT_EVENTS_PATH, 'r') as handle:
+                for raw in handle:
+                    line = raw.strip()
+                    if not line or not line.startswith('{'):
+                        continue
+                    try:
+                        recent_rows.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
+        except Exception:
+            pass
+
+    decay_map = {}
+    for row in recent_rows:
+        token = (row.get('token') or '').upper()
+        if not token:
+            continue
+        exit_time = row.get('exit_time') or row.get('timestamp') or row.get('last_update')
+        if not exit_time:
+            continue
+        try:
+            dt = datetime.fromisoformat(str(exit_time).replace('Z', '+00:00'))
+        except ValueError:
+            continue
+        age_hours = (now - dt.replace(tzinfo=None)).total_seconds() / 3600.0
+        if age_hours < 0 or age_hours > SCANNER_DECAY_LOOKBACK_HOURS:
+            continue
+
+        pnl = _safe_float(row.get('pnl_percent')) or 0.0
+        exit_reason = str(row.get('exit_reason') or '').lower()
+        exit_category = str(row.get('exit_category') or row.get('category') or '').upper()
+        bucket = decay_map.setdefault(token, {'weak_exits': 0, 'wins': 0, 'penalty': 0.0})
+        if exit_reason in SCANNER_WEAK_EXIT_REASONS or (exit_category in {'NM', 'TIME', 'FC'} and pnl <= 0.15):
+            bucket['weak_exits'] += 1
+            bucket['penalty'] += 0.04 if age_hours <= 2 else 0.025
+        elif exit_category == 'TP' and pnl >= 0.35:
+            bucket['wins'] += 1
+            bucket['penalty'] -= 0.015
+
+    for token, bucket in decay_map.items():
+        weak_exits = bucket['weak_exits']
+        wins = bucket['wins']
+        penalty = max(min(bucket['penalty'], 0.18), 0.0)
+        if weak_exits >= 3 and wins == 0:
+            penalty = min(penalty + 0.04, 0.22)
+        bucket['penalty'] = round(penalty, 6)
+    return decay_map
 
 
 def _scale_positive_ratio(value, cap=2.0):
@@ -517,7 +586,7 @@ def _write_market_state(state: dict):
         json.dump(state, handle, indent=2)
 
 
-def _evaluate_market_state(ranked_entries, summary, timestamp):
+def _evaluate_market_state(ranked_entries, summary, timestamp, decay_map=None):
     total_signals = len(ranked_entries)
     top_slice = ranked_entries[:5]
     avg_top_score = sum(entry['score'] for entry in top_slice) / len(top_slice) if top_slice else 0.0
@@ -530,6 +599,8 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
         if top_score_total > 0:
             concentration_ratio = max(float(top_slice[0].get('score') or 0.0), 0.0) / top_score_total
     narrow_board = total_signals <= 2
+    decay_map = decay_map or {}
+    decay_names = [token for token, bucket in decay_map.items() if float(bucket.get('penalty') or 0.0) > 0]
     mode = 'high_opportunity' if (
         total_signals >= 3 and
         avg_top_score >= 0.5 and
@@ -551,6 +622,8 @@ def _evaluate_market_state(ranked_entries, summary, timestamp):
             'ranked_bench_count': len(ranked_bench),
             'concentration_ratio': round(concentration_ratio, 6),
             'narrow_board': narrow_board,
+            'decayed_symbol_count': len(decay_names),
+            'decayed_symbols': decay_names[:8],
         },
         'top_opportunities': summary.get('top_opportunities', []),
         'leadership_board': leadership_board,
@@ -567,6 +640,7 @@ def market_scanner(tokens, volume_data, momentum_data):
     recent_runs = _load_recent_runs(log_path, RUN_LOOKBACK)
     history = _build_history(recent_runs)
     coinbase_bases = _load_coinbase_bases()
+    trade_decay_map = _load_trade_decay_map()
 
     candidates = []
     for token in tokens:
@@ -663,7 +737,7 @@ def market_scanner(tokens, volume_data, momentum_data):
             'timestamp': timestamp,
             'top_opportunities': []
         }
-        market_state = _evaluate_market_state([], summary, timestamp)
+        market_state = _evaluate_market_state([], summary, timestamp, trade_decay_map)
         _write_market_state(market_state)
         _save_candidates([])
         return ["SUMMARY:" + json.dumps(summary)]
@@ -698,11 +772,19 @@ def market_scanner(tokens, volume_data, momentum_data):
         if entry['volume'] < STRONG_VOLUME_FLOOR:
             composite -= 0.05
 
+        decay = trade_decay_map.get(entry['token'], {})
+        decay_penalty = float(decay.get('penalty') or 0.0)
+        if decay_penalty:
+            composite -= decay_penalty
+
         entry['momentum_score'] = round(momentum_score, 6)
         entry['volume_score'] = round(volume_score, 6)
         entry['persistence_score'] = round(persistence_score, 6)
         entry['liquidity_score'] = round(liquidity_score, 6)
         entry['alignment_score'] = round(alignment_score, 6)
+        entry['downstream_decay_penalty'] = round(decay_penalty, 6)
+        entry['recent_weak_exits'] = int(decay.get('weak_exits') or 0)
+        entry['recent_trade_wins'] = int(decay.get('wins') or 0)
         entry['score'] = round(max(composite, 0), 6)
 
     sorted_entries = sorted(filtered_entries, key=lambda e: e['score'], reverse=True)
@@ -765,7 +847,7 @@ def market_scanner(tokens, volume_data, momentum_data):
         ]
     }
 
-    market_state = _evaluate_market_state(leadership_board, summary, timestamp)
+    market_state = _evaluate_market_state(leadership_board, summary, timestamp, trade_decay_map)
     _write_market_state(market_state)
 
     with open(log_path, 'a') as f:
