@@ -32,6 +32,8 @@ CACHE_DIR = Path(os.path.join(WORKSPACE, 'cache'))
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 COINGECKO_CACHE_PATH = CACHE_DIR / 'coingecko_snapshot.json'
 COINGECKO_CACHE_TTL = 300
+REPLAY_PACKET_DIR = Path(os.path.join(WORKSPACE, 'ops_state', 'replay_packets'))
+REPLAY_PACKET_DIR.mkdir(parents=True, exist_ok=True)
 
 SKILL_PATHS = {
     'market_scanner': os.path.join(WORKSPACE, 'skills', 'market_scanner', 'market_scanner.py'),
@@ -307,6 +309,78 @@ def _prepare_scanner_payload(data: List[Dict]):
     return tokens, volume_data, momentum_data
 
 
+def _safe_write_replay_packet(packet: Dict):
+    try:
+        timestamp = str(packet.get('timestamp') or datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
+        day = timestamp[:10]
+        target_dir = REPLAY_PACKET_DIR / day
+        target_dir.mkdir(parents=True, exist_ok=True)
+        safe_ts = timestamp.replace(':', '').replace('Z', 'Z').replace('+00:00', 'Z')
+        path = target_dir / f"{safe_ts}_{packet.get('task', 'cycle')}.json"
+        path.write_text(json.dumps(packet, indent=2))
+    except Exception:
+        return
+
+
+def _load_json_file(path: Path, default):
+    try:
+        if path.exists():
+            return json.loads(path.read_text())
+    except Exception:
+        pass
+    return default
+
+
+def _collect_replay_snapshot(task: str, details: Dict) -> Dict:
+    summary = details.get('summary') if isinstance(details, dict) else None
+    market_state = _load_json_file(CACHE_DIR / 'market_state.json', {})
+    tickers = _load_json_file(CACHE_DIR / 'coinbase_tickers.json', {})
+    open_positions = _load_json_file(Path(WORKSPACE) / 'paper_trades' / 'open_positions_v2.json', [])
+    active_symbols = sorted({(p.get('token') or '').upper() for p in open_positions if (p.get('token') or '').upper()})
+    bench_symbols = []
+    for item in (market_state.get('ranked_bench') or []):
+        sym = (item.get('token') or '').upper()
+        if sym and sym not in bench_symbols:
+            bench_symbols.append(sym)
+    top_symbols = []
+    for item in (market_state.get('top_opportunities') or []):
+        sym = (item.get('token') or '').upper()
+        if sym and sym not in top_symbols:
+            top_symbols.append(sym)
+    relevant_symbols = []
+    for sym in active_symbols + bench_symbols[:12] + top_symbols[:5]:
+        if sym and sym not in relevant_symbols:
+            relevant_symbols.append(sym)
+    ticker_snapshot = {}
+    for sym in relevant_symbols:
+        product_id = f'{sym}-USD'
+        ticker = tickers.get(product_id)
+        if not isinstance(ticker, dict):
+            continue
+        ticker_snapshot[product_id] = {
+            'price': ticker.get('price'),
+            'drift_300s': ticker.get('drift_300s'),
+            'drift_900s': ticker.get('drift_900s'),
+            'freshness_seconds': ticker.get('freshness_seconds'),
+            'volume_24h': ticker.get('volume_24h'),
+        }
+    return {
+        'timestamp': (summary or {}).get('timestamp') or datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'task': task,
+        'summary': summary,
+        'market_state': {
+            'mode': market_state.get('mode'),
+            'computed_at': market_state.get('computed_at'),
+            'metrics': market_state.get('metrics'),
+            'top_opportunities': market_state.get('top_opportunities') or [],
+            'ranked_bench': market_state.get('ranked_bench') or [],
+        },
+        'open_positions': open_positions,
+        'ticker_snapshot': ticker_snapshot,
+        'details': details,
+    }
+
+
 def run_market_scanner():
     data = _fetch_market_snapshot()
     tokens, volume_data, momentum_data = _prepare_scanner_payload(data)
@@ -368,7 +442,11 @@ def run_paper_trader():
     summary = result.get('summary') if isinstance(result, dict) else None
     open_positions = result.get('open_positions', []) if isinstance(result, dict) else []
     message = summary or f"Paper trader updated ({len(open_positions)} open)."
-    details = {'summary': summary, 'open_positions': len(open_positions)}
+    details = {
+        'summary': summary,
+        'open_positions': len(open_positions),
+        'result': result if isinstance(result, dict) else None,
+    }
     return message, details
 
 
@@ -492,6 +570,8 @@ def main(task: str):
         'details': details,
     }
     _append_log(log_entry)
+    if status == 'ok' and task in {'market_scanner', 'paper_trader'}:
+        _safe_write_replay_packet(_collect_replay_snapshot(task, details))
     if message:
         print(message)
 
