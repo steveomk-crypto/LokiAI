@@ -21,9 +21,11 @@ STRONG_VOLUME_FLOOR = 5_000_000
 BENCH_VOLUME_FLOOR = 3_000_000
 HIGH_CONVICTION_SCORE_FLOOR = 0.45
 BENCH_SCORE_FLOOR = 0.50
-SECONDARY_MOMENTUM_FLOOR = 2.75
-SECONDARY_VOLUME_FLOOR = 8_000_000
+SECONDARY_MOMENTUM_FLOOR = 2.25
+SECONDARY_VOLUME_FLOOR = 4_000_000
 SECONDARY_SCORE_FLOOR = 0.40
+LEADERSHIP_MOMENTUM_FLOOR = 1.75
+LEADERSHIP_VOLUME_FLOOR = 2_500_000
 timestamp_format = "%Y-%m-%dT%H:%M"
 
 LOG_DIR = '/home/lokiai/.openclaw/workspace/market_logs/'
@@ -569,6 +571,7 @@ def market_scanner(tokens, volume_data, momentum_data):
         if (
             (volume > HIGH_VOLUME_LEVEL and momentum > HIGH_MOMENTUM_LEVEL)
             or (volume >= SECONDARY_VOLUME_FLOOR and momentum >= SECONDARY_MOMENTUM_FLOOR)
+            or (volume >= LEADERSHIP_VOLUME_FLOOR and momentum >= LEADERSHIP_MOMENTUM_FLOOR)
         ):
             candidates.append({
                 'token': token,

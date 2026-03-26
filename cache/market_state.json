@@ -1,8 +1,8 @@
 {
   "mode": "baseline",
-  "computed_at": "2026-03-26T10:32",
+  "computed_at": "2026-03-26T10:38",
   "metrics": {
-    "avg_top_score": 0.85,
+    "avg_top_score": 0.845549,
     "high_quality_signals": 0,
     "breadth_positive": 0,
     "total_signals": 1,
@@ -12,9 +12,9 @@
   "top_opportunities": [
     {
       "token": "REZ",
-      "score": 0.85,
-      "momentum": 3.560831,
-      "volume": 8565006.924374,
+      "score": 0.845549,
+      "momentum": 3.264095,
+      "volume": 8591720.35809,
       "persistence": 5,
       "status": "persistent",
       "trend": "steady"
@@ -22,10 +22,10 @@
   ],
   "leadership_board": [
     {
-      "timestamp": "2026-03-26T10:32",
+      "timestamp": "2026-03-26T10:38",
       "token": "REZ",
-      "volume": 8565006.924374,
-      "momentum": 3.560831,
+      "volume": 8591720.35809,
+      "momentum": 3.264095,
       "status": "persistent",
       "persistence": 5,
       "coinbase_actionable": true,
@@ -33,25 +33,25 @@
       "volume_acceleration_ratio": -0.0,
       "buy_pressure_proxy": -0.0,
       "liquidity_health": 0.5,
-      "momentum_5m": null,
+      "momentum_5m": -0.296736,
       "momentum_15m": null,
       "momentum_60m": null,
-      "momentum_alignment_score": 0.5,
+      "momentum_alignment_score": 0.470326,
       "momentum_trend": "steady",
       "momentum_score": 1.0,
       "volume_score": 1.0,
       "persistence_score": 1.0,
       "liquidity_score": 0.5,
-      "alignment_score": 0.5,
-      "score": 0.85
+      "alignment_score": 0.470326,
+      "score": 0.845549
     }
   ],
   "ranked_bench": [
     {
-      "timestamp": "2026-03-26T10:32",
+      "timestamp": "2026-03-26T10:38",
       "token": "REZ",
-      "volume": 8565006.924374,
-      "momentum": 3.560831,
+      "volume": 8591720.35809,
+      "momentum": 3.264095,
       "status": "persistent",
       "persistence": 5,
       "coinbase_actionable": true,
@@ -59,17 +59,17 @@
       "volume_acceleration_ratio": -0.0,
       "buy_pressure_proxy": -0.0,
       "liquidity_health": 0.5,
-      "momentum_5m": null,
+      "momentum_5m": -0.296736,
       "momentum_15m": null,
       "momentum_60m": null,
-      "momentum_alignment_score": 0.5,
+      "momentum_alignment_score": 0.470326,
       "momentum_trend": "steady",
       "momentum_score": 1.0,
       "volume_score": 1.0,
       "persistence_score": 1.0,
       "liquidity_score": 0.5,
-      "alignment_score": 0.5,
-      "score": 0.85
+      "alignment_score": 0.470326,
+      "score": 0.845549
     }
   ]
 }
