@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-03-26T19:04:14+00:00",
+  "websocket_connected": false,
+  "scanner_signal_count": 0,
+  "scanner_tokens": [],
+  "candidate_eval_count": 0,
+  "accepted_candidate_count": 0,
+  "rejected_candidate_count": 0,
+  "reject_reasons": {},
+  "shortlist_count": 0,
+  "shortlist_tokens": [],
+  "new_positions_count": 0,
+  "new_position_tokens": []
+}

@@ -1,67 +1,38 @@
 {
-  "generated_at": "2026-03-25T21:58:05.534199+00:00",
-  "window_minutes": 90,
+  "generated_at": "2026-03-26T19:04:14+00:00",
   "scanner": {
-    "runs": 142,
-    "nonzero_signal_runs": 70,
-    "zero_signal_runs": 72,
-    "top_surfaced_tokens": {
-      "AKT": 34,
-      "FET": 22
-    }
+    "runs": 0,
+    "nonzero_signal_runs": 0,
+    "zero_signal_runs": 0,
+    "top_surfaced_tokens": {}
   },
   "trader": {
-    "runs": 142,
-    "watch_runs": 113,
-    "engaged_runs": 29,
-    "shortlist_nonzero_runs": 2,
-    "shortlist_zero_runs": 140,
-    "new_positions_total": 2,
-    "closed_positions_total": 2
+    "runs": 0,
+    "watch_runs": 0,
+    "engaged_runs": 0,
+    "shortlist_nonzero_runs": 0,
+    "shortlist_zero_runs": 0,
+    "new_positions_total": 0,
+    "closed_positions_total": 0
   },
   "candidate_flow": {
-    "eval_count": 76,
-    "accepted_count": 2,
-    "rejected_count": 74,
-    "top_reject_reasons": {
-      "cooldown": 43,
-      "tier_filter_failed": 22,
-      "drift_300_too_negative": 7,
-      "drift_900_too_negative": 2
-    }
+    "eval_count": 0,
+    "accepted_count": 0,
+    "rejected_count": 0,
+    "top_reject_reasons": {}
   },
-  "dominant_tokens": [
-    {
-      "token": "AKT",
-      "scanner_mentions": 34,
-      "accepted": 1,
-      "rejected": 35,
-      "top_reject_reasons": {
-        "cooldown": 31,
-        "tier_filter_failed": 2,
-        "drift_900_too_negative": 2
-      }
-    },
-    {
-      "token": "FET",
-      "scanner_mentions": 22,
-      "accepted": 1,
-      "rejected": 21,
-      "top_reject_reasons": {
-        "tier_filter_failed": 11,
-        "drift_300_too_negative": 7,
-        "cooldown": 3
-      }
-    }
-  ],
+  "dominant_tokens": [],
   "latest_audit": {
-    "timestamp": "2026-03-25T21:57:40+00:00",
+    "timestamp": "2026-03-26T19:04:14+00:00",
     "mode": "watch",
     "active_slot_count": 0,
-    "closed_trade_count": 5,
-    "win_count": 1,
-    "loss_count": 4,
-    "avg_win_pct": 0.9122,
-    "avg_loss_pct": -0.4254
-  }
+    "closed_trade_count": 0,
+    "win_count": 0,
+    "loss_count": 0,
+    "avg_win_pct": 0.0,
+    "avg_loss_pct": 0.0,
+    "latest_closed": [],
+    "latest_open": []
+  },
+  "session_reset_at": "2026-03-26T19:04:14+00:00"
 }
