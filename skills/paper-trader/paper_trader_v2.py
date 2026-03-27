@@ -24,10 +24,10 @@ V2_FUNNEL_REPORT_PATH = TRADES_DIR / 'v2_entry_funnel_report.json'
 MAX_SLOTS = 3
 CANDIDATE_BENCH_LIMIT = 12
 ENTRY_MIN_SCORE = 0.40
-HIGH_CONFIDENCE_SCORE = 0.52
+HIGH_CONFIDENCE_SCORE = 0.58
 FRESHNESS_LIMIT_SECONDS = 180
 ENTRY_MIN_DRIFT_300S = 0.03
-HIGH_CONFIDENCE_MIN_DRIFT_300S = 0.06
+HIGH_CONFIDENCE_MIN_DRIFT_300S = 0.10
 ENTRY_MIN_PERSISTENCE = 4
 COOLDOWN_MINUTES = 30
 STOP_LOSS_PCT = -3.0
@@ -342,13 +342,14 @@ def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     if persistence == 4 and score < 0.56:
         return '', 'borderline_score_at_p4', structure_score
 
-    high_confidence = score >= HIGH_CONFIDENCE_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
+    high_confidence = score >= HIGH_CONFIDENCE_SCORE and persistence >= 5
     valid_setup = score >= ENTRY_MIN_SCORE and persistence >= ENTRY_MIN_PERSISTENCE
+    high_conf_extension = drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 13.5
 
     if structure_state == 'full':
-        if high_confidence and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.02:
+        if high_confidence and not high_conf_extension and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.08 and momentum >= 4.5:
             return 'high', f'{structure_reason}:high_confidence_continuation', structure_score
-        if high_confidence and drift >= -0.02 and drift_900s >= 0.08:
+        if high_confidence and not high_conf_extension and drift >= 0.0 and drift_900s >= 0.12 and momentum >= 4.0:
             return 'high', f'{structure_reason}:high_confidence_recovery', structure_score
         if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= 0.0:
             return 'standard', f'{structure_reason}:standard_continuation', structure_score
@@ -356,8 +357,8 @@ def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
             return 'standard', f'{structure_reason}:supported_flat_reclaim', structure_score
 
     if structure_state == 'early':
-        if high_confidence and persistence >= 5:
-            return 'standard', f'{structure_reason}:early_reclaim_high_confidence', structure_score
+        if high_confidence and persistence >= 5 and not high_conf_extension and drift >= 0.08 and drift_900s >= 0.08 and momentum >= 4.5:
+            return 'high', f'{structure_reason}:early_reclaim_high_confidence', structure_score
         if valid_setup and persistence >= 5 and score >= 0.50:
             return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
         if valid_setup and persistence >= 5 and drift >= -0.01 and drift_900s >= -0.30:
