@@ -347,9 +347,9 @@ def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     high_conf_extension = drift >= FAKE_PUMP_DRIFT_THRESHOLD and momentum < 13.5
 
     if structure_state == 'full':
-        if high_confidence and not high_conf_extension and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.08 and momentum >= 4.5:
+        if high_confidence and not high_conf_extension and drift >= HIGH_CONFIDENCE_MIN_DRIFT_300S and drift_900s >= 0.20 and momentum >= 4.5:
             return 'high', f'{structure_reason}:high_confidence_continuation', structure_score
-        if high_confidence and not high_conf_extension and drift >= 0.0 and drift_900s >= 0.12 and momentum >= 4.0:
+        if high_confidence and not high_conf_extension and drift >= 0.0 and drift_900s >= 0.22 and momentum >= 4.0:
             return 'high', f'{structure_reason}:high_confidence_recovery', structure_score
         if valid_setup and drift >= ENTRY_MIN_DRIFT_300S and drift_900s >= 0.0:
             return 'standard', f'{structure_reason}:standard_continuation', structure_score
@@ -357,7 +357,7 @@ def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
             return 'standard', f'{structure_reason}:supported_flat_reclaim', structure_score
 
     if structure_state == 'early':
-        if high_confidence and persistence >= 5 and not high_conf_extension and drift >= 0.08 and drift_900s >= 0.08 and momentum >= 4.5:
+        if high_confidence and persistence >= 5 and not high_conf_extension and drift >= 0.08 and drift_900s >= 0.20 and momentum >= 4.5:
             return 'high', f'{structure_reason}:early_reclaim_high_confidence', structure_score
         if valid_setup and persistence >= 5 and score >= 0.50:
             return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
