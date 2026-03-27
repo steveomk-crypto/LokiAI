@@ -37,7 +37,14 @@ if [ -f "${PID_FILE}" ]; then
 fi
 
 echo $$ > "${PID_FILE}"
-trap 'write_heartbeat "stopping"; rm -f "${PID_FILE}"; rm -f "${HEARTBEAT_FILE}"' EXIT INT TERM
+cleanup() {
+  write_heartbeat "stopping"
+  rm -f "${PID_FILE}" "${HEARTBEAT_FILE}"
+  exit 0
+}
+
+trap cleanup INT TERM
+trap 'rm -f "${PID_FILE}" "${HEARTBEAT_FILE}"' EXIT
 
 exec >> "${LOG_FILE}"
 exec 2>&1
