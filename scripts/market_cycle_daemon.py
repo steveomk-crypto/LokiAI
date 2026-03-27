@@ -70,6 +70,13 @@ def remove_pid() -> None:
             PID_FILE.unlink()
     except Exception:
         pass
+    try:
+        if HEARTBEAT_FILE.exists():
+            heartbeat = json.loads(HEARTBEAT_FILE.read_text())
+            if str(heartbeat.get('pid')) == str(os.getpid()):
+                HEARTBEAT_FILE.unlink()
+    except Exception:
+        pass
 
 
 def _pid_is_live_daemon(pid: int | None) -> bool:

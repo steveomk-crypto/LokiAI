@@ -37,7 +37,7 @@ if [ -f "${PID_FILE}" ]; then
 fi
 
 echo $$ > "${PID_FILE}"
-trap 'write_heartbeat "stopping"; rm -f "${PID_FILE}"' EXIT INT TERM
+trap 'write_heartbeat "stopping"; rm -f "${PID_FILE}"; rm -f "${HEARTBEAT_FILE}"' EXIT INT TERM
 
 exec >> "${LOG_FILE}"
 exec 2>&1

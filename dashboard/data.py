@@ -8,6 +8,7 @@ import signal
 
 import requests
 import os
+import subprocess
 
 from dashboard.runtime_registry import COMPONENTS
 from dashboard.modes import get_modes
@@ -63,6 +64,25 @@ def _file_meta(path: Path) -> dict[str, Any]:
     stat = path.stat()
     updated_at = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat()
     return {'exists': True, 'path': str(path), 'updated_at': updated_at, 'size_bytes': stat.st_size}
+
+
+def _pid_cmdline(pid: int | None) -> str:
+    if not pid:
+        return ''
+    try:
+        return subprocess.run(
+            ['ps', '-p', str(pid), '-o', 'args='],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+    except Exception:
+        return ''
+
+
+def _pid_matches(pid: int | None, needles: tuple[str, ...]) -> bool:
+    cmdline = _pid_cmdline(pid)
+    return bool(cmdline and any(needle in cmdline for needle in needles))
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -499,14 +519,23 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
         heartbeat = _load_json(SYSTEM_LOG_DIR / 'market_cycle_heartbeat.json', {})
         hb_state = str(heartbeat.get('state') or '').lower()
         hb_ts = heartbeat.get('timestamp')
-        if hb_state in {'started', 'running_cycle', 'sleeping'} and _is_recent(hb_ts, 120):
+        hb_pid = heartbeat.get('pid')
+        heartbeat_pid_live = False
+        try:
+            heartbeat_pid_live = _pid_matches(int(hb_pid) if hb_pid is not None else None, ('market_cycle_daemon.py', 'market_cycle_daemon.sh'))
+        except Exception:
+            heartbeat_pid_live = False
+        if hb_state in {'started', 'running_cycle', 'sleeping'} and _is_recent(hb_ts, 120) and heartbeat_pid_live:
             runtime['main_loop']['state'] = 'running'
             runtime['main_loop']['running'] = True
             runtime['main_loop']['last_success_at'] = hb_ts
-        elif hb_state == 'stopping' and _is_recent(hb_ts, 120):
+        elif hb_state in {'stopping', 'stop_requested'} and _is_recent(hb_ts, 120):
             runtime['main_loop']['state'] = 'stopped'
             runtime['main_loop']['running'] = False
             runtime['main_loop']['last_success_at'] = hb_ts
+        elif hb_ts and not heartbeat_pid_live and str(runtime['main_loop'].get('state') or '').lower() in {'running', 'sleeping', 'active recently'}:
+            runtime['main_loop']['state'] = 'stale heartbeat'
+            runtime['main_loop']['running'] = False
         elif _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
             runtime['main_loop']['state'] = 'active recently'
     if 'main_loop' in runtime and loop_info.get('last_error') and str(runtime['main_loop'].get('state') or '').lower() not in {'running', 'sleeping'}:
