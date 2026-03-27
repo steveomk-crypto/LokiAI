@@ -538,6 +538,7 @@ def _apply_component_health_overrides(runtime: dict[str, dict[str, Any]]) -> dic
             runtime['main_loop']['running'] = False
         elif _is_recent((runtime['main_loop'].get('log_meta') or {}).get('updated_at'), 120):
             runtime['main_loop']['state'] = 'active recently'
+            runtime['main_loop']['running'] = False
     if 'main_loop' in runtime and loop_info.get('last_error') and str(runtime['main_loop'].get('state') or '').lower() not in {'running', 'sleeping'}:
         runtime['main_loop']['last_error'] = loop_info.get('last_error')
     automation_stage_map = {
