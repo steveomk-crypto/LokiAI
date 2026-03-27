@@ -183,6 +183,7 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     freshness = float(ticker.get('freshness_seconds') or 9999.0)
     momentum = float(candidate.get('momentum') or 0.0)
     last_exit_reason = entry.get('last_exit_reason')
+    last_exit_pnl = float(entry.get('last_exit_pnl_percent') or 0.0)
 
     has_reset = drift_300s <= -0.05 or drift_900s <= -0.02 or freshness > 90
     strong_reclaim = (
@@ -209,6 +210,32 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
         drift_900s >= 0.08 and
         momentum >= 3.2
     )
+    fast_reclaim = (
+        persistence >= 5 and
+        score >= 0.64 and
+        freshness <= 45 and
+        drift_300s >= 0.30 and
+        drift_900s >= 0.20 and
+        momentum >= 4.0
+    )
+    soft_failure_reclaim = (
+        last_exit_reason in {'fake_pump_confirmed', 'no_move', 'timeout', 'failed_continuation', 'early_profit_giveback', 'modest_continuation_failure'} and
+        persistence >= 5 and
+        score >= 0.60 and
+        freshness <= 60 and
+        drift_300s >= 0.18 and
+        drift_900s >= 0.05 and
+        momentum >= 3.2
+    )
+    stop_loss_reclaim = (
+        last_exit_reason == 'stop_loss' and
+        persistence >= 5 and
+        score >= 0.80 and
+        freshness <= 45 and
+        drift_300s >= 0.30 and
+        drift_900s >= 0.12 and
+        momentum >= 5.0
+    )
 
     if last_exit_reason in {'no_move', 'timeout'} and (freshness > 120 or drift_300s <= 0.0 or drift_900s <= 0.0):
         return False, 'stale_reentry_after_no_move'
@@ -218,21 +245,29 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
             entry['reentry_blocked_until'] = None
             blocked_until = None
         else:
-            if no_move_reclaim or exceptional_reclaim:
+            if stop_loss_reclaim or no_move_reclaim or exceptional_reclaim:
                 return True, 'reclaimed_strength'
-            if has_reset and strong_reclaim:
+            if fast_reclaim or (has_reset and strong_reclaim) or soft_failure_reclaim:
                 return True, 'reset_and_reclaim'
             return False, 'cooldown'
-    if no_move_reclaim or exceptional_reclaim:
+    if stop_loss_reclaim or no_move_reclaim or exceptional_reclaim:
         return True, 'reclaimed_strength'
-    if has_reset and strong_reclaim:
+    if fast_reclaim or (has_reset and strong_reclaim) or soft_failure_reclaim:
         return True, 'reset_and_reclaim'
 
     if lifecycle in {'choppy', 'exhausted'}:
+        if last_exit_reason == 'stop_loss' and last_exit_pnl <= -2.5:
+            return False, 'leader_exhausted'
+        if fast_reclaim or soft_failure_reclaim:
+            return True, 'repaired_leader'
         return False, 'leader_exhausted'
     if lifecycle == 'needs_reset':
+        if stop_loss_reclaim or fast_reclaim or soft_failure_reclaim:
+            return True, 'repaired_reset'
         return False, 'needs_reset'
     if lifecycle in {'active', 'leader_active'}:
+        if fast_reclaim and freshness <= 30:
+            return True, 'reclaimed_strength'
         return False, 'cooldown'
     return True, None
 
@@ -821,22 +856,22 @@ def _refresh_positions(open_positions: list[dict], tickers: dict[str, dict], sta
             })
             closed.append(closed_position)
             lifecycle = 'leader_active'
-            blocked_minutes = COOLDOWN_MINUTES
+            blocked_minutes = 12
             if exit_reason in {'no_move', 'timeout'}:
                 lifecycle = 'needs_reset'
-                blocked_minutes = max(COOLDOWN_MINUTES, 35)
-            elif exit_reason in {'failed_continuation', 'early_profit_giveback'}:
+                blocked_minutes = 15
+            elif exit_reason in {'failed_continuation', 'early_profit_giveback', 'modest_continuation_failure'}:
                 lifecycle = 'choppy'
-                blocked_minutes = max(COOLDOWN_MINUTES, 25)
+                blocked_minutes = 18
             elif exit_reason in {'fake_pump_confirmed'}:
                 lifecycle = 'exhausted'
-                blocked_minutes = max(COOLDOWN_MINUTES, 45)
+                blocked_minutes = 18
             elif exit_reason in {'trailing_exit'}:
                 lifecycle = 'leader_active'
-                blocked_minutes = 12
+                blocked_minutes = 8
             elif exit_reason in {'stop_loss'}:
                 lifecycle = 'needs_reset'
-                blocked_minutes = max(COOLDOWN_MINUTES, 45)
+                blocked_minutes = 40
             _set_symbol_reentry_state(
                 state,
                 position.get('token'),
