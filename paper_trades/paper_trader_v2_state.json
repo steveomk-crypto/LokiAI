@@ -1,5 +1,38 @@
 {
+  "session_reset_at": "2026-03-28T12:40:52+00:00",
+  "symbol_state": {
+    "BCH": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "AKT": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    },
+    "FET": {
+      "lifecycle": "idle",
+      "last_exit_reason": null,
+      "last_exit_pnl_percent": null,
+      "last_peak_pnl_percent": null,
+      "last_entry_at": null,
+      "last_exit_at": null,
+      "reentry_blocked_until": null
+    }
+  },
+  "last_run_at": null,
+  "last_scan_timestamp": null,
+  "last_candidates": [],
+  "last_rejections": [],
   "last_entries": {},
-  "session_reset_at": "2026-03-27T18:49:42+00:00",
-  "symbol_state": {}
+  "notes": "fresh reset requested by user"
 }
