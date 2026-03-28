@@ -359,9 +359,9 @@ def _candidate_profile(candidate: dict, ticker: dict) -> tuple[str, str, float]:
     if structure_state == 'early':
         if high_confidence and persistence >= 5 and not high_conf_extension and drift >= 0.08 and drift_900s >= 0.20 and momentum >= 4.5:
             return 'high', f'{structure_reason}:early_reclaim_high_confidence', structure_score
-        if valid_setup and persistence >= 5 and score >= 0.50:
+        if valid_setup and persistence >= 5 and score >= 0.50 and drift >= 0.10 and drift_900s >= 0.08 and momentum >= 3.2:
             return 'standard', f'{structure_reason}:early_reclaim_supported', structure_score
-        if valid_setup and persistence >= 5 and drift >= -0.01 and drift_900s >= -0.30:
+        if valid_setup and persistence >= 5 and drift >= 0.05 and drift_900s >= 0.10 and momentum >= 3.5:
             return 'standard', f'{structure_reason}:weak_regime_flat_reclaim', structure_score
 
     return '', 'confidence_filter_failed', structure_score
