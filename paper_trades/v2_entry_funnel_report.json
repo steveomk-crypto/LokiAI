@@ -1,37 +1,29 @@
 {
-  "generated_at": "2026-03-28T12:40:54+00:00",
+  "generated_at": "2026-03-28T12:42:28+00:00",
   "scanner": {
-    "runs": 1,
-    "nonzero_signal_runs": 1,
+    "runs": 0,
+    "nonzero_signal_runs": 0,
     "zero_signal_runs": 0,
-    "top_surfaced_tokens": {
-      "TRIA": 1
-    }
+    "top_surfaced_tokens": {}
   },
   "trader": {
-    "runs": 1,
-    "watch_runs": 1,
+    "runs": 0,
+    "watch_runs": 0,
     "engaged_runs": 0,
     "shortlist_nonzero_runs": 0,
-    "shortlist_zero_runs": 1,
+    "shortlist_zero_runs": 0,
     "new_positions_total": 0,
     "closed_positions_total": 0
   },
   "candidate_flow": {
-    "eval_count": 3,
+    "eval_count": 0,
     "accepted_count": 0,
-    "rejected_count": 3,
-    "top_reject_reasons": {
-      "structure_not_reclaimed": 1,
-      "structure_downtrend": 1,
-      "drift_300_too_negative": 1
-    }
+    "rejected_count": 0,
+    "top_reject_reasons": {}
   },
-  "dominant_tokens": [
-    "TRIA"
-  ],
+  "dominant_tokens": [],
   "latest_audit": {
-    "timestamp": "2026-03-28T12:40:54+00:00",
+    "timestamp": "2026-03-28T12:42:28+00:00",
     "mode": "watch",
     "active_slot_count": 0,
     "closed_trade_count": 0,
@@ -40,7 +32,8 @@
     "avg_win_pct": 0.0,
     "avg_loss_pct": 0.0,
     "latest_closed": [],
-    "latest_open": []
+    "latest_open": [],
+    "last_manual_flatten_at": "2026-03-28T12:42:28+00:00"
   },
-  "session_reset_at": "2026-03-28T12:40:52+00:00"
+  "session_reset_at": "2026-03-28T12:42:28+00:00"
 }
