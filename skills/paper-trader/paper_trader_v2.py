@@ -258,7 +258,15 @@ def _reentry_decision(symbol: str, state: dict, candidate: dict | None = None, t
     if lifecycle in {'choppy', 'exhausted'}:
         if last_exit_reason == 'stop_loss' and last_exit_pnl <= -2.5:
             return False, 'leader_exhausted'
-        if fast_reclaim or soft_failure_reclaim:
+        recycled_reclaim = (
+            persistence >= 5 and
+            score >= 0.56 and
+            freshness <= 45 and
+            drift_300s >= 0.18 and
+            drift_900s >= 0.08 and
+            momentum >= 3.8
+        )
+        if fast_reclaim or soft_failure_reclaim or recycled_reclaim:
             return True, 'repaired_leader'
         return False, 'leader_exhausted'
     if lifecycle == 'needs_reset':
