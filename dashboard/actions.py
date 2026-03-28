@@ -87,6 +87,42 @@ def _is_recent_iso(value: str | None, max_age_seconds: int) -> bool:
         return False
 
 
+def _pid_matches(pid: int | None, needles: list[str]) -> bool:
+    if not pid:
+        return False
+    try:
+        result = subprocess.run(['ps', '-p', str(pid), '-o', 'args='], capture_output=True, text=True, check=False)
+        args_out = (result.stdout or '').strip()
+        return result.returncode == 0 and bool(args_out) and any(needle in args_out for needle in needles)
+    except Exception:
+        return False
+
+
+def _live_component_pid(component_id: str, runtime: dict) -> int | None:
+    entry = runtime.get(component_id, {}) or {}
+    pid = entry.get('pid')
+    pid_file = entry.get('pid_file')
+    if not pid and pid_file:
+        try:
+            pid = int(Path(pid_file).read_text().strip())
+        except Exception:
+            pid = None
+
+    needles_map = {
+        'coinbase_feed': ['feeds/coinbase_ws.py'],
+        'market_scanner': ['skills/market_scanner/market_scanner.py', 'run_coinbase_scanner.sh'],
+        'paper_trader_v2': ['paper_trader_v2.py', 'run_paper_trader_v2.sh', 'autonomous_market_loop.py --task paper_trader'],
+        'position_manager': ['autonomous_market_loop.py --task position_manager', 'position_reflex_runner.py'],
+        'operator_dashboard': ['python3 -m dashboard.main'],
+        'stream_dashboard': ['python3 -m dashboard.stream_main'],
+        'main_loop': ['scripts/market_cycle_daemon.py', 'market_cycle_daemon.sh'],
+    }
+    needles = needles_map.get(component_id)
+    if not needles:
+        return pid if pid else None
+    return pid if _pid_matches(pid, needles) else None
+
+
 def stop_pid(pid_file: str) -> Tuple[bool, str]:
     path = Path(pid_file)
     if not path.exists():
@@ -106,6 +142,31 @@ def perform_component_action(component_id: str, action: str) -> Tuple[bool, str]
     root = run_root()
     comp = COMPONENTS.get(component_id)
     mode_components = {'market_broadcaster', 'telegram_sender', 'x_autoposter', 'performance_analyzer', 'sol_shadow_logger'}
+
+    if action == 'start' and component_id != 'main_loop':
+        live_pid = _live_component_pid(component_id, runtime)
+        if live_pid:
+            return True, f"{comp.name if comp else component_id} already running (PID {live_pid})"
+
+        needles_map = {
+            'coinbase_feed': ['python3 feeds/coinbase_ws.py'],
+            'market_scanner': ['python3 skills/market_scanner/market_scanner.py', 'run_coinbase_scanner.sh'],
+            'paper_trader_v2': ['python3 skills/paper-trader/paper_trader_v2.py', 'run_paper_trader_v2.sh'],
+            'position_manager': ['autonomous_market_loop.py --task position_manager', 'position_reflex_runner.py'],
+            'operator_dashboard': ['python3 -m dashboard.main'],
+            'stream_dashboard': ['python3 -m dashboard.stream_main'],
+        }
+        needles = needles_map.get(component_id, [])
+        if needles:
+            try:
+                ps_lines = subprocess.run(['ps', '-eo', 'pid=,args='], capture_output=True, text=True, check=False).stdout.splitlines()
+                for line in ps_lines:
+                    row = line.strip()
+                    if row and any(needle in row for needle in needles):
+                        pid = int(row.split(None, 1)[0])
+                        return True, f"{comp.name if comp else component_id} already running (PID {pid})"
+            except Exception:
+                pass
 
     if not comp:
         return False, f'{component_id} control not wired yet'
