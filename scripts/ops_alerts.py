@@ -31,6 +31,10 @@ SERVICE_EXPECTATIONS = {
     'Operator Dashboard': {'port': 8500, 'match': 'dashboard.operator_main'},
     'Stream Dashboard': {'port': 8501, 'match': 'dashboard.stream_main'},
 }
+ONE_SHOT_WORKFLOWS = {
+    'Coinbase Scanner': {'freshness_path': MARKET_STATE_PATH, 'freshness_key': 'computed_at', 'stale_minutes': SCANNER_STALE_MINUTES},
+    'Paper Trader V2': {'freshness_path': TRADER_AUDIT_PATH, 'freshness_key': 'timestamp', 'stale_minutes': SCANNER_STALE_MINUTES},
+}
 
 
 def load_env_file(path: Path) -> dict[str, str]:
@@ -191,6 +195,19 @@ def service_statuses() -> dict[str, tuple[str, str]]:
             results[service] = ('online', f'{service} online.')
         else:
             results[service] = ('offline', f'{service} offline unexpectedly.')
+
+    for service, spec in ONE_SHOT_WORKFLOWS.items():
+        payload = load_json(spec['freshness_path'])
+        if payload is None:
+            results[service] = ('error', f'{service} state missing.')
+            continue
+        age = age_minutes(payload.get(spec['freshness_key']))
+        if age is None:
+            results[service] = ('error', f'{service} freshness timestamp missing or malformed.')
+        elif age > spec['stale_minutes']:
+            results[service] = ('stale', f'{service} stale: last successful run {age:.1f}m ago.')
+        else:
+            results[service] = ('online', f'{service} healthy: last successful run {age:.1f}m ago.')
     return results
 
 
